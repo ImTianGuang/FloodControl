@@ -1,0 +1,27 @@
+*.class
+*.log*
+
+# Package Files #
+*.jar
+*.war
+*.ear
+*.iml
+
+# ignore test data for myself
+dispatcher.properties
+testbin
+build
+hook
+
+# ignore Maven generated target folders
+target
+kids-service/kids-api-error.log
+kids-service/kids-api.log
+
+# ignore eclipse files
+.project
+.classpath
+.idea
+.settings
+.metadata
+localtools
