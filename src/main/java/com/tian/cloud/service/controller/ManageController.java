@@ -1,6 +1,7 @@
 package com.tian.cloud.service.controller;
 
 import com.tian.cloud.service.controller.request.CompanyUpdateReq;
+import com.tian.cloud.service.controller.request.FloodSituationUpdateReq;
 import com.tian.cloud.service.controller.request.MessageUpdateReq;
 import com.tian.cloud.service.controller.request.PositionUpdateReq;
 import com.tian.cloud.service.controller.response.BaseResponse;
@@ -35,6 +36,9 @@ public class ManageController {
     }
 
     // add flood-situation
+    public BaseResponse<Void> saveOrUpdateFloodSituation(FloodSituationUpdateReq request) {
+        return BaseResponse.success(null);
+    }
 
     // addOrUpdate phones,asserts,plan
 

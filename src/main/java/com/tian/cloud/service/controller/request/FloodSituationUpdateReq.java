@@ -1,6 +1,9 @@
 package com.tian.cloud.service.controller.request;
 
+import com.tian.cloud.service.enums.SituationEnum;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * @author tianguang
@@ -8,4 +11,26 @@ import lombok.Data;
  **/
 @Data
 public class FloodSituationUpdateReq {
+
+    private Integer floodSituationId;
+
+    private Long startTime;
+
+    private Long endTime;
+
+    private String floodDesc;
+
+    private List<SituationDetail> situationDetails;
+
+    private List<SituationDetail> solutionDetails;
+
+    @Data
+    public static class SituationDetail {
+
+        private Integer situationId;
+
+        private Integer status;
+
+        private String situationValue;
+    }
 }

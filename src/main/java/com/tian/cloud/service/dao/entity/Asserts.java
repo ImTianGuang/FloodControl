@@ -9,13 +9,13 @@ import lombok.Data;
 @Data
 public class Asserts {
 
-    private int id;
+    private Integer id;
 
-    private int companyId;
+    private Integer companyId;
 
-    private int assertsTypeId;
+    private Integer assertsTypeId;
 
-    private int assertsValue;
+    private String assertsValue;
 
     private long createTime;
 

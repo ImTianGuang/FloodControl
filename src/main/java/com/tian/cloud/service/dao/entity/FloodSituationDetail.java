@@ -18,8 +18,6 @@ public class FloodSituationDetail {
 
     private Integer situationId;
 
-    private String situationName;
-
     private String situationValue;
 
     private long createTime;
