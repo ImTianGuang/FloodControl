@@ -1,9 +1,6 @@
 package com.tian.cloud.service.controller;
 
-import com.tian.cloud.service.controller.request.CompanyUpdateReq;
-import com.tian.cloud.service.controller.request.FloodSituationUpdateReq;
-import com.tian.cloud.service.controller.request.MessageUpdateReq;
-import com.tian.cloud.service.controller.request.PositionUpdateReq;
+import com.tian.cloud.service.controller.request.*;
 import com.tian.cloud.service.controller.response.BaseResponse;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,8 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ManageController {
 
     // addOrUpdate company
-
-    public BaseResponse<Void> saveOrUpdateCompany(CompanyUpdateReq request) {
+    public BaseResponse<Void> saveOrUpdateCompanyInfo(CompanyInfoUpdateInfoReq request) {
         return BaseResponse.success(null);
     }
 
@@ -30,17 +26,15 @@ public class ManageController {
         return BaseResponse.success(null);
     }
 
-    // add message
+    // addOrUpdate message
     public BaseResponse<Void> sqveOrUpdateMessage(MessageUpdateReq request) {
         return BaseResponse.success(null);
     }
 
-    // add flood-situation
+    // addOrUpdate flood-situation
     public BaseResponse<Void> saveOrUpdateFloodSituation(FloodSituationUpdateReq request) {
         return BaseResponse.success(null);
     }
-
-    // addOrUpdate phones,asserts,plan
 
     // export company
 

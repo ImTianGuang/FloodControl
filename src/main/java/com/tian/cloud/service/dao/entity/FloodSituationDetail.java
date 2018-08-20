@@ -1,6 +1,6 @@
 package com.tian.cloud.service.dao.entity;
 
-import com.tian.cloud.service.enums.SituationEnum;
+import com.tian.cloud.service.enums.SituationTargetEnum;
 import lombok.Data;
 
 /**
@@ -14,11 +14,11 @@ public class FloodSituationDetail {
 
     private Integer floodSituationId;
 
-    private SituationEnum situationEnum;
+    private SituationTargetEnum situationTargetEnum;
 
-    private Integer situationId;
+    private Integer targetId;
 
-    private String situationValue;
+    private String targetValue;
 
     private long createTime;
 

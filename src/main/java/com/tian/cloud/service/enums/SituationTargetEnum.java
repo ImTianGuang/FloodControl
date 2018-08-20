@@ -4,11 +4,11 @@ import com.google.common.collect.Maps;
 
 import java.util.Map;
 
-public enum SituationEnum {
+public enum SituationTargetEnum {
 
     VAR0(0, "000"),;
 
-    SituationEnum(int code, String msg) {
+    SituationTargetEnum(int code, String msg) {
         this.code = code;
         this.msg = msg;
     }
@@ -17,15 +17,15 @@ public enum SituationEnum {
 
     private String msg;
 
-    private static final Map<Integer, SituationEnum> codeMap = Maps.newHashMap();
+    private static final Map<Integer, SituationTargetEnum> codeMap = Maps.newHashMap();
 
     static {
-        for (SituationEnum var : SituationEnum.values()) {
+        for (SituationTargetEnum var : SituationTargetEnum.values()) {
             codeMap.put(var.getCode(), var);
         }
     }
 
-    public static SituationEnum toEnum(int code) {
+    public static SituationTargetEnum toEnum(int code) {
         return codeMap.get(code);
     }
 

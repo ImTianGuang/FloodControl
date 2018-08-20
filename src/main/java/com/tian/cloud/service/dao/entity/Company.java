@@ -14,7 +14,7 @@ public class Company {
 
     private String name;
 
-    private LineStatusEnum status;
+    private Integer status;
 
     private String address;
 

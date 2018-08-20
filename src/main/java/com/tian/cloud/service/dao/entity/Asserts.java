@@ -15,7 +15,11 @@ public class Asserts {
 
     private Integer assertsTypeId;
 
+    private String assertsTypeName;
+
     private String assertsValue;
+
+    private Integer status;
 
     private long createTime;
 

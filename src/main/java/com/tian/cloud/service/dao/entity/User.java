@@ -16,7 +16,7 @@ public class User {
 
     private String floodOrgTitle;
 
-    private LineStatusEnum status;
+    private Integer status;
 
     private String userName;
 
