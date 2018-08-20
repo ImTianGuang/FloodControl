@@ -9,11 +9,11 @@ import lombok.Data;
 @Data
 public class Position {
 
-    private int id;
+    private Integer id;
 
     private String name;
 
-    private int companyId;
+    private Integer companyId;
 
     private long createTime;
 

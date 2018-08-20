@@ -1,20 +1,20 @@
-package com.tian.cloud.service.dao.entity;
+package com.tian.cloud.service.controller.request;
 
 import com.tian.cloud.service.enums.LineStatusEnum;
 import lombok.Data;
 
 /**
  * @author tianguang
- * 2018/8/17 下午5:58
+ * 2018/8/20 下午2:15
  **/
 @Data
-public class Company {
+public class CompanyUpdateReq {
 
     private Integer id;
 
     private String name;
 
-    private LineStatusEnum status;
+    private Integer status;
 
     private String address;
 
@@ -29,8 +29,4 @@ public class Company {
     private String checkPerson;
 
     private String checkPersonPhone;
-
-    private long createTime;
-
-    private long updateTime;
 }
