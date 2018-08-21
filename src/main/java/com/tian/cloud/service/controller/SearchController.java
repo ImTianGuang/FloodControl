@@ -3,6 +3,7 @@ package com.tian.cloud.service.controller;
 import com.google.common.collect.Lists;
 import com.tian.cloud.service.controller.request.MessageSearchReq;
 import com.tian.cloud.service.controller.response.BaseResponse;
+import com.tian.cloud.service.controller.response.FloodSituationInfo;
 import com.tian.cloud.service.controller.response.PageResponse;
 import com.tian.cloud.service.dao.entity.Company;
 import com.tian.cloud.service.dao.entity.Message;
@@ -28,4 +29,7 @@ public class SearchController {
     }
     // flood-situationList
 
+    public PageResponse<FloodSituationInfo> floodSituationList() {
+        return PageResponse.success(Lists.newArrayList(), 10);
+    }
 }

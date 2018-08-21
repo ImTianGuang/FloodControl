@@ -27,6 +27,6 @@ public class PageResponse<T> extends BaseResponse<List<T>> {
         response.setErrorCode(code);
         response.setErrorMsg(msg);
         response.setData(data);
-        return response
+        return response;
     }
 }
