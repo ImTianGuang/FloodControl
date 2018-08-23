@@ -12,7 +12,9 @@ public class CommonType {
 
     private Integer id;
 
-    private CommenTypeEnum commenTypeEnum;
+    private int commonTypeEnum;
+
+    private Integer status;
 
     private String name;
 

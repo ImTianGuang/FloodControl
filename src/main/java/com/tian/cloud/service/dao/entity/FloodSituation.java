@@ -11,9 +11,15 @@ public class FloodSituation {
 
     private Integer id;
 
+    private Integer companyId;
+
+    private Integer status;
+
     private long startTime;
 
     private long endTime;
+
+    private String title;
 
     private String floodDesc;
 

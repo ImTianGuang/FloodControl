@@ -1,18 +1,18 @@
 spring:
   application:
     name: demo-service
-  zipkin:
-      base-url: http://localhost:8080
-  sleuth:
-      sampler:
-        percentage: 1 #zipkin采样率，默认为0.1，改为1后全采样，但是会降低接口调用效率
 
 server:
   port: 8081
 
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://localhost:8083/eureka
+spring:
+  datasource:
+  driverClassName: com.mysql.jdbc.Driver
+  url: jdbc:mysql://localhost:3306/flood?useUnicode=true&characterEncoding=utf-8
+  username: root
+  pasword: root
+
+mybatis:
+  mapper-locations: classpath:/mapper/*.xml
 
 

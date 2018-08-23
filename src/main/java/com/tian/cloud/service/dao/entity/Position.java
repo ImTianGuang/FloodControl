@@ -11,9 +11,11 @@ public class Position {
 
     private Integer id;
 
+    private Integer companyId;
+
     private String name;
 
-    private Integer companyId;
+    private Integer status;
 
     private long createTime;
 

@@ -16,6 +16,8 @@ public class User {
 
     private String floodOrgTitle;
 
+    private Integer positionId;
+
     private Integer status;
 
     private String userName;

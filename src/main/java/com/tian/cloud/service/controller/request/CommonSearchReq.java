@@ -7,7 +7,7 @@ import lombok.Data;
  * 2018/8/20 下午8:56
  **/
 @Data
-public class MessageSearchReq {
+public class CommonSearchReq {
 
     private Integer startId;
 

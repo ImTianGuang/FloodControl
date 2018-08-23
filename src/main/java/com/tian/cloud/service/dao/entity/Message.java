@@ -12,7 +12,11 @@ public class Message {
 
     private Integer id;
 
-    private LineStatusEnum status;
+    private Integer companyId;
+
+    private Integer messageType;
+
+    private int status;
 
     private String title;
 

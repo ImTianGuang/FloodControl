@@ -1,0 +1,99 @@
+create table `asserts` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `company_id` int(11) NOT NULL default 0,
+    `asserts_type_id` int(11) NOT NULL default 0,
+    `asserts_type_name` varchar(64) NOT NULL default '',
+    `asserts_value` varchar(64) NOT NULL default '',
+    `status` int(11) NOT NULL default 1,
+    `create_time` bigint(20) NOT NULL,
+    `update_time` bigint(20) NOT NULL,
+    PRIMARY KEY (`id`)
+)ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+
+create table `common_type` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `name` varchar(64) NOT NULL default '',
+    `common_type_enum` tinyint NOT NULL default 1,
+    `status` int(11) NOT NULL default 1,
+    `create_time` bigint(20) NOT NULL,
+    `update_time` bigint(20) NOT NULL,
+    PRIMARY KEY (`id`)
+)ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+
+create table `company` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `name` varchar(255) NOT NULL default '',
+    `address` varchar(255) NOT NULL default '',
+    `post_code` varchar(16) NOT NULL default '',
+    `email` varchar(64) NOT NULL default '',
+    `record_person` varchar(64) NOT NULL default '',
+    `record_person_phone` varchar(64) NOT NULL default '',
+    `check_person` varchar(64) NOT NULL default '',
+    `check_person_phone` varchar(64) NOT NULL default '',
+    `status` int(11) NOT NULL default 1,
+    `create_time` bigint(20) NOT NULL,
+    `update_time` bigint(20) NOT NULL,
+    PRIMARY KEY (`id`)
+)ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+
+create table `flood_situation` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `company_id` int(11) NOT NULL default 0,
+    `status` int(11) NOT NULL default 1,
+    `start_time` bigint(20) NOT NULL,
+    `end_time` bigint(20) NOT NULL,
+    `title` varchar(64) NOT NULL default '',
+    `flood_desc` varchar(64) NOT NULL default '',
+    `create_time` bigint(20) NOT NULL,
+    `update_time` bigint(20) NOT NULL,
+    PRIMARY KEY (`id`)
+)ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+
+create table `flood_situation_detail` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `company_id` int(11) NOT NULL default 0,
+    `flood_situation_id` int(11) NOT NULL default 0,
+    `target_enum` int(11) NOT NULL default 0,
+    `status` int(11) NOT NULL default 1,
+    `target_id` int(11) NOT NULL default 0,
+    `target_value` varchar(64) NOT NULL default '',
+    `create_time` bigint(20) NOT NULL,
+    `update_time` bigint(20) NOT NULL,
+    PRIMARY KEY (`id`)
+)ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+
+create table `message` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `company_id` int(11) NOT NULL default 0,
+    `message_type` int(11) NOT NULL default 0,
+    `status` int(11) NOT NULL default 1,
+    `title` varchar(64) NOT NULL default '',
+    `content` varchar(1024) NOT NULL default '',
+    `create_time` bigint(20) NOT NULL,
+    `update_time` bigint(20) NOT NULL,
+    PRIMARY KEY (`id`)
+)ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+
+create table `position` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `company_id` int(11) NOT NULL default 0,
+    `name` varchar(64) NOT NULL default '',
+    `status` int(11) NOT NULL default 1,
+    `create_time` bigint(20) NOT NULL,
+    `update_time` bigint(20) NOT NULL,
+    PRIMARY KEY (`id`)
+)ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+
+create table `user` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `company_id` int(11) NOT NULL default 0,
+    `position_id` int(11) NOT NULL default 0,
+    `floodOrgTitle` varchar(64) NOT NULL default '',
+    `user_name` varchar(64) NOT NULL default '',
+    `user_phone` varchar(64) NOT NULL default '',
+    `word_phone` varchar(64) NOT NULL default '',
+    `fax` varchar(64) NOT NULL default '',
+    `create_time` bigint(20) NOT NULL,
+    `update_time` bigint(20) NOT NULL,
+    PRIMARY KEY (`id`)
+)ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;

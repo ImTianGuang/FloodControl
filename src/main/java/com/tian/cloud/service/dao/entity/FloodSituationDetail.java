@@ -12,9 +12,13 @@ public class FloodSituationDetail {
 
     private Integer id;
 
+    private Integer companyId;
+
     private Integer floodSituationId;
 
     private SituationTargetEnum situationTargetEnum;
+
+    private Integer status;
 
     private Integer targetId;
 

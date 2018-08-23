@@ -2,6 +2,8 @@ package com.tian.cloud.service.controller;
 
 import com.tian.cloud.service.controller.request.*;
 import com.tian.cloud.service.controller.response.BaseResponse;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -9,29 +11,36 @@ import org.springframework.web.bind.annotation.RestController;
  * 2018/8/20 下午1:41
  **/
 @RestController
+@RequestMapping("/manage/")
 public class ManageController {
 
     // addOrUpdate company
+    @RequestMapping("updateCompany")
+    @ResponseBody
     public BaseResponse<Void> saveOrUpdateCompanyInfo(CompanyInfoUpdateInfoReq request) {
         return BaseResponse.success(null);
     }
 
-    // addOrUpdate position
+    @RequestMapping("updatePosition")
+    @ResponseBody
     public BaseResponse<Void> saveOrUpdatePosition(PositionUpdateReq request) {
         return BaseResponse.success(null);
     }
 
-    // addOrUpdate commonType: situationType solutionType
+    @RequestMapping("updateCommonType")
+    @ResponseBody
     public BaseResponse<Void> saveOrUpdateCommonType(CompanyUpdateReq request) {
         return BaseResponse.success(null);
     }
 
-    // addOrUpdate message
-    public BaseResponse<Void> sqveOrUpdateMessage(MessageUpdateReq request) {
+    @RequestMapping("updateMessage")
+    @ResponseBody
+    public BaseResponse<Void> saveOrUpdateMessage(MessageUpdateReq request) {
         return BaseResponse.success(null);
     }
 
-    // addOrUpdate flood-situation
+    @RequestMapping("updateSituation")
+    @ResponseBody
     public BaseResponse<Void> saveOrUpdateFloodSituation(FloodSituationUpdateReq request) {
         return BaseResponse.success(null);
     }
