@@ -1,18 +1,19 @@
 package com.tian.cloud.service.dao.entity;
 
-import com.tian.cloud.service.enums.CommenTypeEnum;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author tianguang
  * 2018/8/20 下午1:48
  **/
 @Data
+@NoArgsConstructor
 public class CommonType {
 
     private Integer id;
 
-    private int commonTypeEnum;
+    private Integer commonTypeEnum;
 
     private Integer status;
 
@@ -20,5 +21,5 @@ public class CommonType {
 
     private long createTime;
 
-    private long updateTIme;
+    private long updateTime;
 }

@@ -1,41 +1,28 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.tian.cloud.service.dao.mapper.CommonTypeMapper" >
-    <resultMap id="BaseResultMap" type="com.tian.cloud.service.dao.entity.CommonType" >
+<mapper namespace="com.tian.cloud.service.dao.mapper.CompanyMapper" >
+    <resultMap id="BaseResultMap" type="com.tian.cloud.service.dao.entity.Company" >
         <id column="id" property="id" jdbcType="INTEGER" />
         <result column="name" property="name" jdbcType="VARCHAR" />
         <result column="status" property="status" jdbcType="INTEGER" />
-        <result column="common_type_enum" property="commonTypeEnum" jdbcType="TINYINT" />
         <result column="create_time" property="createTime" jdbcType="BIGINT" />
         <result column="update_time" property="updateTime" jdbcType="BIGINT" />
     </resultMap>
 
     <sql id="Base_Column_List" >
-        id, name, status, common_type_enum, create_time, update_time
+        id, name, status, create_time, update_time
     </sql>
 
     <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
         select
         <include refid="Base_Column_List" />
-        from common_type
+        from company
         where id = #{id}
     </select>
 
-    <select id="selectByTypeAndStatus" resultMap="BaseResultMap" parameterType="map">
+    <select id="selectAll" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from common_type
-        <where>
-            common_type_enum = #{commonTypeEnum}
-            and
-            status = #{status}
-        </where>
-    </select>
-
-    <select id="selectAllByStatus" resultMap="BaseResultMap" parameterType="java.lang.Integer">
-        select
-        <include refid="Base_Column_List"/>
-        from common_type
-        where status = #{status}
+        from company
     </select>
 </mapper>

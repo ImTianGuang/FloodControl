@@ -21,12 +21,11 @@ public class PageResponse<T> extends BaseResponse<List<T>> {
         return response;
     }
 
-    public static <T> PageResponse<T> fail(String code, String msg, List<T> data) {
+    public static <T> PageResponse<T> pageFail(String code, String msg) {
         PageResponse<T> response = new PageResponse<>();
         response.setRet(false);
         response.setErrorCode(code);
         response.setErrorMsg(msg);
-        response.setData(data);
         return response;
     }
 }

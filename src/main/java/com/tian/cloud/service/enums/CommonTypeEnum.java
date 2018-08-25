@@ -4,11 +4,14 @@ import com.google.common.collect.Maps;
 
 import java.util.Map;
 
-public enum CommenTypeEnum {
+public enum CommonTypeEnum {
 
-    VAR0(0, "000"),;
+    POSITION(0, "职位"),
+    SITUATION(1, "汛情类型"),
+    SOLUTION(2, "解决类型"),
+    ;
 
-    CommenTypeEnum(int code, String msg) {
+    CommonTypeEnum(int code, String msg) {
         this.code = code;
         this.msg = msg;
     }
@@ -17,15 +20,15 @@ public enum CommenTypeEnum {
 
     private String msg;
 
-    private static final Map<Integer, CommenTypeEnum> codeMap = Maps.newHashMap();
+    private static final Map<Integer, CommonTypeEnum> codeMap = Maps.newHashMap();
 
     static {
-        for (CommenTypeEnum var : CommenTypeEnum.values()) {
+        for (CommonTypeEnum var : CommonTypeEnum.values()) {
             codeMap.put(var.getCode(), var);
         }
     }
 
-    public static CommenTypeEnum toEnum(int code) {
+    public static CommonTypeEnum toEnum(int code) {
         return codeMap.get(code);
     }
 

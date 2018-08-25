@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
 @SpringBootApplication(scanBasePackages = "com.tian.cloud.service")
 @MapperScan(value = "com.tian.cloud.service.dao.mapper")
-//@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
+@EnableAutoConfiguration
 public class Application {
 
     public static void main(String[] args) {

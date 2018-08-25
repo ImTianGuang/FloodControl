@@ -1,6 +1,5 @@
 package com.tian.cloud.service.dao.entity;
 
-import com.tian.cloud.service.enums.LineStatusEnum;
 import lombok.Data;
 
 /**
