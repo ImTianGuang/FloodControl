@@ -21,7 +21,7 @@
         where id = #{id}
     </select>
 
-    <select id="selectByTypeAndStatus" resultMap="BaseResultMap" parameterType="map">
+    <select id="selectByTypeAndStatus" resultMap="BaseResultMap" parameterType="Object">
         select
         <include refid="Base_Column_List"/>
         from common_type

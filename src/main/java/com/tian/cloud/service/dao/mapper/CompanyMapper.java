@@ -10,4 +10,6 @@ public interface CompanyMapper {
     Company selectById(@Param("id") Integer id);
 
     List<Company> selectAll();
+
+    List<Company> search(@Param("companyName") String companyName);
 }

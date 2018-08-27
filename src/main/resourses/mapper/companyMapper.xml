@@ -25,4 +25,13 @@
         <include refid="Base_Column_List"/>
         from company
     </select>
+
+    <select id="search" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from company
+        <where>
+            name like CONCAT('%', #{companyName}, '%')
+        </where>
+    </select>
 </mapper>

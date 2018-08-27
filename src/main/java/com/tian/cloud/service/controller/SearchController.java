@@ -15,6 +15,7 @@ import com.tian.cloud.service.enums.CommonTypeEnum;
 import com.tian.cloud.service.enums.LineStatusEnum;
 import com.tian.cloud.service.service.CommonTypeService;
 import com.tian.cloud.service.service.CompanyService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -27,6 +28,7 @@ import java.util.List;
  **/
 @RestController
 @RequestMapping("/search")
+@Slf4j
 public class SearchController {
 
     @Resource
@@ -41,29 +43,9 @@ public class SearchController {
     public PageResponse<List<Company>> searchCompany(
             @RequestParam(required = false) String companyName) {
 
-        if (2==1) {
-            return PageResponse.pageFail("001", "未知异常");
-        }
-        List<Company> companies = Lists.newArrayList();
-        Company company = new Company();
-        company.setId(0);
-        company.setStatus(LineStatusEnum.USABLE.getCode());
-        company.setName("公司1");
-        company.setAddress("address");
-        company.setPostCode("111111");
-        company.setEmail("company@qq.com");
-
-        Company company1 = new Company();
-        company1.setId(0);
-        company1.setStatus(LineStatusEnum.USABLE.getCode());
-        company1.setName("公司2");
-        company1.setAddress("address");
-        company1.setPostCode("111111");
-        company1.setEmail("company@qq.com");
-
-        companies.add(company);
-        companies.add(company1);
-        return PageResponse.success(companies, 2);
+        log.info("companyName:{}", companyName);
+        List<Company> companies = companyService.selectAll();
+        return PageResponse.success(companies, companies.size());
     }
 
     @RequestMapping("/companyInfo")

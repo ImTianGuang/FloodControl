@@ -12,6 +12,11 @@ spring:
         max-wait-millis: 2000
   application:
     name: demo-service
+  http:
+    encoding:
+      enabled: true
+      force: true
+      charset: UTF-8
 
 server:
   port: 8081

@@ -7,4 +7,6 @@ import java.util.List;
 public interface CompanyService {
 
     List<Company> selectAll();
+
+    List<Company> search(String companyName);
 }
