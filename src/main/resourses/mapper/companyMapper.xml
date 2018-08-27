@@ -4,6 +4,13 @@
     <resultMap id="BaseResultMap" type="com.tian.cloud.service.dao.entity.Company" >
         <id column="id" property="id" jdbcType="INTEGER" />
         <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="address" property="address" jdbcType="VARCHAR" />
+        <result column="post_code" property="postCode" jdbcType="VARCHAR" />
+        <result column="email" property="email" jdbcType="VARCHAR" />
+        <result column="record_person" property="recordPerson" jdbcType="VARCHAR" />
+        <result column="record_person_phone" property="recordPersonPhone" jdbcType="VARCHAR" />
+        <result column="check_person" property="checkPerson" jdbcType="VARCHAR" />
+        <result column="check_person_phone" property="checkPersonPhone" jdbcType="VARCHAR" />
         <result column="status" property="status" jdbcType="INTEGER" />
         <result column="create_time" property="createTime" jdbcType="BIGINT" />
         <result column="update_time" property="updateTime" jdbcType="BIGINT" />
@@ -34,4 +41,22 @@
             name like CONCAT('%', #{companyName}, '%')
         </where>
     </select>
+
+    <update id="updateCompany" parameterType="com.tian.cloud.service.dao.entity.Company">
+        update
+        company
+        name = #{name},
+        address = #{address},
+        post_code = #{postCode},
+        email = #{email},
+        record_person = #{recordPerson},
+        record_person_phone = #{recordPersonPhone},
+        check_person = #{chackPerson},
+        check_person_phone = #{checkPersonPhone},
+        status = #{status},
+        update_time = #{updateTime}
+        <where>
+            id = #{id}
+        </where>
+    </update>
 </mapper>

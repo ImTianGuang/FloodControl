@@ -12,4 +12,6 @@ public interface CompanyMapper {
     List<Company> selectAll();
 
     List<Company> search(@Param("companyName") String companyName);
+
+    int updateCompany(Company company);
 }

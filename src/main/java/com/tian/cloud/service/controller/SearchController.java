@@ -3,10 +3,7 @@ package com.tian.cloud.service.controller;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.tian.cloud.service.controller.request.CommonSearchReq;
-import com.tian.cloud.service.controller.response.BaseResponse;
-import com.tian.cloud.service.controller.response.FloodSituationInfo;
-import com.tian.cloud.service.controller.response.PageResponse;
-import com.tian.cloud.service.controller.response.TypeSummary;
+import com.tian.cloud.service.controller.response.*;
 import com.tian.cloud.service.dao.entity.CommonType;
 import com.tian.cloud.service.dao.entity.Company;
 import com.tian.cloud.service.dao.entity.Message;
@@ -50,21 +47,11 @@ public class SearchController {
 
     @RequestMapping("/companyInfo")
     @ResponseBody
-    public BaseResponse<Company> companyInfo(
+    public BaseResponse<CompanyInfo> companyInfo(
             @RequestParam(required = true) Integer companyId) {
 
-        if (2==1) {
-            return BaseResponse.fail("001", "未知异常");
-        }
-        Company company = new Company();
-        company.setId(0);
-        company.setStatus(LineStatusEnum.USABLE.getCode());
-        company.setName("公司1");
-        company.setAddress("address");
-        company.setPostCode("111111");
-        company.setEmail("company@qq.com");
 
-        return BaseResponse.success(company);
+        return BaseResponse.success(null);
     }
 
     // messageList

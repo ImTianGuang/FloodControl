@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tian.cloud.service.dao.mapper.UserMapper" >
+    <resultMap id="BaseResultMap" type="com.tian.cloud.service.dao.entity.User" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <id column="company_id" property="companyId" jdbcType="INTEGER" />
+        <id column="position_id" property="positionId" jdbcType="INTEGER" />
+        <result column="status" property="status" jdbcType="INTEGER" />
+        <result column="create_time" property="createTime" jdbcType="BIGINT" />
+        <result column="update_time" property="updateTime" jdbcType="BIGINT" />
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+        id, company_id, asserts_type_id, asserts_type_name, asserts_value, status, create_time, update_time
+    </sql>
+
+    <insert id="insertBatch" parameterType="list" useGeneratedKeys="true" keyProperty="id">
+        insert into asserts
+        (company_id, asserts_type_id, asserts_type_name, asserts_value, status, create_time, update_time)
+        values
+        <foreach collection="assertsList" item="asserts" separator=",">
+            (#{asserts.assertsTypeId},#{asserts.assertsTypeName},#{asserts.assertsValue},#{asserts.status},#{asserts.createTime},#{asserts.updateTime})
+        </foreach>
+    </insert>
+
+    <update id="updateBatch" parameterType="list">
+        update asserts
+        set
+        company = #{company},
+        asserts_type_id = #{assertsTypeId},
+        asserts_type_name = #{assertsTypeName},
+        asserts_value = #{assertsValue},
+        status = #{status},
+        update_time = #{updateTime},
+    </update>
+</mapper>

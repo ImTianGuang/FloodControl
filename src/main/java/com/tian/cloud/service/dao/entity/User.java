@@ -28,6 +28,9 @@ public class User {
 
     private String fax;
 
+    // 所属组织机构
+    private Integer orgCode;
+
     private long createTime;
 
     private long updateTime;
