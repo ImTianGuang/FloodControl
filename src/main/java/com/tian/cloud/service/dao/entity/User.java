@@ -14,8 +14,6 @@ public class User {
 
     private Integer companyId;
 
-    private String floodOrgTitle;
-
     private Integer positionId;
 
     private Integer status;
@@ -30,6 +28,8 @@ public class User {
 
     // 所属组织机构
     private Integer orgCode;
+
+    private String orgTitle;
 
     private long createTime;
 

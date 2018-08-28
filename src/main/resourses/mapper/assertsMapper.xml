@@ -25,7 +25,7 @@
         </foreach>
     </insert>
 
-    <update id="updateBatch" parameterType="list">
+    <update id="update" parameterType="Object">
         update asserts
         set
         company = #{company},
@@ -33,6 +33,8 @@
         asserts_type_name = #{assertsTypeName},
         asserts_value = #{assertsValue},
         status = #{status},
-        update_time = #{updateTime},
+        update_time = #{updateTime}
+        where
+        id = #{id}
     </update>
 </mapper>

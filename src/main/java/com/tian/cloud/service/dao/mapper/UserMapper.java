@@ -5,7 +5,7 @@ import com.tian.cloud.service.dao.entity.User;
 import java.util.List;
 
 public interface UserMapper {
-    void updateBatch(List<User> updateList);
+    void update(User user);
 
-    void insertBatch(List<User> saveList);
+    void insertBatch(List<User> userList);
 }

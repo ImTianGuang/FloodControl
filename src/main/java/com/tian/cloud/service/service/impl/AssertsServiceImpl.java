@@ -35,8 +35,13 @@ public class AssertsServiceImpl implements AssertsService {
             }
         }
 
-        assertsMapper.insertBatch(saveAsserts);
-        assertsMapper.updateBatch(updateAsserts);
+        if (!CollectionUtils.isEmpty(saveAsserts)) {
+            assertsMapper.insertBatch(saveAsserts);
+        }
+
+        for (Asserts asserts : updateAsserts) {
+            assertsMapper.update(asserts);
+        }
 
     }
 }

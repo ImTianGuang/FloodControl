@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface AssertsMapper {
 
-    void updateBatch(List<Asserts> updateAsserts);
+    void update(Asserts asserts);
 
     void insertBatch(List<Asserts> saveAsserts);
 

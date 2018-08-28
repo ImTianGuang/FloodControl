@@ -5,32 +5,44 @@
         <id column="id" property="id" jdbcType="INTEGER" />
         <id column="company_id" property="companyId" jdbcType="INTEGER" />
         <id column="position_id" property="positionId" jdbcType="INTEGER" />
-        <result column="status" property="status" jdbcType="INTEGER" />
+        <id column="status" property="status" jdbcType="INTEGER" />
+        <id column="user_name" property="userName" jdbcType="VARCHAR"/>
+        <id column="user_phone" property="userPhone" jdbcType="VARCHAR"/>
+        <id column="work_phone" property="workPhone" jdbcType="VARCHAR"/>
+        <id column="fax" property="fax" jdbcType="VARCHAR"/>
+        <id column="org_code" property="orgCode" jdbcType="VARCHAR"/>
+        <result column="org_title" property="orgTitle" jdbcType="VARCHAR" />
         <result column="create_time" property="createTime" jdbcType="BIGINT" />
         <result column="update_time" property="updateTime" jdbcType="BIGINT" />
     </resultMap>
 
     <sql id="Base_Column_List" >
-        id, company_id, asserts_type_id, asserts_type_name, asserts_value, status, create_time, update_time
+        id, company_id, position_id, status, user_name, user_phone, work_phone, fax,org_code, org_title, create_time, update_time
     </sql>
 
     <insert id="insertBatch" parameterType="list" useGeneratedKeys="true" keyProperty="id">
-        insert into asserts
-        (company_id, asserts_type_id, asserts_type_name, asserts_value, status, create_time, update_time)
+        insert into `user`
+        (company_id, position_id, status, user_name, user_phone, work_phone, fax,org_code, org_title, create_time, update_time)
         values
-        <foreach collection="assertsList" item="asserts" separator=",">
-            (#{asserts.assertsTypeId},#{asserts.assertsTypeName},#{asserts.assertsValue},#{asserts.status},#{asserts.createTime},#{asserts.updateTime})
+        <foreach collection="userList" item="user" separator=",">
+            (#{user.companyId},#{user.positionId},#{user.status},#{user.userName},#{user.userPhone},#{user.workPhone},#{user.fax},#{user.orgCode},#{user.createTime},#{user.updateTime})
         </foreach>
     </insert>
 
-    <update id="updateBatch" parameterType="list">
-        update asserts
+    <update id="update" parameterType="com.tian.cloud.service.dao.entity.User">
+        update `user`
         set
-        company = #{company},
-        asserts_type_id = #{assertsTypeId},
-        asserts_type_name = #{assertsTypeName},
-        asserts_value = #{assertsValue},
+        company_id = #{companyId},
+        position_id = #{positionId},
         status = #{status},
+        user_name = #{userName},
+        user_phone = #{userPhone},
+        work_phone = #{workPhone},
+        fax = #{fax},
+        org_code = #{orgCode},
+        org_title = #{orgTitle},
         update_time = #{updateTime},
+        where
+        id = #{id}
     </update>
 </mapper>

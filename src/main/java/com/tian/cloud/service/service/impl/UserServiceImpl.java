@@ -45,7 +45,9 @@ public class UserServiceImpl implements UserService {
         }
 
         if (!CollectionUtils.isEmpty(updateList)) {
-            userMapper.updateBatch(updateList);
+            for (User user : updateList) {
+                userMapper.update(user);
+            }
         }
     }
 }
