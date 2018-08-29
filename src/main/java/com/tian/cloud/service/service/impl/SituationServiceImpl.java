@@ -114,6 +114,12 @@ public class SituationServiceImpl implements SituationService {
     }
 
     private void save(FloodSituationInfo situationInfo) {
-
+        situationMapper.save(situationInfo.getFloodSituation());
+        if (!CollectionUtils.isEmpty(situationInfo.getSolutionDetailList())) {
+            floodSituationDetailMapper.saveBatch(situationInfo.getSolutionDetailList());
+        }
+        if (!CollectionUtils.isEmpty(situationInfo.getSituationDetailList())) {
+            floodSituationDetailMapper.saveBatch(situationInfo.getSituationDetailList());
+        }
     }
 }

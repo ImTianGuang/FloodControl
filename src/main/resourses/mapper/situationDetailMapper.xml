@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tian.cloud.service.dao.mapper.FloodSituationDetailMapper" >
+    <resultMap id="BaseResultMap" type="com.tian.cloud.service.dao.entity.FloodSituationDetail" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="company_id" property="companyId" jdbcType="VARCHAR" />
+        <result column="flood_situation_id" property="floodSituationId" jdbcType="INTEGER" />
+        <result column="target_enum" property="situationTargetCode" jdbcType="INTEGER" />
+        <result column="status" property="status" jdbcType="INTEGER" />
+        <result column="target_id" property="targetId" jdbcType="INTEGER" />
+        <result column="target_value" property="targetValue" jdbcType="VARCHAR" />
+        <result column="create_time" property="createTime" jdbcType="BIGINT" />
+        <result column="update_time" property="updateTime" jdbcType="BIGINT" />
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+        id, company_id, flood_situation_id, target_enum, status, target_id, target_value, create_time, update_time
+    </sql>
+
+    <insert id="saveBatch" parameterType="list">
+        insert into company
+        (company_id, flood_situation_id, target_enum, status, target_id, target_value, create_time, update_time)
+        values
+        <foreach collection="saveList" item="detail" separator=",">
+            (#{companyId}, #{floodSituationId}, #{situationTargetCode}, #{status}, #{targetId}, #{targetValue}, #{createTime}, #{updateTime})
+        </foreach>
+    </insert>
+
+    <update id="update" parameterType="com.tian.cloud.service.dao.entity.FloodSituation">
+        update
+        flood_situation
+        set
+        company_id = #{companyId},
+        status = #{status},
+        start_time = #{startTime},
+        end_time = #{endTime},
+        title = #{title},
+        flood_desc = #{floodDesc},
+        update_time = #{updateTime}
+        <where>
+            id = #{id}
+        </where>
+    </update>
+</mapper>

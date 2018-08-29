@@ -11,4 +11,6 @@ public interface SituationMapper {
     FloodSituation getById(Integer situationId);
 
     void update(FloodSituation floodSituation);
+
+    void save(FloodSituation floodSituation);
 }

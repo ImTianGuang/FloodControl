@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tian.cloud.service.dao.mapper.SituationMapper" >
+    <resultMap id="BaseResultMap" type="com.tian.cloud.service.dao.entity.FloodSituation" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="company_id" property="companyId" jdbcType="VARCHAR" />
+        <result column="status" property="status" jdbcType="VARCHAR" />
+        <result column="start_time" property="startTime" jdbcType="VARCHAR" />
+        <result column="end_time" property="endTime" jdbcType="VARCHAR" />
+        <result column="title" property="title" jdbcType="VARCHAR" />
+        <result column="flood_desc" property="floodDesc" jdbcType="VARCHAR" />
+        <result column="create_time" property="createTime" jdbcType="BIGINT" />
+        <result column="update_time" property="updateTime" jdbcType="BIGINT" />
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+        id, company_id, status, start_time, end_time, title, flood_desc, create_time, update_time
+    </sql>
+
+    <insert id="save" parameterType="list">
+        insert into company
+        (company_id, status, start_time, end_time, title, flood_desc, create_time, update_time)
+        values
+        (#{companyId}, #{status}, #{startTime}, #{endTime}, #{title}, #{floodDesc}, #{createTime}, #{updateTime})
+    </insert>
+
+    <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+        select
+        <include refid="Base_Column_List" />
+        from flood_situation
+        where id = #{id}
+    </select>
+
+
+    <update id="update" parameterType="com.tian.cloud.service.dao.entity.FloodSituation">
+        update
+        flood_situation
+        set
+        company_id = #{companyId},
+        status = #{status},
+        start_time = #{startTime},
+        end_time = #{endTime},
+        title = #{title},
+        flood_desc = #{floodDesc},
+        update_time = #{updateTime}
+        <where>
+            id = #{id}
+        </where>
+    </update>
+</mapper>
