@@ -26,16 +26,16 @@
         </foreach>
     </insert>
 
-    <update id="update" parameterType="com.tian.cloud.service.dao.entity.FloodSituation">
+    <update id="update" parameterType="com.tian.cloud.service.dao.entity.FloodSituationDetail">
         update
         flood_situation
         set
         company_id = #{companyId},
+        flood_situation_id = #{floodSituationId},
+        target_enum = #{situationTargetCode},
         status = #{status},
-        start_time = #{startTime},
-        end_time = #{endTime},
-        title = #{title},
-        flood_desc = #{floodDesc},
+        target_id = #{targetId},
+        target_value = #{targetValue}
         update_time = #{updateTime}
         <where>
             id = #{id}
