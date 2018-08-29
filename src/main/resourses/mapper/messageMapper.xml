@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tian.cloud.service.dao.mapper.MessageMapper" >
+    <resultMap id="BaseResultMap" type="com.tian.cloud.service.dao.entity.Message" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <id column="company_id" property="companyId" jdbcType="INTEGER" />
+        <id column="message_type" property="messageType" jdbcType="INTEGER" />
+        <id column="status" property="status" jdbcType="INTEGER" />
+        <id column="title" property="title" jdbcType="VARCHAR"/>
+        <id column="content" property="content" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="BIGINT" />
+        <result column="update_time" property="updateTime" jdbcType="BIGINT" />
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+        id, company_id, message_type, status, title, content, create_time, update_time
+    </sql>
+
+    <insert id="save" parameterType="com.tian.cloud.service.dao.entity.Message" useGeneratedKeys="true" keyProperty="id">
+        insert into `message`
+        (company_id, message_type, status, title, content, create_time, update_time)
+        values
+        (#{companyId},#{messageType},#{status},#{title},#{content},#{createTime},#{updateTime})
+    </insert>
+
+    <update id="update" parameterType="com.tian.cloud.service.dao.entity.Message">
+        update `message`
+        set
+        company_id = #{companyId},
+        message_type = #{messageType},
+        status = #{status},
+        title = #{title},
+        content = #{content},
+        update_time = #{updateTime}
+        where
+        id = #{id}
+    </update>
+</mapper>

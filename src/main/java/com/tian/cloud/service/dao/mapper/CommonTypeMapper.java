@@ -13,7 +13,7 @@ public interface CommonTypeMapper {
 
     List<CommonType> selectAllByStatus(@Param("status") int status);
 
-    void saveBatch(List<CommonType> saveList);
+    void saveBatch(@Param("saveList") List<CommonType> saveList);
 
     void update(CommonType commonType);
 }

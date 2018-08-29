@@ -19,7 +19,7 @@
         (name,status,common_type_enum,create_time, update_time)
         values
         <foreach collection="saveList" item="a" separator=",">
-            (a.name,a.status,a.common_type_enum,a.create_time,a.update_time)
+            (#{a.name},#{a.status},#{a.commonTypeEnum},#{a.createTime},#{a.updateTime})
         </foreach>
     </insert>
     <update id="update" parameterType="com.tian.cloud.service.dao.entity.CommonType">

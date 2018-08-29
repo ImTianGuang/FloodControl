@@ -8,6 +8,7 @@ import com.tian.cloud.service.dao.entity.Company;
 import com.tian.cloud.service.dao.entity.Message;
 import com.tian.cloud.service.service.CommonTypeService;
 import com.tian.cloud.service.service.CompanyService;
+import com.tian.cloud.service.service.MessageService;
 import com.tian.cloud.service.service.SituationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,6 +37,9 @@ public class ManageController {
     @Resource
     private SituationService situationService;
 
+    @Resource
+    private MessageService messageService;
+
     @RequestMapping("updateCompanyList")
     @ResponseBody
     public BaseResponse<Boolean> updateCompanyList(@RequestBody List<Company> companyList) {
@@ -63,6 +67,7 @@ public class ManageController {
     @RequestMapping("updateMessage")
     @ResponseBody
     public BaseResponse<Void> saveOrUpdateMessage(Message message) {
+        messageService.saveOrUpdate(message);
         return BaseResponse.success(null);
     }
 

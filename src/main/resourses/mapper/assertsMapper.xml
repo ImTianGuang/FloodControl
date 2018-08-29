@@ -16,7 +16,7 @@
         id, company_id, asserts_type_id, asserts_type_name, asserts_value, status, create_time, update_time
     </sql>
 
-    <select id="getByCompany" parameterType="Object">
+    <select id="getByCompany" parameterType="Object" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from asserts
@@ -28,14 +28,14 @@
         (company_id, asserts_type_id, asserts_type_name, asserts_value, status, create_time, update_time)
         values
         <foreach collection="assertsList" item="asserts" separator=",">
-            (#{asserts.assertsTypeId},#{asserts.assertsTypeName},#{asserts.assertsValue},#{asserts.status},#{asserts.createTime},#{asserts.updateTime})
+            (#{asserts.companyId},#{asserts.assertsTypeId},#{asserts.assertsTypeName},#{asserts.assertsValue},#{asserts.status},#{asserts.createTime},#{asserts.updateTime})
         </foreach>
     </insert>
 
     <update id="update" parameterType="Object">
         update asserts
         set
-        company = #{company},
+        company_id = #{companyId},
         asserts_type_id = #{assertsTypeId},
         asserts_type_name = #{assertsTypeName},
         asserts_value = #{assertsValue},
