@@ -1,6 +1,5 @@
 package com.tian.cloud.service.controller;
 
-import com.tian.cloud.service.controller.request.*;
 import com.tian.cloud.service.controller.response.BaseResponse;
 import com.tian.cloud.service.controller.response.CompanyInfo;
 import com.tian.cloud.service.controller.response.FloodSituationInfo;
@@ -41,7 +40,7 @@ public class ManageController {
     @ResponseBody
     public BaseResponse<Boolean> updateCompanyList(@RequestBody List<Company> companyList) {
         log.info("companyList:{}", companyList);
-        companyService.saveCompanyList(companyList);
+        companyService.saveOrUpdate(companyList);
         return BaseResponse.success(true);
     }
 

@@ -25,7 +25,7 @@
         (name, address, post_code, email, record_person, record_person_phone, check_person, check_person_phone, status, create_time, update_time)
         values
         <foreach collection="saveList" item="company" separator=",">
-            (#{company.name},#{company.address},#{company.email},#{company.record_person},#{company.record_person_phone},#{company.check_person},#{company.check_person_phone},#{company.status},#{company.create_time},#{company.update_time})
+            (#{company.name},#{company.address},#{company.postCode},#{company.email},#{company.recordPerson},#{company.recordPersonPhone},#{company.checkPerson},#{company.checkPersonPhone},#{company.status},#{company.createTime},#{company.updateTime})
         </foreach>
     </insert>
 
@@ -54,13 +54,14 @@
     <update id="updateCompany" parameterType="com.tian.cloud.service.dao.entity.Company">
         update
         company
+        set
         name = #{name},
         address = #{address},
         post_code = #{postCode},
         email = #{email},
         record_person = #{recordPerson},
         record_person_phone = #{recordPersonPhone},
-        check_person = #{chackPerson},
+        check_person = #{checkPerson},
         check_person_phone = #{checkPersonPhone},
         status = #{status},
         update_time = #{updateTime}

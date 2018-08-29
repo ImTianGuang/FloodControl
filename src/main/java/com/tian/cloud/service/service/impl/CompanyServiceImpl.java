@@ -71,7 +71,7 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public void saveCompanyList(List<Company> companyList) {
+    public void saveOrUpdate(List<Company> companyList) {
         if (CollectionUtils.isEmpty(companyList)) {
             return;
         }

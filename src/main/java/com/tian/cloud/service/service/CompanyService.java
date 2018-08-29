@@ -15,5 +15,5 @@ public interface CompanyService {
 
     boolean saveCompanyInfo(CompanyInfo companyInfo);
 
-    void saveCompanyList(List<Company> companyList);
+    void saveOrUpdate(List<Company> companyList);
 }
