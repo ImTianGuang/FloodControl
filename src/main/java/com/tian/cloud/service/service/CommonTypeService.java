@@ -12,4 +12,6 @@ public interface CommonTypeService {
     List<CommonType> selectByType(Integer commonTypeEnum);
 
     Multimap<Integer, CommonType> selectAll();
+
+    void saveOrUpdate(List<CommonType> commonTypeList);
 }

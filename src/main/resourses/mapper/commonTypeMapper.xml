@@ -14,6 +14,24 @@
         id, name, status, common_type_enum, create_time, update_time
     </sql>
 
+    <insert id="saveBatch" parameterType="list">
+        insert into common_type
+        (name,status,common_type_enum,create_time, update_time)
+        values
+        <foreach collection="saveList" item="a" separator=",">
+            (a.name,a.status,a.common_type_enum,a.create_time,a.update_time)
+        </foreach>
+    </insert>
+    <update id="update" parameterType="com.tian.cloud.service.dao.entity.CommonType">
+        update common_type
+        set
+        name = #{name},
+        status = #{status},
+        common_type_enum = #{commonTypeEnum},
+        update_time = #{updateTime}
+        where
+        id = #{id}
+    </update>
     <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
         select
         <include refid="Base_Column_List" />

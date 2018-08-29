@@ -13,6 +13,8 @@ public class CommonSearchReq {
 
     private Integer len;
 
+    private String keyword;
+
     private Long startTime;
 
     private Long endTime;

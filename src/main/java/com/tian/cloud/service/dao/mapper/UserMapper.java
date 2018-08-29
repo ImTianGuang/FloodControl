@@ -8,4 +8,6 @@ public interface UserMapper {
     void update(User user);
 
     void insertBatch(List<User> userList);
+
+    List<User> getUserByCompany(int companyId);
 }

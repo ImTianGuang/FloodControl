@@ -7,4 +7,6 @@ import java.util.List;
 public interface AssertsService {
 
     void saveOrUpdate(List<Asserts> assertsList);
+
+    List<Asserts> getAssertsByCompany(int companyId);
 }

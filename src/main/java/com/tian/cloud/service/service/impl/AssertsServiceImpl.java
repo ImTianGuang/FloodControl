@@ -44,4 +44,9 @@ public class AssertsServiceImpl implements AssertsService {
         }
 
     }
+
+    @Override
+    public List<Asserts> getAssertsByCompany(int companyId) {
+        return assertsMapper.getByCompany(companyId);
+    }
 }

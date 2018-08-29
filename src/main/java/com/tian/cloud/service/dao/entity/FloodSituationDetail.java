@@ -16,7 +16,7 @@ public class FloodSituationDetail {
 
     private Integer floodSituationId;
 
-    private SituationTargetEnum situationTargetEnum;
+    private Integer situationTargetCode;
 
     private Integer status;
 

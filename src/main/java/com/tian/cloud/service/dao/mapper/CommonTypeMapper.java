@@ -12,4 +12,8 @@ public interface CommonTypeMapper {
     List<CommonType> selectByTypeAndStatus(@Param("commonTypeEnum") Integer commonTypeEnum, @Param("status") int status);
 
     List<CommonType> selectAllByStatus(@Param("status") int status);
+
+    void saveBatch(List<CommonType> saveList);
+
+    void update(CommonType commonType);
 }

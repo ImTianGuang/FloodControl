@@ -14,4 +14,6 @@ public interface CompanyMapper {
     List<Company> search(@Param("companyName") String companyName);
 
     int updateCompany(Company company);
+
+    void insertBatch(List<Company> saveList);
 }

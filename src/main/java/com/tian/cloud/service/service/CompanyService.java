@@ -14,4 +14,6 @@ public interface CompanyService {
     CompanyInfo getCompanyInfo(int companyId);
 
     boolean saveCompanyInfo(CompanyInfo companyInfo);
+
+    void saveCompanyList(List<Company> companyList);
 }

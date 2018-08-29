@@ -6,7 +6,8 @@ import java.util.Map;
 
 public enum SituationTargetEnum {
 
-    VAR0(0, "000"),;
+    SITUATION(0, "汛清"),
+    SOLUTION(1, "措施"),;
 
     SituationTargetEnum(int code, String msg) {
         this.code = code;

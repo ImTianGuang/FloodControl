@@ -10,4 +10,5 @@ public interface AssertsMapper {
 
     void insertBatch(List<Asserts> saveAsserts);
 
+    List<Asserts> getByCompany(int companyId);
 }

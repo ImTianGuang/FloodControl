@@ -20,6 +20,14 @@
         id, company_id, position_id, status, user_name, user_phone, work_phone, fax,org_code, org_title, create_time, update_time
     </sql>
 
+    <select id="getUserByCompany" parameterType="Object">
+        select
+        <include refid="Base_Column_List"/>
+        from `user`
+        where
+        company_id = #{companyId} and status = 1
+    </select>
+
     <insert id="insertBatch" parameterType="list" useGeneratedKeys="true" keyProperty="id">
         insert into `user`
         (company_id, position_id, status, user_name, user_phone, work_phone, fax,org_code, org_title, create_time, update_time)
