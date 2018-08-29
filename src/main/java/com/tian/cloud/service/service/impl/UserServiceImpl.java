@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void saveOrUpdate(List<CompanyInfo.PhoneInfo> phoneList) {
-        if (CollectionUtils.isEmpty(phoneList)) {
+      if (CollectionUtils.isEmpty(phoneList)) {
             return;
         }
         List<User> updateList = Lists.newArrayList();
