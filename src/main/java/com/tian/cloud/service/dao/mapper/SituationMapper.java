@@ -9,4 +9,6 @@ import com.tian.cloud.service.dao.entity.FloodSituation;
 public interface SituationMapper {
 
     FloodSituation getById(Integer situationId);
+
+    void update(FloodSituation floodSituation);
 }

@@ -11,6 +11,7 @@ import com.tian.cloud.service.dao.mapper.FloodSituationDetailMapper;
 import com.tian.cloud.service.dao.mapper.SituationMapper;
 import com.tian.cloud.service.enums.SituationTargetEnum;
 import com.tian.cloud.service.service.SituationService;
+import com.tian.cloud.service.util.ParamCheckUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -66,6 +67,53 @@ public class SituationServiceImpl implements SituationService {
 
     @Override
     public void saveOrUpdate(FloodSituationInfo situationInfo) {
+        ParamCheckUtil.assertTrue(situationInfo != null, "汛情信息为空");
+        ParamCheckUtil.assertTrue(situationInfo.getFloodSituation() != null, "汛情信息为空");
+        ParamCheckUtil.assertTrue(situationInfo.getFloodSituation().getCompanyId() != null, "未选择公司");
+
+        if (situationInfo.getFloodSituation().getId() == null) {
+            save(situationInfo);
+        } else {
+            update(situationInfo);
+        }
+
+    }
+
+    private void update(FloodSituationInfo situationInfo) {
+        situationMapper.update(situationInfo.getFloodSituation());
+        List<FloodSituationDetail> updateList = Lists.newArrayList();
+        List<FloodSituationDetail> saveList = Lists.newArrayList();
+        if (!CollectionUtils.isEmpty(situationInfo.getSituationDetailList())) {
+            for (FloodSituationDetail detail : situationInfo.getSituationDetailList()) {
+                if (detail.getId() == null) {
+                    saveList.add(detail);
+                } else {
+                    updateList.add(detail);
+                }
+            }
+        }
+        if (!CollectionUtils.isEmpty(situationInfo.getSolutionDetailList())) {
+            for (FloodSituationDetail detail : situationInfo.getSolutionDetailList()) {
+                if (detail.getId() == null) {
+                    saveList.add(detail);
+                } else {
+                    updateList.add(detail);
+                }
+            }
+        }
+
+        if (!CollectionUtils.isEmpty(updateList)) {
+            for (FloodSituationDetail detail : updateList) {
+                floodSituationDetailMapper.update(detail);
+            }
+        }
+
+        if (!CollectionUtils.isEmpty(saveList)) {
+            floodSituationDetailMapper.saveBatch(saveList);
+        }
+    }
+
+    private void save(FloodSituationInfo situationInfo) {
 
     }
 }

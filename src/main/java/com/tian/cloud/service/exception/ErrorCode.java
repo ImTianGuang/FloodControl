@@ -14,4 +14,6 @@ public class ErrorCode {
     private String code;
 
     private String msg;
+
+    public static final ErrorCode PARAM_ERROR = new ErrorCode("0001", "参数错误");
 }
