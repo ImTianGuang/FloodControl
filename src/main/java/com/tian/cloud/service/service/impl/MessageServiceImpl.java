@@ -1,11 +1,14 @@
 package com.tian.cloud.service.service.impl;
 
+import com.tian.cloud.service.controller.request.CommonSearchReq;
 import com.tian.cloud.service.dao.entity.Message;
 import com.tian.cloud.service.dao.mapper.MessageMapper;
 import com.tian.cloud.service.service.MessageService;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author tianguang
@@ -24,5 +27,15 @@ public class MessageServiceImpl implements MessageService {
         } else {
             messageMapper.update(message);
         }
+    }
+
+    @Override
+    public List<Message> search(CommonSearchReq request) {
+        return messageMapper.search(request);
+    }
+
+    @Override
+    public Message getMessage(int id) {
+        return null;
     }
 }

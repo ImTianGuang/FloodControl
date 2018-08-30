@@ -34,7 +34,9 @@ public class CompanyServiceImplTest extends TestBase {
     @Test
     public void saveCompanyList() {
         List<Company> companies = companyService.selectAll();
+        int i = 0;
         for (Company company : companies) {
+            company.setName("名称" + i++);
             company.setUpdateTime(System.currentTimeMillis());
         }
         companyService.saveOrUpdate(companies);

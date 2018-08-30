@@ -1,6 +1,9 @@
 package com.tian.cloud.service.controller.response;
 
+import com.google.common.base.Function;
+import com.google.common.base.Supplier;
 import lombok.Data;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -11,14 +14,23 @@ import java.util.List;
 @Data
 public class PageResponse<T> extends BaseResponse<List<T>> {
 
-    private int total;
+    private int nextId;
 
-    public static <T> PageResponse success(List<T> data, int total) {
+    public static <T> PageResponse success(List<T> data, int nextId) {
         PageResponse<T> response = new PageResponse<>();
         response.setRet(true);
         response.setData(data);
-        response.setTotal(total);
+        response.setNextId(nextId);
         return response;
+    }
+
+    public static <T> PageResponse success(List<T> data, Function<T, Integer> idFunction) {
+
+        int next = -1;
+        if (!CollectionUtils.isEmpty(data)) {
+            next = idFunction.apply(data.get(data.size()));
+        }
+        return success(data, next);
     }
 
     public static <T> PageResponse<T> pageFail(String code, String msg) {

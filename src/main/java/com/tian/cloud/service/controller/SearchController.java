@@ -10,8 +10,11 @@ import com.tian.cloud.service.enums.CommonTypeEnum;
 import com.tian.cloud.service.enums.LineStatusEnum;
 import com.tian.cloud.service.service.CommonTypeService;
 import com.tian.cloud.service.service.CompanyService;
+import com.tian.cloud.service.service.MessageService;
 import com.tian.cloud.service.service.SituationService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -36,14 +39,22 @@ public class SearchController {
     @Resource
     private SituationService situationService;
 
+    @Resource
+    private MessageService messageService;
+
     // companyList
     @RequestMapping("/company")
     @ResponseBody
-    public PageResponse<List<Company>> searchCompany(
+    public PageResponse<Company> searchCompany(
             @RequestParam(required = false) String companyName) {
 
         log.info("companyName:{}", companyName);
-        List<Company> companies = companyService.selectAll();
+        List<Company> companies;
+        if (StringUtils.isEmpty(companyName)) {
+            companies = companyService.selectAll();
+        } else {
+            companies = companyService.search(companyName);
+        }
         return PageResponse.success(companies, companies.size());
     }
 
@@ -60,14 +71,13 @@ public class SearchController {
     @RequestMapping("/messageList")
     @ResponseBody
     public PageResponse<Message> messageList(CommonSearchReq request) {
-        return PageResponse.pageFail("", "");
+        List<Message> messageList = messageService.search(request);
+        return PageResponse.success(messageList, Message::getId);
     }
 
     @RequestMapping("messageInfo")
     public BaseResponse<Message> messageInfo(int id) {
-        Message message = new Message();
-        message.setTitle("通知");
-        message.setContent("通知内容\n通知内容");
+        Message message = messageService.getMessage(id);
         return BaseResponse.success(message);
     }
 
