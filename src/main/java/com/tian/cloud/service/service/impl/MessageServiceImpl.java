@@ -36,6 +36,6 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public Message getMessage(int id) {
-        return null;
+        return messageMapper.getById(id);
     }
 }

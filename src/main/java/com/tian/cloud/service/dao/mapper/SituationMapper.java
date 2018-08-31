@@ -1,6 +1,9 @@
 package com.tian.cloud.service.dao.mapper;
 
+import com.tian.cloud.service.controller.request.CommonSearchReq;
 import com.tian.cloud.service.dao.entity.FloodSituation;
+
+import java.util.List;
 
 /**
  * @author tianguang
@@ -13,4 +16,6 @@ public interface SituationMapper {
     void update(FloodSituation floodSituation);
 
     void save(FloodSituation floodSituation);
+
+    List<FloodSituation> search(CommonSearchReq request);
 }

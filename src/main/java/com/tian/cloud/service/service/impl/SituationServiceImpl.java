@@ -1,6 +1,7 @@
 package com.tian.cloud.service.service.impl;
 
 import com.google.common.collect.Lists;
+import com.tian.cloud.service.controller.request.CommonSearchReq;
 import com.tian.cloud.service.controller.response.FloodSituationInfo;
 import com.tian.cloud.service.dao.entity.CommonType;
 import com.tian.cloud.service.dao.entity.Company;
@@ -77,6 +78,11 @@ public class SituationServiceImpl implements SituationService {
             update(situationInfo);
         }
 
+    }
+
+    @Override
+    public List<FloodSituation> search(CommonSearchReq request) {
+        return situationMapper.search(request);
     }
 
     private void update(FloodSituationInfo situationInfo) {

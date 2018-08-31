@@ -49,15 +49,22 @@
                 )
             </if>
             <if test="startId != null">
-                and id < #{startId}
+                and <![CDATA[ id < #{startId} ]]>
             </if>
             <if test="startTime != null">
                 and create_time >= #{startTime}
             </if>
             <if test="endTime != null">
-                and create_time <= #{endTime}
+                and <![CDATA[ create_time <= #{endTime} ]]>
             </if>
         </where>
         order by update_time desc limit #{len}
+    </select>
+
+    <select id="getById" resultMap="BaseResultMap" parameterType="Object">
+        select
+        <include refid="Base_Column_List"/>
+        from message
+        where id = #{id}
     </select>
 </mapper>

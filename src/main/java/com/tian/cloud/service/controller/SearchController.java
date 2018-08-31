@@ -84,7 +84,9 @@ public class SearchController {
     @RequestMapping("/situationList")
     @ResponseBody
     public PageResponse<FloodSituation> situationList(CommonSearchReq request) {
-        return null;
+        List<FloodSituation> situations = situationService.search(request);
+
+        return PageResponse.success(situations, FloodSituation::getId);
     }
 
     @RequestMapping("/situationInfo")
