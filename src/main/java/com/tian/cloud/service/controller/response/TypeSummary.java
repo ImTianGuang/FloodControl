@@ -21,4 +21,5 @@ public class TypeSummary {
     private List<CommonType> solutionTypeList;
     private List<CommonType> situationTypeList;
     private List<CommonType> positionList;
+    private List<CommonType> assertsTypeList;
 }

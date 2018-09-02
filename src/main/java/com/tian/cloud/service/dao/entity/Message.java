@@ -12,11 +12,11 @@ public class Message {
 
     private Integer id;
 
-    private Integer companyId;
+    private Integer companyId = -1;
 
-    private Integer messageType;
+    private Integer messageType = 0;
 
-    private int status;
+    private int status = 1;
 
     private String title;
 

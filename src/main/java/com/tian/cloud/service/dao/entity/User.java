@@ -16,15 +16,15 @@ public class User {
 
     private Integer positionId;
 
-    private Integer status;
+    private Integer status = 1;
 
-    private String userName;
+    private String userName = "";
 
-    private String userPhone;
+    private String userPhone = "";
 
-    private String workPhone;
+    private String workPhone = "";
 
-    private String fax;
+    private String fax = "";
 
     // 所属组织机构
     private Integer orgCode;

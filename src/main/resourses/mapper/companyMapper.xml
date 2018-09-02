@@ -33,13 +33,15 @@
         select
         <include refid="Base_Column_List" />
         from company
-        where id = #{id}
+        where id = #{id} and status = 1
     </select>
 
     <select id="selectAll" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from company
+        where
+        status = 1
     </select>
 
     <select id="search" resultMap="BaseResultMap">
@@ -48,6 +50,7 @@
         from company
         <where>
             name like CONCAT('%', #{companyName}, '%')
+            and status = 1
         </where>
     </select>
 
@@ -64,7 +67,8 @@
         check_person = #{checkPerson},
         check_person_phone = #{checkPersonPhone},
         status = #{status},
-        update_time = #{updateTime}
+        update_time = #{updateTime},
+        flood_plan = #{floodPlan}
         <where>
             id = #{id}
         </where>

@@ -19,9 +19,10 @@ public class FloodSituation {
 
     private long endTime;
 
-    private String title;
+    private String title = "";
 
-    private String floodDesc;
+    @Deprecated
+    private String floodDesc = "";
 
     private long createTime;
 

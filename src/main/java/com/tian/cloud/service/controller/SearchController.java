@@ -113,6 +113,7 @@ public class SearchController {
         typeSummary.setPositionList((List<CommonType>) multimap.get(CommonTypeEnum.POSITION.getCode()));
         typeSummary.setSituationTypeList((List<CommonType>) multimap.get(CommonTypeEnum.SITUATION.getCode()));
         typeSummary.setSolutionTypeList((List<CommonType>) multimap.get(CommonTypeEnum.SOLUTION.getCode()));
+        typeSummary.setAssertsTypeList((List<CommonType>) multimap.get(CommonTypeEnum.ASSERTS.getCode()));
         return BaseResponse.success(typeSummary);
     }
 }

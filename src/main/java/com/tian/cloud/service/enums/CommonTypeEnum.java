@@ -9,6 +9,7 @@ public enum CommonTypeEnum {
     POSITION(0, "职位"),
     SITUATION(1, "汛情类型"),
     SOLUTION(2, "解决类型"),
+    ASSERTS(3, "物资类型"),
     ;
 
     CommonTypeEnum(int code, String msg) {

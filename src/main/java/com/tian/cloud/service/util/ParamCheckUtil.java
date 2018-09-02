@@ -11,7 +11,7 @@ public class ParamCheckUtil {
 
     public static void assertTrue(boolean condition, String message) {
         if (!condition) {
-            throw new InternalException(ErrorCode.PARAM_ERROR);
+            throw new InternalException(ErrorCode.PARAM_ERROR, message);
         }
     }
 }

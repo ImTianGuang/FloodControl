@@ -15,6 +15,7 @@ import com.tian.cloud.service.service.SituationService;
 import com.tian.cloud.service.util.ParamCheckUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -91,19 +92,21 @@ public class SituationServiceImpl implements SituationService {
         List<FloodSituationDetail> saveList = Lists.newArrayList();
         if (!CollectionUtils.isEmpty(situationInfo.getSituationDetailList())) {
             for (FloodSituationDetail detail : situationInfo.getSituationDetailList()) {
-                if (detail.getId() == null) {
-                    saveList.add(detail);
-                } else {
+                if (detail.getId() != null) {
                     updateList.add(detail);
+                }
+                if (detail.getId() == null && detail.getTargetId() != null && !StringUtils.isEmpty(detail.getTargetValue())) {
+                    saveList.add(detail);
                 }
             }
         }
         if (!CollectionUtils.isEmpty(situationInfo.getSolutionDetailList())) {
             for (FloodSituationDetail detail : situationInfo.getSolutionDetailList()) {
-                if (detail.getId() == null) {
-                    saveList.add(detail);
-                } else {
+                if (detail.getId() != null) {
                     updateList.add(detail);
+                }
+                if (detail.getId() == null && detail.getTargetId() != null && !StringUtils.isEmpty(detail.getTargetValue())) {
+                    saveList.add(detail);
                 }
             }
         }
@@ -120,11 +123,24 @@ public class SituationServiceImpl implements SituationService {
     }
 
     private void save(FloodSituationInfo situationInfo) {
-        situationMapper.save(situationInfo.getFloodSituation());
+        FloodSituation floodSituation = situationInfo.getFloodSituation();
+        situationMapper.save(floodSituation);
+
         if (!CollectionUtils.isEmpty(situationInfo.getSolutionDetailList())) {
+            for (FloodSituationDetail detail : situationInfo.getSolutionDetailList()) {
+                detail.setFloodSituationId(floodSituation.getId());
+                detail.setCreateTime(System.currentTimeMillis());
+                detail.setUpdateTime(detail.getCreateTime());
+            }
             floodSituationDetailMapper.saveBatch(situationInfo.getSolutionDetailList());
         }
+
         if (!CollectionUtils.isEmpty(situationInfo.getSituationDetailList())) {
+            for (FloodSituationDetail detail : situationInfo.getSituationDetailList()) {
+                detail.setFloodSituationId(floodSituation.getId());
+                detail.setCreateTime(System.currentTimeMillis());
+                detail.setUpdateTime(detail.getCreateTime());
+            }
             floodSituationDetailMapper.saveBatch(situationInfo.getSituationDetailList());
         }
     }

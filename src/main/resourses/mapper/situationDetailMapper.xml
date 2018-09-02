@@ -17,18 +17,25 @@
         id, company_id, flood_situation_id, target_enum, status, target_id, target_value, create_time, update_time
     </sql>
 
+    <select id="getBySituationId" parameterType="Object" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        where
+        flood_situation_id = #{situationId} and status = 1
+    </select>
+
     <insert id="saveBatch" parameterType="list">
-        insert into company
+        insert into flood_situation_detail
         (company_id, flood_situation_id, target_enum, status, target_id, target_value, create_time, update_time)
         values
         <foreach collection="saveList" item="detail" separator=",">
-            (#{companyId}, #{floodSituationId}, #{situationTargetCode}, #{status}, #{targetId}, #{targetValue}, #{createTime}, #{updateTime})
+            (#{detail.companyId}, #{detail.floodSituationId}, #{detail.situationTargetCode}, #{detail.status}, #{detail.targetId}, #{detail.targetValue}, #{detail.createTime}, #{detail.updateTime})
         </foreach>
     </insert>
 
     <update id="update" parameterType="com.tian.cloud.service.dao.entity.FloodSituationDetail">
         update
-        flood_situation
+        flood_situation_detail
         set
         company_id = #{companyId},
         flood_situation_id = #{floodSituationId},

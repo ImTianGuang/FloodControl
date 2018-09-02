@@ -3,6 +3,7 @@ package com.tian.cloud.service.service.impl;
 import com.tian.cloud.service.controller.request.CommonSearchReq;
 import com.tian.cloud.service.dao.entity.Message;
 import com.tian.cloud.service.dao.mapper.MessageMapper;
+import com.tian.cloud.service.enums.LineStatusEnum;
 import com.tian.cloud.service.service.MessageService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -23,8 +24,14 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public void saveOrUpdate(Message message) {
         if (message.getId() == null) {
+            if (message.getStatus() == LineStatusEnum.DELETED.getCode()) {
+                return;
+            }
+            message.setCreateTime(System.currentTimeMillis());
+            message.setUpdateTime(message.getCreateTime());
             messageMapper.save(message);
         } else {
+            message.setUpdateTime(System.currentTimeMillis());
             messageMapper.update(message);
         }
     }

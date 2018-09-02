@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -51,7 +52,7 @@ public class ManageController {
     // addOrUpdate company
     @RequestMapping("updateCompany")
     @ResponseBody
-    public BaseResponse<Boolean> saveOrUpdateCompanyInfo(CompanyInfo companyInfo) {
+    public BaseResponse<Boolean> saveOrUpdateCompanyInfo(@RequestBody CompanyInfo companyInfo) {
         companyService.saveCompanyInfo(companyInfo);
         return BaseResponse.success(true);
     }
@@ -66,14 +67,15 @@ public class ManageController {
 
     @RequestMapping("updateMessage")
     @ResponseBody
-    public BaseResponse<Void> saveOrUpdateMessage(Message message) {
+    public BaseResponse<Void> saveOrUpdateMessage(@RequestBody Message message) {
         messageService.saveOrUpdate(message);
         return BaseResponse.success(null);
     }
 
     @RequestMapping("updateSituation")
     @ResponseBody
-    public BaseResponse<Boolean> saveOrUpdateFloodSituation(FloodSituationInfo situationInfo) {
+    public BaseResponse<Boolean> saveOrUpdateFloodSituation(@RequestBody FloodSituationInfo situationInfo) {
+        log.info("updateFlood:{}", situationInfo);
         situationService.saveOrUpdate(situationInfo);
         return BaseResponse.success(true);
     }

@@ -6,10 +6,11 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import com.tian.cloud.service.SearchUtil;
 import com.tian.cloud.service.controller.response.CompanyInfo;
-import com.tian.cloud.service.dao.entity.Asserts;
-import com.tian.cloud.service.dao.entity.Company;
-import com.tian.cloud.service.dao.entity.User;
+import com.tian.cloud.service.dao.entity.*;
+import com.tian.cloud.service.dao.mapper.CommonTypeMapper;
 import com.tian.cloud.service.dao.mapper.CompanyMapper;
+import com.tian.cloud.service.enums.CommonTypeEnum;
+import com.tian.cloud.service.enums.LineStatusEnum;
 import com.tian.cloud.service.enums.Orgnization;
 import com.tian.cloud.service.service.AssertsService;
 import com.tian.cloud.service.service.CompanyService;
@@ -38,6 +39,9 @@ public class CompanyServiceImpl implements CompanyService {
     @Resource
     private AssertsService assertsService;
 
+    @Resource
+    private CommonTypeMapper commonTypeMapper;
+
     @Override
     public List<Company> selectAll() {
         return companyMapper.selectAll();
@@ -53,12 +57,71 @@ public class CompanyServiceImpl implements CompanyService {
         Company company = companyMapper.selectById(companyId);
         List<Asserts> asserts = assertsService.getAssertsByCompany(companyId);
         List<User> users = userService.getUserByCompany(companyId);
+        if (CollectionUtils.isEmpty(users) || users.size() < 2) {
+            users = defaultUsers(users, company);
+        }
         List<CompanyInfo.PhoneInfo> phoneInfos = toPhoneInfos(users);
         CompanyInfo companyInfo = new CompanyInfo();
         companyInfo.setAssertsList(asserts);
         companyInfo.setCompany(company);
         companyInfo.setPhoneList(phoneInfos);
         return companyInfo;
+    }
+
+    private List<User> defaultUsers(List<User> userList, Company company) {
+        if (CollectionUtils.isEmpty(userList)) {
+            userList = Lists.newArrayList();
+        }
+
+        List<CommonType> commonTypeList = commonTypeMapper.selectByType(CommonTypeEnum.POSITION.getCode());
+        createDefaultIfEmpty(commonTypeList);
+
+        CommonType commonType = commonTypeList.get(0);
+        User user = new User();
+        user.setCompanyId(company.getId());
+        user.setOrgCode(Orgnization.ORG1.getCode());
+        user.setOrgTitle(Orgnization.ORG1.getMsg());
+        user.setPositionId(commonType.getId());
+
+        User user1 = new User();
+        user1.setCompanyId(company.getId());
+        user1.setOrgCode(Orgnization.ORG2.getCode());
+        user1.setOrgTitle(Orgnization.ORG2.getMsg());
+        user1.setPositionId(commonType.getId());
+
+        boolean containOrg1 = false;
+        boolean containOrg2 = false;
+
+        for (User user2 : userList) {
+            if (user2.getOrgCode() == Orgnization.ORG1.getCode()) {
+                containOrg1 = true;
+            }
+            if (user2.getOrgCode() == Orgnization.ORG2.getCode()) {
+                containOrg2 = true;
+            }
+        }
+
+        if (!containOrg1) {
+            userList.add(user);
+        }
+        if (!containOrg2) {
+            userList.add(user1);
+        }
+        return userList;
+    }
+
+    private void createDefaultIfEmpty(List<CommonType> commonTypeList) {
+        if (CollectionUtils.isEmpty(commonTypeList)) {
+            commonTypeList = Lists.newArrayList();
+            CommonType commonType = new CommonType();
+            commonType.setStatus(LineStatusEnum.USABLE.getCode());
+            commonType.setName("其他");
+            commonType.setCommonTypeEnum(CommonTypeEnum.POSITION.getCode());
+            commonType.setCreateTime(System.currentTimeMillis());
+            commonType.setUpdateTime(commonType.getUpdateTime());
+            commonTypeList.add(commonType);
+            commonTypeMapper.saveBatch(commonTypeList);
+        }
     }
 
     @Override
@@ -79,8 +142,11 @@ public class CompanyServiceImpl implements CompanyService {
         List<Company> saveList = Lists.newArrayList();
         for (Company company : companyList) {
             if (company.getId() == null || company.getId() == 0) {
-                saveList.add(company);
+                if (company.getStatus() == LineStatusEnum.USABLE.getCode()) {
+                    saveList.add(company);
+                }
             } else {
+                company.setUpdateTime(System.currentTimeMillis());
                 updateList.add(company);
             }
         }

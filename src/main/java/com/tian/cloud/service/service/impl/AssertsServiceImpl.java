@@ -28,8 +28,10 @@ public class AssertsServiceImpl implements AssertsService {
         List<Asserts> updateAsserts = Lists.newArrayList();
         List<Asserts> saveAsserts = Lists.newArrayList();
         for (Asserts asserts : assertsList) {
-            if (asserts.getId() == null || asserts.getId() == 0) {
-                saveAsserts.add(asserts);
+            if (asserts.getId() == null) {
+                if (asserts.getStatus() == 1) {
+                    saveAsserts.add(asserts);
+                }
             } else {
                 updateAsserts.add(asserts);
             }

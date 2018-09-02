@@ -31,6 +31,7 @@ create table `company` (
     `check_person` varchar(64) NOT NULL default '',
     `check_person_phone` varchar(64) NOT NULL default '',
     `status` int(11) NOT NULL default 1,
+    `flood_plan` mediumtext not null,
     `create_time` bigint(20) NOT NULL,
     `update_time` bigint(20) NOT NULL,
     PRIMARY KEY (`id`)

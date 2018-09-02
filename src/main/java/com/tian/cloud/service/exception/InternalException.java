@@ -24,4 +24,10 @@ public class InternalException extends RuntimeException {
         this.errorCode = errorCode.getCode();
         this.errorMsgCn = errorCode.getMsg();
     }
+
+    public InternalException(ErrorCode errorCode, String errorMsgCn) {
+        super(errorCode.getCode());
+        this.errorCode = errorCode.getCode();
+        this.errorMsgCn = errorMsgCn;
+    }
 }

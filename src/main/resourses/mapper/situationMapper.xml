@@ -17,8 +17,8 @@
         id, company_id, status, start_time, end_time, title, flood_desc, create_time, update_time
     </sql>
 
-    <insert id="save" parameterType="list">
-        insert into company
+    <insert id="save" parameterType="list" useGeneratedKeys="true" keyProperty="id">
+        insert into flood_situation
         (company_id, status, start_time, end_time, title, flood_desc, create_time, update_time)
         values
         (#{companyId}, #{status}, #{startTime}, #{endTime}, #{title}, #{floodDesc}, #{createTime}, #{updateTime})
@@ -28,7 +28,7 @@
         select
         <include refid="Base_Column_List" />
         from flood_situation
-        where id = #{id}
+        where id = #{id} and status = 1
     </select>
 
     <select id="search" parameterType="com.tian.cloud.service.controller.request.CommonSearchReq" resultMap="BaseResultMap">
@@ -51,6 +51,9 @@
             </if>
             <if test="endTime != null">
                 and <![CDATA[ create_time <= #{endTime} ]]>
+            </if>
+            <if test="1 == 1">
+                and status = 1
             </if>
         </where>
         order by update_time desc limit #{len}

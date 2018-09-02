@@ -33,8 +33,10 @@ public class UserServiceImpl implements UserService {
                 continue;
             }
             for (User user : phoneInfo.getUserList()) {
-                if (user.getId() == null || user.getId() == 0) {
-                    saveList.add(user);
+                if (user.getId() == null) {
+                    if (user.getStatus() == 1) {
+                        saveList.add(user);
+                    }
                 } else {
                     updateList.add(user);
                 }

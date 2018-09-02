@@ -11,25 +11,27 @@ public class Company {
 
     private Integer id;
 
-    private String name;
+    private String name = "";
 
     private Integer status;
 
-    private String address;
+    private String address = "";
 
-    private String postCode;
+    private String postCode = "";
 
-    private String email;
+    private String email = "";
 
-    private String recordPerson;
+    private String recordPerson = "";
 
-    private String recordPersonPhone;
+    private String recordPersonPhone = "";
 
-    private String checkPerson;
+    private String checkPerson = "";
 
-    private String checkPersonPhone;
+    private String checkPersonPhone = "";
 
-    private long createTime;
+    private String floodPlan = "";
 
-    private long updateTime;
+    private long createTime = System.currentTimeMillis();
+
+    private long updateTime = System.currentTimeMillis();
 }
