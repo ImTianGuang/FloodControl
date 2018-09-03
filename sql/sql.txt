@@ -96,6 +96,7 @@ create table `user` (
     `fax` varchar(64) NOT NULL default '',
     `org_code` tinyint NOT NULL default 0,
     `org_title` varchar(64) NOT NULL default '',
+    `flood_title` varchar(64) not null default '',
     `create_time` bigint(20) NOT NULL,
     `update_time` bigint(20) NOT NULL,
     PRIMARY KEY (`id`)

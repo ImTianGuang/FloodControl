@@ -3,21 +3,22 @@
 <mapper namespace="com.tian.cloud.service.dao.mapper.UserMapper" >
     <resultMap id="BaseResultMap" type="com.tian.cloud.service.dao.entity.User" >
         <id column="id" property="id" jdbcType="INTEGER" />
-        <id column="company_id" property="companyId" jdbcType="INTEGER" />
-        <id column="position_id" property="positionId" jdbcType="INTEGER" />
-        <id column="status" property="status" jdbcType="INTEGER" />
-        <id column="user_name" property="userName" jdbcType="VARCHAR"/>
-        <id column="user_phone" property="userPhone" jdbcType="VARCHAR"/>
-        <id column="work_phone" property="workPhone" jdbcType="VARCHAR"/>
-        <id column="fax" property="fax" jdbcType="VARCHAR"/>
-        <id column="org_code" property="orgCode" jdbcType="VARCHAR"/>
+        <result column="company_id" property="companyId" jdbcType="INTEGER" />
+        <result column="position_id" property="positionId" jdbcType="INTEGER" />
+        <result column="status" property="status" jdbcType="INTEGER" />
+        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="user_phone" property="userPhone" jdbcType="VARCHAR"/>
+        <result column="work_phone" property="workPhone" jdbcType="VARCHAR"/>
+        <result column="fax" property="fax" jdbcType="VARCHAR"/>
+        <result column="org_code" property="orgCode" jdbcType="INTEGER"/>
         <result column="org_title" property="orgTitle" jdbcType="VARCHAR" />
+        <result column="flood_title" property="floodTitle" jdbcType="VARCHAR"/>
         <result column="create_time" property="createTime" jdbcType="BIGINT" />
         <result column="update_time" property="updateTime" jdbcType="BIGINT" />
     </resultMap>
 
     <sql id="Base_Column_List" >
-        id, company_id, position_id, status, user_name, user_phone, work_phone, fax,org_code, org_title, create_time, update_time
+        id, company_id, position_id, status, user_name, user_phone, work_phone, fax,org_code, org_title, create_time, update_time,flood_title
     </sql>
 
     <select id="getUserByCompany" parameterType="Object" resultMap="BaseResultMap">
@@ -30,10 +31,10 @@
 
     <insert id="insertBatch" parameterType="list" useGeneratedKeys="true" keyProperty="id">
         insert into `user`
-        (company_id, position_id, status, user_name, user_phone, work_phone, fax,org_code, org_title, create_time, update_time)
+        (company_id, position_id, status, user_name, user_phone, work_phone, fax,org_code, org_title, create_time, update_time, flood_title)
         values
         <foreach collection="userList" item="user" separator=",">
-            (#{user.companyId},#{user.positionId},#{user.status},#{user.userName},#{user.userPhone},#{user.workPhone},#{user.fax},#{user.orgCode},#{user.orgTitle}, #{user.createTime},#{user.updateTime})
+            (#{user.companyId},#{user.positionId},#{user.status},#{user.userName},#{user.userPhone},#{user.workPhone},#{user.fax},#{user.orgCode},#{user.orgTitle}, #{user.createTime},#{user.updateTime},#{user.floodTitle})
         </foreach>
     </insert>
 
@@ -49,7 +50,8 @@
         fax = #{fax},
         org_code = #{orgCode},
         org_title = #{orgTitle},
-        update_time = #{updateTime}
+        update_time = #{updateTime},
+        flood_title = #{floodTitle}
         where
         id = #{id}
     </update>

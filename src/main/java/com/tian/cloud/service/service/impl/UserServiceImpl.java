@@ -5,8 +5,10 @@ import com.tian.cloud.service.controller.response.CompanyInfo;
 import com.tian.cloud.service.dao.entity.User;
 import com.tian.cloud.service.dao.mapper.UserMapper;
 import com.tian.cloud.service.service.UserService;
+import com.tian.cloud.service.util.ParamCheckUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -33,6 +35,8 @@ public class UserServiceImpl implements UserService {
                 continue;
             }
             for (User user : phoneInfo.getUserList()) {
+                ParamCheckUtil.assertTrue(!StringUtils.isEmpty(user.getFloodTitle()), "名称不能为空");
+
                 if (user.getId() == null) {
                     if (user.getStatus() == 1) {
                         saveList.add(user);

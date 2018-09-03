@@ -2,9 +2,7 @@ package com.tian.cloud.service.service.impl;
 
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
-import com.tian.cloud.service.SearchUtil;
 import com.tian.cloud.service.controller.response.CompanyInfo;
 import com.tian.cloud.service.dao.entity.*;
 import com.tian.cloud.service.dao.mapper.CommonTypeMapper;
@@ -76,13 +74,16 @@ public class CompanyServiceImpl implements CompanyService {
         }
 
         List<CommonType> commonTypeList = commonTypeMapper.selectByType(CommonTypeEnum.POSITION.getCode());
-        createDefaultIfEmpty(commonTypeList);
+        List<CommonType> floodTitleList = commonTypeMapper.selectByType(CommonTypeEnum.FLOOD_TITLE.getCode());
+        createDefaultIfEmpty(commonTypeList, CommonTypeEnum.POSITION);
+        createDefaultIfEmpty(floodTitleList, CommonTypeEnum.FLOOD_TITLE);
 
         CommonType commonType = commonTypeList.get(0);
         User user = new User();
         user.setCompanyId(company.getId());
         user.setOrgCode(Orgnization.ORG1.getCode());
         user.setOrgTitle(Orgnization.ORG1.getMsg());
+        user.setFloodTitle(floodTitleList.get(0).getName());
         user.setPositionId(commonType.getId());
 
         User user1 = new User();
@@ -112,13 +113,13 @@ public class CompanyServiceImpl implements CompanyService {
         return userList;
     }
 
-    private void createDefaultIfEmpty(List<CommonType> commonTypeList) {
+    private void createDefaultIfEmpty(List<CommonType> commonTypeList, CommonTypeEnum commonTypeEnum) {
         if (CollectionUtils.isEmpty(commonTypeList)) {
             commonTypeList = Lists.newArrayList();
             CommonType commonType = new CommonType();
             commonType.setStatus(LineStatusEnum.USABLE.getCode());
             commonType.setName("其他");
-            commonType.setCommonTypeEnum(CommonTypeEnum.POSITION.getCode());
+            commonType.setCommonTypeEnum(commonTypeEnum.getCode());
             commonType.setCreateTime(System.currentTimeMillis());
             commonType.setUpdateTime(commonType.getUpdateTime());
             commonTypeList.add(commonType);

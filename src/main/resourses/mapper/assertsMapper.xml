@@ -3,8 +3,8 @@
 <mapper namespace="com.tian.cloud.service.dao.mapper.AssertsMapper" >
     <resultMap id="BaseResultMap" type="com.tian.cloud.service.dao.entity.Asserts" >
         <id column="id" property="id" jdbcType="INTEGER" />
-        <id column="company_id" property="companyId" jdbcType="INTEGER" />
-        <id column="asserts_type_id" property="assertsTypeId" jdbcType="INTEGER" />
+        <result column="company_id" property="companyId" jdbcType="INTEGER" />
+        <result column="asserts_type_id" property="assertsTypeId" jdbcType="INTEGER" />
         <result column="asserts_type_name" property="assertsTypeName" jdbcType="VARCHAR" />
         <result column="asserts_value" property="assertsValue" jdbcType="VARCHAR" />
         <result column="status" property="status" jdbcType="INTEGER" />

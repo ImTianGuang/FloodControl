@@ -22,4 +22,5 @@ public class TypeSummary {
     private List<CommonType> situationTypeList;
     private List<CommonType> positionList;
     private List<CommonType> assertsTypeList;
+    private List<CommonType> floodTitleList;
 }

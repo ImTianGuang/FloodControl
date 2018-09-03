@@ -3,11 +3,11 @@
 <mapper namespace="com.tian.cloud.service.dao.mapper.MessageMapper" >
     <resultMap id="BaseResultMap" type="com.tian.cloud.service.dao.entity.Message" >
         <id column="id" property="id" jdbcType="INTEGER" />
-        <id column="company_id" property="companyId" jdbcType="INTEGER" />
-        <id column="message_type" property="messageType" jdbcType="INTEGER" />
-        <id column="status" property="status" jdbcType="INTEGER" />
-        <id column="title" property="title" jdbcType="VARCHAR"/>
-        <id column="content" property="content" jdbcType="VARCHAR"/>
+        <result column="company_id" property="companyId" jdbcType="INTEGER" />
+        <result column="message_type" property="messageType" jdbcType="INTEGER" />
+        <result column="status" property="status" jdbcType="INTEGER" />
+        <result column="title" property="title" jdbcType="VARCHAR"/>
+        <result column="content" property="content" jdbcType="VARCHAR"/>
         <result column="create_time" property="createTime" jdbcType="BIGINT" />
         <result column="update_time" property="updateTime" jdbcType="BIGINT" />
     </resultMap>

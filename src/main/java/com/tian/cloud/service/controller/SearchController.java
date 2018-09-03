@@ -1,27 +1,21 @@
 package com.tian.cloud.service.controller;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.tian.cloud.service.controller.request.CommonSearchReq;
 import com.tian.cloud.service.controller.response.*;
 import com.tian.cloud.service.dao.entity.*;
-import com.tian.cloud.service.dao.mapper.CommonTypeMapper;
 import com.tian.cloud.service.enums.CommonTypeEnum;
-import com.tian.cloud.service.enums.LineStatusEnum;
 import com.tian.cloud.service.service.CommonTypeService;
 import com.tian.cloud.service.service.CompanyService;
 import com.tian.cloud.service.service.MessageService;
 import com.tian.cloud.service.service.SituationService;
 import com.tian.cloud.service.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -131,6 +125,8 @@ public class SearchController {
         typeSummary.setSituationTypeList((List<CommonType>) multimap.get(CommonTypeEnum.SITUATION.getCode()));
         typeSummary.setSolutionTypeList((List<CommonType>) multimap.get(CommonTypeEnum.SOLUTION.getCode()));
         typeSummary.setAssertsTypeList((List<CommonType>) multimap.get(CommonTypeEnum.ASSERTS.getCode()));
+        typeSummary.setFloodTitleList((List<CommonType>) multimap.get(CommonTypeEnum.FLOOD_TITLE.getCode()));
+
         return BaseResponse.success(typeSummary);
     }
 }

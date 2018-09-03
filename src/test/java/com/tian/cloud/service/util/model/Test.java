@@ -2,6 +2,9 @@ package com.tian.cloud.service.util.model;
 
 import com.tian.cloud.service.util.excel.ExcelExportUtil;
 import com.tian.cloud.service.util.excel.ExcelImportUtil;
+import com.tian.cloud.service.util.excel.MySheet;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.assertj.core.util.Lists;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,10 +29,14 @@ public class Test {
         }
         String filePath = "/Users/tianguang/demo-sheet.xls";
 
+        MySheet mySheet = new MySheet();
+        mySheet.setDataList(shopDTOList);
+        mySheet.setSheetName("商户列表");
+        mySheet.setSheetColor(HSSFColor.HSSFColorPredefined.LIGHT_GREEN);
         /**
          * Excel导出：Object 转换为 Excel
          */
-        ExcelExportUtil.exportToFile(filePath, shopDTOList);
+        ExcelExportUtil.exportToFile(filePath, Lists.newArrayList(mySheet));
 
         /**
          * Excel导入：Excel 转换为 Object
