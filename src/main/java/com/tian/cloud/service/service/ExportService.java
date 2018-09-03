@@ -7,4 +7,6 @@ import java.util.List;
 public interface ExportService {
 
     List<MySheet> getAllUserSheetList();
+
+    MySheet getAssertsSheet();
 }

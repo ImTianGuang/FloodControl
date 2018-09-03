@@ -24,13 +24,13 @@ public class CommonTypeServiceImpl implements CommonTypeService {
 
     @Override
     public List<CommonType> selectByType(Integer commonTypeEnum) {
-        List<CommonType> commonTypeList = commonTypeMapper.selectByType(commonTypeEnum);
+        List<CommonType> commonTypeList = commonTypeMapper.selectUsableByType(commonTypeEnum);
         return commonTypeList;
     }
 
     @Override
     public Multimap<Integer, CommonType> selectAll() {
-        List<CommonType> commonTypeList = commonTypeMapper.selectAll();
+        List<CommonType> commonTypeList = commonTypeMapper.selectAllUsable();
         return Multimaps.index(commonTypeList, CommonType::getCommonTypeEnum);
     }
 

@@ -12,4 +12,6 @@ public interface AssertsMapper {
     void insertBatch(@Param("assertsList") List<Asserts> assertsList);
 
     List<Asserts> getByCompany(int companyId);
+
+    List<Asserts> selectAllUsable();
 }

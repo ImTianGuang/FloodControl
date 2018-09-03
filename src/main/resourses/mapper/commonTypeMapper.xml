@@ -39,7 +39,7 @@
         where id = #{id} and status = 1
     </select>
 
-    <select id="selectByType" resultMap="BaseResultMap" parameterType="Integer">
+    <select id="selectUsableByType" resultMap="BaseResultMap" parameterType="Integer">
         select
         <include refid="Base_Column_List"/>
         from common_type
@@ -50,7 +50,7 @@
         </where>
     </select>
 
-    <select id="selectAll" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    <select id="selectAllUsable" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         select
         <include refid="Base_Column_List"/>
         from common_type

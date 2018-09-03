@@ -9,9 +9,9 @@ public interface CommonTypeMapper {
 
     CommonType selectById(@Param("id") int id);
 
-    List<CommonType> selectByType(@Param("commonTypeEnum") Integer commonTypeEnum);
+    List<CommonType> selectUsableByType(@Param("commonTypeEnum") Integer commonTypeEnum);
 
-    List<CommonType> selectAll();
+    List<CommonType> selectAllUsable();
 
     void saveBatch(@Param("saveList") List<CommonType> saveList);
 

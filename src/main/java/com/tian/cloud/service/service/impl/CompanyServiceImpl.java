@@ -44,7 +44,7 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public List<Company> selectAll() {
-        return companyMapper.selectAll();
+        return companyMapper.selectAllUsable();
     }
 
     @Override
@@ -73,8 +73,8 @@ public class CompanyServiceImpl implements CompanyService {
             userList = Lists.newArrayList();
         }
 
-        List<CommonType> commonTypeList = commonTypeMapper.selectByType(CommonTypeEnum.POSITION.getCode());
-        List<CommonType> floodTitleList = commonTypeMapper.selectByType(CommonTypeEnum.FLOOD_TITLE.getCode());
+        List<CommonType> commonTypeList = commonTypeMapper.selectUsableByType(CommonTypeEnum.POSITION.getCode());
+        List<CommonType> floodTitleList = commonTypeMapper.selectUsableByType(CommonTypeEnum.FLOOD_TITLE.getCode());
         createDefaultIfEmpty(commonTypeList, CommonTypeEnum.POSITION);
         createDefaultIfEmpty(floodTitleList, CommonTypeEnum.FLOOD_TITLE);
 
@@ -91,6 +91,7 @@ public class CompanyServiceImpl implements CompanyService {
         user1.setOrgCode(Orgnization.ORG2.getCode());
         user1.setOrgTitle(Orgnization.ORG2.getMsg());
         user1.setPositionId(commonType.getId());
+        user1.setFloodTitle(floodTitleList.get(0).getName());
 
         boolean containOrg1 = false;
         boolean containOrg2 = false;

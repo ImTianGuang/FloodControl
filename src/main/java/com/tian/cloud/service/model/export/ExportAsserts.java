@@ -9,9 +9,13 @@ import java.util.List;
  * 2018/8/31 下午5:56
  **/
 @Data
-public class AssertsDTO {
+public class ExportAsserts {
+
+    private String companyName;
 
     private String floodManager;
+
+    private String floodManagerPhone;
 
     private List<Pair> assertsList;
 }

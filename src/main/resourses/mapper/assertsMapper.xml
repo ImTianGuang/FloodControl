@@ -23,6 +23,15 @@
         where
         company_id = #{companyId} and status = 1
     </select>
+
+    <select id="selectAllUsable" parameterType="Object" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from asserts
+        where
+        status = 1
+    </select>
+
     <insert id="insertBatch" parameterType="list" useGeneratedKeys="true" keyProperty="id">
         insert into asserts
         (company_id, asserts_type_id, asserts_type_name, asserts_value, status, create_time, update_time)

@@ -29,6 +29,10 @@ public class Company {
 
     private String checkPersonPhone = "";
 
+    private String floodManager = "";
+
+    private String floodManagerPhone = "";
+
     private String floodPlan = "";
 
     private long createTime = System.currentTimeMillis();

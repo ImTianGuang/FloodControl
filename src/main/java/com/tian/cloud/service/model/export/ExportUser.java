@@ -1,7 +1,10 @@
 package com.tian.cloud.service.model.export;
 
+import com.google.common.collect.Lists;
 import com.tian.cloud.service.util.excel.annotation.ExcelField;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * @author tianguang
@@ -27,4 +30,6 @@ public class ExportUser {
 
     @ExcelField(name = "传真")
     private String fax;
+
+    private List<Pair> pairs = Lists.newArrayList(new Pair("新的一列", "333"));
 }

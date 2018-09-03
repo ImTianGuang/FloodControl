@@ -11,6 +11,8 @@
         <result column="record_person_phone" property="recordPersonPhone" jdbcType="VARCHAR" />
         <result column="check_person" property="checkPerson" jdbcType="VARCHAR" />
         <result column="check_person_phone" property="checkPersonPhone" jdbcType="VARCHAR" />
+        <result column="flood_manager" property="floodManager" jdbcType="VARCHAR" />
+        <result column="flood_manager_phone" property="floodManagerPhone" jdbcType="VARCHAR" />
         <result column="status" property="status" jdbcType="INTEGER" />
         <result column="create_time" property="createTime" jdbcType="BIGINT" />
         <result column="update_time" property="updateTime" jdbcType="BIGINT" />
@@ -43,12 +45,19 @@
         where name = #{name} and status = 1
     </select>
 
-    <select id="selectAll" resultMap="BaseResultMap">
+    <select id="selectAllUsable" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from company
         where
         status = 1
+        order by name
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from company
         order by name
     </select>
 

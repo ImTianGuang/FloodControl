@@ -14,7 +14,7 @@ public class MySheet {
 
     private String sheetName;
 
-    private HSSFColor.HSSFColorPredefined sheetColor;
+    private HSSFColor.HSSFColorPredefined sheetColor = HSSFColor.HSSFColorPredefined.LIGHT_GREEN;
 
     private List<?> dataList;
 }
