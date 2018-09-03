@@ -15,6 +15,10 @@ public class CommonSearchReq {
 
     private String keyword;
 
+    private String startDateStr;
+
+    private String endDateStr;
+
     private Long startTime;
 
     private Long endTime;

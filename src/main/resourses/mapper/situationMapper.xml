@@ -40,7 +40,7 @@
                 (
                 title like CONCAT('%', #{keyword}, '%')
                 or
-                content like CONCAT('%', #{keyword}, '%')
+                flood_desc like CONCAT('%', #{keyword}, '%')
                 )
             </if>
             <if test="startId != null">
@@ -56,7 +56,10 @@
                 and status = 1
             </if>
         </where>
-        order by update_time desc limit #{len}
+        order by create_time desc
+        <if test="len != null">
+            limit #{len}
+        </if>
     </select>
 
     <update id="update" parameterType="com.tian.cloud.service.dao.entity.FloodSituation">

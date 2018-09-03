@@ -28,7 +28,7 @@ public class PageResponse<T> extends BaseResponse<List<T>> {
 
         int next = -1;
         if (!CollectionUtils.isEmpty(data)) {
-            next = idFunction.apply(data.get(data.size()));
+            next = idFunction.apply(data.get(data.size()-1));
         }
         return success(data, next);
     }

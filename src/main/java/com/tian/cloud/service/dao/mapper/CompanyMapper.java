@@ -16,4 +16,6 @@ public interface CompanyMapper {
     int updateCompany(Company company);
 
     void insertBatch(@Param("saveList") List<Company> saveList);
+
+    Company selectByName(@Param("name") String name);
 }

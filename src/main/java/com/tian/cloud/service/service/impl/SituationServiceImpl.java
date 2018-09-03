@@ -124,6 +124,8 @@ public class SituationServiceImpl implements SituationService {
 
     private void save(FloodSituationInfo situationInfo) {
         FloodSituation floodSituation = situationInfo.getFloodSituation();
+        floodSituation.setCreateTime(System.currentTimeMillis());
+        floodSituation.setUpdateTime(floodSituation.getCreateTime());
         situationMapper.save(floodSituation);
 
         if (!CollectionUtils.isEmpty(situationInfo.getSolutionDetailList())) {

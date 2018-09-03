@@ -43,9 +43,9 @@ public class ManageController {
 
     @RequestMapping("updateCompanyList")
     @ResponseBody
-    public BaseResponse<Boolean> updateCompanyList(@RequestBody List<Company> companyList) {
-        log.info("companyList:{}", companyList);
-        companyService.saveOrUpdate(companyList);
+    public BaseResponse<Boolean> updateCompanyList(@RequestBody Company company) {
+        log.info("companyList:{}", company);
+        companyService.saveOrUpdate(company);
         return BaseResponse.success(true);
     }
 

@@ -58,7 +58,10 @@
                 and <![CDATA[ create_time <= #{endTime} ]]>
             </if>
         </where>
-        order by update_time desc limit #{len}
+        order by create_time desc
+        <if test="len != null">
+            limit #{len}
+        </if>
     </select>
 
     <select id="getById" resultMap="BaseResultMap" parameterType="Object">

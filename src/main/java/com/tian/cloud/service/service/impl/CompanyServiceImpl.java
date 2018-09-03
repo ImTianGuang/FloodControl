@@ -15,9 +15,11 @@ import com.tian.cloud.service.enums.Orgnization;
 import com.tian.cloud.service.service.AssertsService;
 import com.tian.cloud.service.service.CompanyService;
 import com.tian.cloud.service.service.UserService;
+import com.tian.cloud.service.util.ParamCheckUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -162,7 +164,22 @@ public class CompanyServiceImpl implements CompanyService {
         }
     }
 
+    @Override
+    public boolean saveOrUpdate(Company company) {
+        ParamCheckUtil.assertTrue(!StringUtils.isEmpty(company.getName()), "单位名称必填");
+        if (company.getId() != null) {
+            this.updateCompany(company);
+        }
+        if (company.getId() == null && company.getStatus() == LineStatusEnum.USABLE.getCode()) {
+            Company dbRecord = companyMapper.selectByName(company.getName());
+            ParamCheckUtil.assertTrue(dbRecord == null, "已存在相同单位名称:" + company.getName());
+            companyMapper.insertBatch(Lists.newArrayList(company));
+        }
+        return false;
+    }
+
     public boolean updateCompany(Company company) {
+
         company.setUpdateTime(System.currentTimeMillis());
         return companyMapper.updateCompany(company) > 0;
     }

@@ -15,5 +15,6 @@ public class ErrorCode {
 
     private String msg;
 
-    public static final ErrorCode PARAM_ERROR = new ErrorCode("0001", "参数错误");
+    public static final ErrorCode SYS_ERROR = new ErrorCode("0001", "系统异常");
+    public static final ErrorCode PARAM_ERROR = new ErrorCode("0002", "参数错误");
 }

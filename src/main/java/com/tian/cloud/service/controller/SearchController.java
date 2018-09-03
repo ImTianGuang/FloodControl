@@ -12,6 +12,7 @@ import com.tian.cloud.service.service.CommonTypeService;
 import com.tian.cloud.service.service.CompanyService;
 import com.tian.cloud.service.service.MessageService;
 import com.tian.cloud.service.service.SituationService;
+import com.tian.cloud.service.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -70,7 +73,13 @@ public class SearchController {
     // messageList
     @RequestMapping("/messageList")
     @ResponseBody
-    public PageResponse<Message> messageList(CommonSearchReq request) {
+    public PageResponse<Message> messageList(@RequestBody CommonSearchReq request) {
+        if (request.getStartDateStr() != null) {
+            request.setStartTime(DateUtil.str2Date(request.getStartDateStr(), DateUtil.FMT_YYYY_MM1).getTime());
+        }
+        if (request.getEndDateStr() != null) {
+            request.setEndTime(DateUtil.str2Date(request.getEndDateStr(), DateUtil.FMT_YYYY_MM1).getTime());
+        }
         List<Message> messageList = messageService.search(request);
         return PageResponse.success(messageList, Message::getId);
     }
@@ -83,7 +92,14 @@ public class SearchController {
 
     @RequestMapping("/situationList")
     @ResponseBody
-    public PageResponse<FloodSituation> situationList(CommonSearchReq request) {
+    public PageResponse<FloodSituation> situationList(@RequestBody CommonSearchReq request) {
+        if (request.getStartDateStr() != null) {
+            request.setStartTime(DateUtil.str2Date(request.getStartDateStr(), DateUtil.FMT_YYYY_MM1).getTime());
+        }
+        if (request.getEndDateStr() != null) {
+            request.setEndTime(DateUtil.str2Date(request.getEndDateStr(), DateUtil.FMT_YYYY_MM1).getTime());
+        }
+
         List<FloodSituation> situations = situationService.search(request);
 
         return PageResponse.success(situations, FloodSituation::getId);
@@ -99,6 +115,7 @@ public class SearchController {
     @RequestMapping("commonTypeList")
     @ResponseBody
     public PageResponse<CommonType> commonTypeList(HttpServletRequest request, Integer commonTypeEnum) {
+
         List<CommonType> commonTypeList = commonTypeService.selectByType(commonTypeEnum);
         return PageResponse.success(commonTypeList, commonTypeList.size());
     }
