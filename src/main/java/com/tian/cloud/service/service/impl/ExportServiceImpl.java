@@ -1,7 +1,12 @@
 package com.tian.cloud.service.service.impl;
 
 import com.tian.cloud.service.service.ExportService;
+import com.tian.cloud.service.service.UserService;
+import com.tian.cloud.service.util.excel.MySheet;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author tianguang
@@ -9,4 +14,12 @@ import org.springframework.stereotype.Service;
  **/
 @Service
 public class ExportServiceImpl implements ExportService {
+    
+    @Resource
+    private UserService userService;
+
+    @Override
+    public List<MySheet> buildAllUserSheetList() {
+        return null;
+    }
 }
