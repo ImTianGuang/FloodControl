@@ -9,4 +9,6 @@ public interface UserService {
     void saveOrUpdate(List<CompanyInfo.PhoneInfo> phoneList);
 
     List<User> getUserByCompany(int companyId);
+
+    List<User> getAllUser();
 }

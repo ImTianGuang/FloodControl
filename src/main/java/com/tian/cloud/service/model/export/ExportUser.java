@@ -1,5 +1,6 @@
 package com.tian.cloud.service.model.export;
 
+import com.tian.cloud.service.util.excel.annotation.ExcelField;
 import lombok.Data;
 
 /**
@@ -7,17 +8,23 @@ import lombok.Data;
  * 2018/8/31 下午5:46
  **/
 @Data
-public class UserDTO {
+public class ExportUser {
 
+    @ExcelField(name = "单位")
     private String companyName;
 
+    @ExcelField(name = "姓名")
     private String name;
 
+    @ExcelField(name = "职位")
     private String position;
 
+    @ExcelField(name = "工作电话")
     private String workPhone;
 
+    @ExcelField(name = "个人电话")
     private String personPhone;
 
+    @ExcelField(name = "传真")
     private String fax;
 }

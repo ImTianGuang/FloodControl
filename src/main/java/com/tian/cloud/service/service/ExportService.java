@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface ExportService {
 
-    List<MySheet> buildAllUserSheetList();
+    List<MySheet> getAllUserSheetList();
 }

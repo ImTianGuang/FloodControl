@@ -61,4 +61,9 @@ public class UserServiceImpl implements UserService {
     public List<User> getUserByCompany(int companyId) {
         return userMapper.getUserByCompany(companyId);
     }
+
+    @Override
+    public List<User> getAllUser() {
+        return userMapper.getAllUser();
+    }
 }

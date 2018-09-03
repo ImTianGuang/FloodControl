@@ -11,4 +11,6 @@ public interface UserMapper {
     void insertBatch(@Param("userList") List<User> userList);
 
     List<User> getUserByCompany(int companyId);
+
+    List<User> getAllUser();
 }
