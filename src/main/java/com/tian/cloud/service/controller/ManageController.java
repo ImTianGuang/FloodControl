@@ -99,7 +99,7 @@ public class ManageController {
         workbook.write(outputstream);
         response.setHeader("content-disposition","attachment;filename=test.xls");
         //定义输出类型
-        response.setContentType("APPLICATION/msexcel");
+        response.setContentType("APPLICATION/xls");
 
 
         outputstream.close();
