@@ -17,7 +17,9 @@ import com.tian.cloud.service.model.export.Pair;
 import com.tian.cloud.service.service.ExportService;
 import com.tian.cloud.service.service.UserService;
 import com.tian.cloud.service.util.excel.MySheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -100,8 +102,19 @@ public class ExportServiceImpl implements ExportService {
     }
 
     @Override
-    public Sheet getCompanySummary() {
-        return null;
+    public Workbook getCompanySummary() {
+        List<Company> allCompany = companyMapper.selectAll();
+        List<User> allUser = userService.getAllUser();
+        List<Asserts> asserts = assertsMapper.selectAllUsable();
+        Workbook workbook = new HSSFWorkbook();
+        Sheet sheet = workbook.createSheet("");
+
+        if (!CollectionUtils.isEmpty(allCompany)) {
+            for (Company company : allCompany) {
+
+            }
+        }
+        return workbook;
     }
 
     private List<Pair> toExportAssertsList(Collection<Asserts> asserts, List<CommonType> assertsTypeList) {
