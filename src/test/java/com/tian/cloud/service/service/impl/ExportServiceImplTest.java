@@ -20,6 +20,10 @@ public class ExportServiceImplTest extends TestBase {
     @Test
     public void buildAllUserSheetList() {
         List<MySheet> userSheetList = exportService.getAllUserSheetList();
+        MySheet asserts = exportService.getAssertsSheet();
+        if (asserts != null) {
+            userSheetList.add(asserts);
+        }
         ExcelExportUtil.exportToFile(filePath, userSheetList);
     }
 }

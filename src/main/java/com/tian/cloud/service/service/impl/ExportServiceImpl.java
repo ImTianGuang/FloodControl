@@ -1,10 +1,7 @@
 package com.tian.cloud.service.service.impl;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
+import com.google.common.collect.*;
 import com.tian.cloud.service.dao.entity.Asserts;
 import com.tian.cloud.service.dao.entity.CommonType;
 import com.tian.cloud.service.dao.entity.Company;
@@ -20,12 +17,14 @@ import com.tian.cloud.service.model.export.Pair;
 import com.tian.cloud.service.service.ExportService;
 import com.tian.cloud.service.service.UserService;
 import com.tian.cloud.service.util.excel.MySheet;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author tianguang
@@ -47,8 +46,11 @@ public class ExportServiceImpl implements ExportService {
     private CommonTypeMapper commonTypeMapper;
 
     private static final Joiner PLUS_JOINER = Joiner.on("+").skipNulls();
+
     @Override
     public List<MySheet> getAllUserSheetList() {
+        List<Company> allCompany = companyMapper.selectAll();
+        Map<Integer, Company> idCompanyMap = Maps.uniqueIndex(allCompany, Company::getId);
         List<User> allUser = userService.getAllUser();
         Multimap<String, User> floodTitleUserMap = Multimaps.index(allUser, User::getFloodTitle);
         List<MySheet> mySheets = Lists.newArrayList();
@@ -59,7 +61,7 @@ public class ExportServiceImpl implements ExportService {
             if (CollectionUtils.isEmpty(users)) {
                 continue;
             }
-            List<ExportUser> exportUsers = toExportUser(floodTitleUserMap.get(floodTitle));
+            List<ExportUser> exportUsers = toExportUser(floodTitleUserMap.get(floodTitle), idCompanyMap);
             mySheet.setDataList(exportUsers);
             mySheets.add(mySheet);
         }
@@ -83,15 +85,27 @@ public class ExportServiceImpl implements ExportService {
             exportAsserts.setFloodManager(company.getFloodManager());
             exportAsserts.setFloodManagerPhone(company.getFloodManagerPhone());
             List<Pair> assertsList = toExportAssertsList(companyIdMap.get(company.getId()), assertsTypeList);
-
+            exportAsserts.setAssertsList(assertsList);
             exportAssertsList.add(exportAsserts);
         }
 
+        if (CollectionUtils.isEmpty(exportAssertsList)) {
+            return null;
+        }
+
+        MySheet mySheet = new MySheet();
+        mySheet.setSheetName("抢险物资和人员统计");
+        mySheet.setDataList(exportAssertsList);
+        return mySheet;
+    }
+
+    @Override
+    public Sheet getCompanySummary() {
         return null;
     }
 
     private List<Pair> toExportAssertsList(Collection<Asserts> asserts, List<CommonType> assertsTypeList) {
-        Multimap<Integer, Asserts> idAssertsMap = Multimaps.index(asserts, Asserts::getId);
+        Multimap<Integer, Asserts> idAssertsMap = Multimaps.index(asserts, Asserts::getAssertsTypeId);
         List<Pair> pairList = Lists.newArrayList();
         for (CommonType assertsType : assertsTypeList) {
             Collection<Asserts> thisTypeAsserts = idAssertsMap.get(assertsType.getId());
@@ -105,11 +119,16 @@ public class ExportServiceImpl implements ExportService {
         return pairList;
     }
 
-    private List<ExportUser> toExportUser(Collection<User> users) {
+    private List<ExportUser> toExportUser(Collection<User> users, Map<Integer, Company> idCompanyMap) {
         List<ExportUser> exportUsers = Lists.newArrayList();
         for (User user : users) {
             ExportUser exportUser = new ExportUser();
-            exportUser.setCompanyName("测试");
+            Company company = idCompanyMap.get(user.getCompanyId());
+            if (company != null) {
+                exportUser.setCompanyName(company.getName());
+            } else {
+                exportUser.setCompanyName("未知");
+            }
             exportUser.setFax(user.getFax());
             exportUser.setName(user.getUserName());
             exportUser.setPersonPhone(user.getUserPhone());

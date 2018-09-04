@@ -12,4 +12,6 @@ public interface FloodSituationDetailMapper {
     void saveBatch(@Param("saveList") List<FloodSituationDetail> saveList);
 
     void update(FloodSituationDetail detail);
+
+    void deleteByTargetId(@Param("targetId") Integer targetId);
 }

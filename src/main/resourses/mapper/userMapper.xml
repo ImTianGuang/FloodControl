@@ -37,6 +37,22 @@
         status = 1
     </select>
 
+    <update id="deleteByPositionId" parameterType="Object">
+        update
+        `user`
+        set status = 0
+        where
+        position_id = #{positionId}
+    </update>
+
+    <update id="deleteByFloodTitle" parameterType="Object">
+        update
+        `user`
+        set status = 0
+        where
+        flood_title = #{floodTitle}
+    </update>
+
     <insert id="insertBatch" parameterType="list" useGeneratedKeys="true" keyProperty="id">
         insert into `user`
         (company_id, position_id, status, user_name, user_phone, work_phone, fax,org_code, org_title, create_time, update_time, flood_title)

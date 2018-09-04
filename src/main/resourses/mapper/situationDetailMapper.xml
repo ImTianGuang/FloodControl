@@ -49,4 +49,13 @@
             id = #{id}
         </where>
     </update>
+
+    <update id="deleteByTargetId" parameterType="Object">
+        update
+        flood_situation_detail
+        set
+        status = 0
+        where
+        target_id = #{targetId}
+    </update>
 </mapper>

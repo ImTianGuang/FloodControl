@@ -2,7 +2,11 @@ package com.tian.cloud.service.service.impl;
 
 import com.google.common.collect.*;
 import com.tian.cloud.service.dao.entity.CommonType;
+import com.tian.cloud.service.dao.mapper.AssertsMapper;
 import com.tian.cloud.service.dao.mapper.CommonTypeMapper;
+import com.tian.cloud.service.dao.mapper.FloodSituationDetailMapper;
+import com.tian.cloud.service.dao.mapper.UserMapper;
+import com.tian.cloud.service.enums.CommonTypeEnum;
 import com.tian.cloud.service.enums.LineStatusEnum;
 import com.tian.cloud.service.service.CommonTypeService;
 import org.springframework.stereotype.Service;
@@ -21,6 +25,15 @@ public class CommonTypeServiceImpl implements CommonTypeService {
 
     @Resource
     private CommonTypeMapper commonTypeMapper;
+
+    @Resource
+    private UserMapper userMapper;
+
+    @Resource
+    private FloodSituationDetailMapper floodSituationDetailMapper;
+
+    @Resource
+    private AssertsMapper assertsMapper;
 
     @Override
     public List<CommonType> selectByType(Integer commonTypeEnum) {
@@ -54,6 +67,10 @@ public class CommonTypeServiceImpl implements CommonTypeService {
                     commonType.setName("");
                     commonType.setStatus(LineStatusEnum.DELETED.getCode());
                 }
+                if (commonType.getStatus() == LineStatusEnum.DELETED.getCode()) {
+                    // 删除使用了该类型的数据
+                    deleteRelatedData(commonType);
+                }
                 commonType.setUpdateTime(System.currentTimeMillis());
                 updateList.add(commonType);
             }
@@ -66,6 +83,18 @@ public class CommonTypeServiceImpl implements CommonTypeService {
         }
         if (!CollectionUtils.isEmpty(saveList)) {
             commonTypeMapper.saveBatch(saveList);
+        }
+    }
+
+    private void deleteRelatedData(CommonType commonType) {
+        if (commonType.getCommonTypeEnum() == CommonTypeEnum.POSITION.getCode()) {
+            userMapper.deleteByPositionId(commonType.getId());
+        } else if (commonType.getCommonTypeEnum() == CommonTypeEnum.SITUATION.getCode() || commonType.getCommonTypeEnum() == CommonTypeEnum.SOLUTION.getCode()) {
+            floodSituationDetailMapper.deleteByTargetId(commonType.getId());
+        } else if (commonType.getCommonTypeEnum() == CommonTypeEnum.ASSERTS.getCode()) {
+            assertsMapper.deleteByAssertsTypeId(commonType.getId());
+        } else if (commonType.getCommonTypeEnum() == CommonTypeEnum.FLOOD_TITLE.getCode()) {
+            userMapper.deleteByFloodTitle(commonType.getName());
         }
     }
 }

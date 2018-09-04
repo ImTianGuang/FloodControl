@@ -1,5 +1,6 @@
 package com.tian.cloud.service.model.export;
 
+import com.tian.cloud.service.util.excel.annotation.ExcelField;
 import lombok.Data;
 
 import java.util.List;
@@ -11,10 +12,13 @@ import java.util.List;
 @Data
 public class ExportAsserts {
 
+    @ExcelField(name = "单位名称")
     private String companyName;
 
+    @ExcelField(name = "防汛负责人")
     private String floodManager;
 
+    @ExcelField(name = "防汛负责人电话")
     private String floodManagerPhone;
 
     private List<Pair> assertsList;

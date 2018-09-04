@@ -53,4 +53,13 @@
         where
         id = #{id}
     </update>
+
+    <update id="deleteByAssertsTypeId" parameterType="Object">
+        update
+        asserts
+        set
+        status = 0
+        where
+        asserts_type_id = #{assertsTypeId}
+    </update>
 </mapper>

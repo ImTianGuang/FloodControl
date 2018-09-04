@@ -13,4 +13,8 @@ public interface UserMapper {
     List<User> getUserByCompany(int companyId);
 
     List<User> getAllUser();
+
+    void deleteByPositionId(@Param("id") Integer id);
+
+    void deleteByFloodTitle(@Param("floodTitle") String floodTitle);
 }
