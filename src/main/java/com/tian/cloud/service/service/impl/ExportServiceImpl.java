@@ -11,6 +11,7 @@ import com.tian.cloud.service.dao.mapper.CommonTypeMapper;
 import com.tian.cloud.service.dao.mapper.CompanyMapper;
 import com.tian.cloud.service.enums.CommonTypeEnum;
 import com.tian.cloud.service.enums.LineStatusEnum;
+import com.tian.cloud.service.enums.Orgnization;
 import com.tian.cloud.service.model.export.ExportAsserts;
 import com.tian.cloud.service.model.export.ExportUser;
 import com.tian.cloud.service.model.export.Pair;
@@ -18,15 +19,12 @@ import com.tian.cloud.service.service.ExportService;
 import com.tian.cloud.service.service.UserService;
 import com.tian.cloud.service.util.excel.MySheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author tianguang
@@ -101,6 +99,9 @@ public class ExportServiceImpl implements ExportService {
         return mySheet;
     }
 
+    private static final List<String> headList = Lists.newArrayList(" ", "名称", "姓名", "职务", "办公电话", "手机", "传真");
+
+    private static final String COMPANY_TITLE_FORMAT = "%s防汛指挥部通讯录";
     @Override
     public Workbook getCompanySummary() {
         List<Company> allCompany = companyMapper.selectAll();
@@ -115,6 +116,83 @@ public class ExportServiceImpl implements ExportService {
             }
         }
         return workbook;
+    }
+
+    private void addCompanyToSheet(int startRow, Sheet sheet, Company company, List<User> userList, List<Asserts> assertsList) {
+
+        int org1EndRowNum = -1;
+        int org2EndRowNum = -1;
+
+        initHeadRow(startRow, sheet, company);
+        startRow = startRow + 2;
+        if (!CollectionUtils.isEmpty(userList)) {
+            userList.sort(Comparator.comparingInt(User::getOrgCode));
+            for (int i = 0;i < userList.size(); i++) {
+                startRow = startRow + i;
+                User user = userList.get(i);
+                if (user.getOrgCode() == 0) {
+                    org1EndRowNum = startRow;
+                }
+                addUserRow(startRow, sheet, user);
+            }
+        }
+
+        startRow = startRow + 1;
+        addCompanyInfo(startRow, sheet,"单位邮箱", company.getEmail());
+        startRow = startRow + 1;
+        addCompanyInfo(startRow, sheet,"地址", company.getAddress());
+        startRow = startRow + 1;
+        addCompanyInfo(startRow, sheet,"邮编", company.getPostCode());
+
+
+    }
+
+    private void addCompanyInfo(int startRow, Sheet sheet, String key, String value) {
+
+        Row companyRow = sheet.createRow(startRow);
+        Cell cell = companyRow.createCell(0);
+        cell.setCellValue(Orgnization.ORG2.getCode());
+
+        Cell cellKey = companyRow.createCell(1);
+        cellKey.setCellValue(key);
+
+        Cell cellValue = companyRow.createCell(2);
+        cellValue.setCellValue(value);
+    }
+
+    private void addUserRow(int startRow, Sheet sheet, User user) {
+        Row userRow = sheet.createRow(startRow);
+        Cell org = userRow.createCell(0);
+        org.setCellValue(user.getOrgTitle());
+
+        Cell title = userRow.createCell(1);
+        title.setCellValue(user.getFloodTitle());
+
+        Cell name = userRow.createCell(2);
+        name.setCellValue(user.getUserName());
+
+        Cell position = userRow.createCell(3);
+        position.setCellValue(user.getPositionId());//todo
+
+        Cell workPhone = userRow.createCell(4);
+        workPhone.setCellValue(user.getWorkPhone());
+
+        Cell phone = userRow.createCell(5);
+        phone.setCellValue(user.getUserPhone());
+
+        Cell fax = userRow.createCell(6);
+        fax.setCellValue(user.getFax());
+    }
+
+    private void initHeadRow(int startRow, Sheet sheet, Company company) {
+        Row titleRow = sheet.createRow(startRow);
+        Cell cell = titleRow.createCell(0, CellType.STRING);
+        cell.setCellValue(String.format(COMPANY_TITLE_FORMAT, company.getName()));
+        Row headRow = sheet.createRow(startRow + 1);
+        for (int i = 0; i < headList.size(); i++) {
+            Cell headCell = headRow.createCell(i, CellType.STRING);
+            headCell.setCellValue(headList.get(i));
+        }
     }
 
     private List<Pair> toExportAssertsList(Collection<Asserts> asserts, List<CommonType> assertsTypeList) {

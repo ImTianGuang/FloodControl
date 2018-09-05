@@ -97,9 +97,9 @@ public class ManageController {
         response.reset();
         //设置响应头和下载保存的文件名
         workbook.write(outputstream);
-        response.setHeader("content-disposition","attachment;filename=test.xls");
+//        response.setHeader("content-disposition","inline;filename=test.xls");
         //定义输出类型
-        response.setContentType("APPLICATION/xls");
+        response.setContentType("application/excel");
 
 
         outputstream.close();

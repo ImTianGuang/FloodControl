@@ -143,6 +143,12 @@
       <artifactId>poi-ooxml</artifactId>
     </dependency>
 
+    <!--github -->
+    <dependency>
+      <groupId>net.sargue</groupId>
+      <artifactId>mailgun</artifactId>
+      <version>1.9.0</version>
+    </dependency>
   </dependencies>
 
   <build>
