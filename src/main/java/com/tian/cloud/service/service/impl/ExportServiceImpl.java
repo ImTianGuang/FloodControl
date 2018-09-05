@@ -20,8 +20,11 @@ import com.tian.cloud.service.service.UserService;
 import com.tian.cloud.service.util.excel.MySheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.RegionUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -102,33 +105,53 @@ public class ExportServiceImpl implements ExportService {
     private static final List<String> headList = Lists.newArrayList(" ", "名称", "姓名", "职务", "办公电话", "手机", "传真");
 
     private static final String COMPANY_TITLE_FORMAT = "%s防汛指挥部通讯录";
+
     @Override
     public Workbook getCompanySummary() {
         List<Company> allCompany = companyMapper.selectAll();
         List<User> allUser = userService.getAllUser();
         List<Asserts> asserts = assertsMapper.selectAllUsable();
         Workbook workbook = new HSSFWorkbook();
-        Sheet sheet = workbook.createSheet("");
+        Sheet sheet = workbook.createSheet("汇总");
+
+        CellStyle cellStyle = getCellStyle(workbook);
+
+        //设置自动换行
+        cellStyle.setWrapText(true);
 
         if (!CollectionUtils.isEmpty(allCompany)) {
             for (Company company : allCompany) {
-
+                addCompanyToSheet(1, sheet, cellStyle, company, allUser, asserts);
             }
         }
         return workbook;
     }
 
-    private void addCompanyToSheet(int startRow, Sheet sheet, Company company, List<User> userList, List<Asserts> assertsList) {
+    private CellStyle getCellStyle(Workbook workbook) {
+        CellStyle cellStyle = workbook.createCellStyle();
+        cellStyle.setAlignment(HorizontalAlignment.CENTER);
+        //垂直居中
+        cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        //设置边框
+        cellStyle.setBorderTop(BorderStyle.THIN);
+        cellStyle.setBorderRight(BorderStyle.THIN);
+        cellStyle.setBorderBottom(BorderStyle.THIN);
+        cellStyle.setBorderLeft(BorderStyle.THIN);
+        return cellStyle;
+    }
+
+    private void addCompanyToSheet(int startRow, Sheet sheet, CellStyle cellStyle, Company company, List<User> userList, List<Asserts> assertsList) {
 
         int org1EndRowNum = -1;
         int org2EndRowNum = -1;
+        int assertsRowNum = -1;
 
-        initHeadRow(startRow, sheet, company);
+        initHeadRow(startRow, sheet, cellStyle, company);
         startRow = startRow + 2;
         if (!CollectionUtils.isEmpty(userList)) {
             userList.sort(Comparator.comparingInt(User::getOrgCode));
             for (int i = 0;i < userList.size(); i++) {
-                startRow = startRow + i;
+                startRow = startRow + 1;
                 User user = userList.get(i);
                 if (user.getOrgCode() == 0) {
                     org1EndRowNum = startRow;
@@ -138,26 +161,92 @@ public class ExportServiceImpl implements ExportService {
         }
 
         startRow = startRow + 1;
-        addCompanyInfo(startRow, sheet,"单位邮箱", company.getEmail());
+        addCompanyInfo(startRow, sheet,cellStyle, "单位邮箱", company.getEmail());
         startRow = startRow + 1;
-        addCompanyInfo(startRow, sheet,"地址", company.getAddress());
+        addCompanyInfo(startRow, sheet,cellStyle, "地址", company.getAddress());
         startRow = startRow + 1;
-        addCompanyInfo(startRow, sheet,"邮编", company.getPostCode());
+        addCompanyInfo(startRow, sheet,cellStyle, "邮编", company.getPostCode());
+
+        org2EndRowNum = startRow;
+
+        startRow = startRow + 1;
+        Row floodManager = sheet.createRow(startRow);
+        Cell fMCell0 = createCell(floodManager, cellStyle, 0, "物资..");
+        Cell fMCell1 = createCell(floodManager, cellStyle, 1, "抢险人员及抢险物资负责人");
+        Cell fMCell2 = createCell(floodManager, cellStyle, 2, company.getFloodManager());
+        Cell fMCell3 = createCell(floodManager, cellStyle, 3, "抢险人员及抢险物资负责人电话");
+        Cell fMCell4 = createCell(floodManager, cellStyle, 4, company.getFloodManagerPhone());
 
 
+        if (!CollectionUtils.isEmpty(assertsList)) {
+            startRow = startRow + 1;
+            Row assertRow = createRow(sheet, startRow);
+            for (int i = 0;i < assertsList.size(); i++) {
+                if (i % 3 == 0) {
+                    startRow = startRow + 1;
+                    assertRow = createRow(sheet, startRow);
+                    createCell(assertRow, cellStyle, 0, "物资..");
+                }
+                Asserts asserts = assertsList.get(i);
+                int assertsIdx = i % 3;
+                createCell(assertRow, cellStyle, assertsIdx, asserts.getAssertsTypeName());
+                createCell(assertRow, cellStyle, assertsIdx, asserts.getAssertsValue());
+            }
+        }
+
+        startRow = startRow + 1;
+        Row endRow = createRow(sheet, startRow);
+        Cell recordPerson = createCell(endRow, cellStyle, 0, "填表人");
+        Cell recordPersonName = createCell(endRow, cellStyle, 1, company.getRecordPerson());
+
+        Cell recordPersonPhone = createCell(endRow, cellStyle, 2, "填表人电话");
+        Cell recordPersonPhoneValue = createCell(endRow, cellStyle, 3, company.getRecordPersonPhone());
+
+        Cell checkPerson = createCell(endRow, cellStyle, 4, "审核人");
+        Cell checkPersonName = createCell(endRow, cellStyle, 5, company.getCheckPerson());
+
+        Cell checkPersonPhone = createCell(endRow, cellStyle, 6, "审核人电话");
+        Cell checkPersonPhoneValue = createCell(endRow, cellStyle, 7, company.getCheckPersonPhone());
+
+        startRow = startRow + 1;
+        createRow(sheet, startRow);
+
+        startRow = startRow + 1;
+        createRow(sheet, startRow);
+
+        for (int i = 0; i < headList.size(); i++) {
+            sheet.autoSizeColumn(i);
+//            sheet.setColumnWidth(i,sheet.getColumnWidth(i)*13/10);
+        }
+
+        // 合并单元格
+        CellRangeAddress cra =new CellRangeAddress(1, 3, 1, 3); // 起始行, 终止行, 起始列, 终止列
+        sheet.addMergedRegion(cra);
+
+        // 使用RegionUtil类为合并后的单元格添加边框
+        RegionUtil.setBorderBottom(1, cra, sheet); // 下边框
+        RegionUtil.setBorderLeft(1, cra, sheet); // 左边框
+        RegionUtil.setBorderRight(1, cra, sheet); // 有边框
+        RegionUtil.setBorderTop(1, cra, sheet); // 上边框
     }
 
-    private void addCompanyInfo(int startRow, Sheet sheet, String key, String value) {
+    private Row createRow(Sheet sheet, int rownum) {
+        return sheet.createRow(rownum);
+    }
 
-        Row companyRow = sheet.createRow(startRow);
-        Cell cell = companyRow.createCell(0);
-        cell.setCellValue(Orgnization.ORG2.getCode());
+    private Cell createCell (Row row, CellStyle cellStyle, int column, String value) {
+        Cell cell = row.createCell(column);
+        value = StringUtils.isEmpty(value) ? "无" : value;
+        cell.setCellValue(value);
+        cell.setCellStyle(cellStyle);
+        return cell;
+    }
+    private void addCompanyInfo(int startRow, Sheet sheet, CellStyle cellStyle, String key, String value) {
 
-        Cell cellKey = companyRow.createCell(1);
-        cellKey.setCellValue(key);
-
-        Cell cellValue = companyRow.createCell(2);
-        cellValue.setCellValue(value);
+        Row companyRow = createRow(sheet, startRow);
+        createCell(companyRow, cellStyle, 0, Orgnization.ORG2.getMsg());
+        createCell(companyRow, cellStyle, 1, key);
+        createCell(companyRow, cellStyle, 2, value);
     }
 
     private void addUserRow(int startRow, Sheet sheet, User user) {
@@ -184,14 +273,13 @@ public class ExportServiceImpl implements ExportService {
         fax.setCellValue(user.getFax());
     }
 
-    private void initHeadRow(int startRow, Sheet sheet, Company company) {
+    private void initHeadRow(int startRow, Sheet sheet, CellStyle cellStyle, Company company) {
         Row titleRow = sheet.createRow(startRow);
-        Cell cell = titleRow.createCell(0, CellType.STRING);
-        cell.setCellValue(String.format(COMPANY_TITLE_FORMAT, company.getName()));
+        createCell(titleRow, cellStyle, 0, String.format(COMPANY_TITLE_FORMAT, company.getName()));
+
         Row headRow = sheet.createRow(startRow + 1);
         for (int i = 0; i < headList.size(); i++) {
-            Cell headCell = headRow.createCell(i, CellType.STRING);
-            headCell.setCellValue(headList.get(i));
+            createCell(headRow, cellStyle, i, headList.get(i));
         }
     }
 

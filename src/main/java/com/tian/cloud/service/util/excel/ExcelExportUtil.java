@@ -165,6 +165,11 @@ public class ExcelExportUtil {
         // workbook
         Workbook workbook = exportWorkbook(sheetList);
 
+        writeToFile(workbook, filePath);
+
+    }
+
+    public static void writeToFile(Workbook workbook, String filePath) {
         FileOutputStream fileOutputStream = null;
         try {
             // workbook 2 FileOutputStream
@@ -187,7 +192,6 @@ public class ExcelExportUtil {
             }
         }
     }
-
     /**
      * 导出Excel字节数据
      *
