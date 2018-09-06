@@ -50,6 +50,15 @@
         </where>
     </select>
 
+    <select id="selectAllByType" resultMap="BaseResultMap" parameterType="Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from common_type
+        <where>
+            common_type_enum = #{commonTypeEnum}
+        </where>
+    </select>
+
     <select id="selectAllUsable" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         select
         <include refid="Base_Column_List"/>

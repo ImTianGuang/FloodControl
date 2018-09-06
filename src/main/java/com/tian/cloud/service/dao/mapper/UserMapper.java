@@ -12,7 +12,7 @@ public interface UserMapper {
 
     List<User> getUserByCompany(int companyId);
 
-    List<User> getAllUser();
+    List<User> getAllUsableUser();
 
     void deleteByPositionId(@Param("id") Integer id);
 

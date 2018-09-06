@@ -16,4 +16,6 @@ public interface CommonTypeMapper {
     void saveBatch(@Param("saveList") List<CommonType> saveList);
 
     void update(CommonType commonType);
+
+    List<CommonType> selectAllByType(int code);
 }

@@ -20,7 +20,7 @@ import com.tian.cloud.service.service.UserService;
 import com.tian.cloud.service.util.excel.ExcelExportUtil;
 import com.tian.cloud.service.util.excel.MySheet;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.RegionUtil;
@@ -61,7 +61,7 @@ public class ExportServiceImpl implements ExportService {
     public List<MySheet> getAllUserSheetList() {
         List<Company> allCompany = companyMapper.selectAll();
         Map<Integer, Company> idCompanyMap = Maps.uniqueIndex(allCompany, Company::getId);
-        List<User> allUser = userService.getAllUser();
+        List<User> allUser = userService.getAllUsableUser();
         Multimap<String, User> floodTitleUserMap = Multimaps.index(allUser, User::getFloodTitle);
         List<MySheet> mySheets = Lists.newArrayList();
         for (String floodTitle : floodTitleUserMap.keySet()) {
@@ -112,9 +112,10 @@ public class ExportServiceImpl implements ExportService {
     @Override
     public Workbook getCompanySummary(Workbook workbook) {
         List<Company> allCompany = companyMapper.selectAll();
-        List<User> allUser = userService.getAllUser();
+        List<User> allUser = userService.getAllUsableUser();
         List<Asserts> asserts = assertsMapper.selectAllUsable();
-
+        List<CommonType> positionList = commonTypeMapper.selectAllByType(CommonTypeEnum.POSITION.getCode());
+        Map<Integer, CommonType> idAndPositionMap = Maps.uniqueIndex(positionList, CommonType::getId);
         Sheet sheet = workbook.createSheet("汇总");
 
         CellStyle cellStyle = getCellStyle(workbook);
@@ -129,13 +130,13 @@ public class ExportServiceImpl implements ExportService {
                     continue;
                 }
                 startRow ++;
-                startRow = addCompanyToSheet(startRow, sheet, cellStyle, company, allUser, asserts);
+                startRow = addCompanyToSheet(startRow, workbook, sheet, cellStyle, company, allUser, asserts, idAndPositionMap);
             }
         }
         for (int i = 0; i < headList.size(); i++) {
             sheet.autoSizeColumn(i);
             int width = sheet.getColumnWidth(i);
-            width = width * 16 / 10;
+            width = width * 13 / 10;
             sheet.setColumnWidth(i,width);
         }
         return workbook;
@@ -166,14 +167,31 @@ public class ExportServiceImpl implements ExportService {
         return cellStyle;
     }
 
-    private int addCompanyToSheet(int startRow, Sheet sheet, CellStyle cellStyle, Company company, List<User> userList, List<Asserts> assertsList) {
+    private CellStyle getCellStyle(Workbook workbook, HSSFColor.HSSFColorPredefined color) {
+        CellStyle cellStyle = workbook.createCellStyle();
+        cellStyle.setAlignment(HorizontalAlignment.CENTER);
+        //垂直居中
+        cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        //设置边框
+        cellStyle.setBorderTop(BorderStyle.THIN);
+        cellStyle.setBorderRight(BorderStyle.THIN);
+        cellStyle.setBorderBottom(BorderStyle.THIN);
+        cellStyle.setBorderLeft(BorderStyle.THIN);
+
+        cellStyle.setFillForegroundColor(color.getIndex());
+        cellStyle.setFillBackgroundColor(color.getIndex());
+        cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        return cellStyle;
+    }
+
+    private int addCompanyToSheet(int startRow, Workbook workbook, Sheet sheet, CellStyle cellStyle, Company company, List<User> userList, List<Asserts> assertsList, Map<Integer, CommonType> idAndPositionMap) {
 
         int headStartRowNum = startRow;
         int org1EndRowNum = -1;
         int org2EndRowNum = -1;
         int assertsRowNum = -1;
 
-        initHeadRow(startRow, sheet, cellStyle, company);
+        initHeadRow(startRow, sheet, workbook, company);
         startRow = startRow + 2;
         if (!CollectionUtils.isEmpty(userList)) {
             userList.sort(Comparator.comparingInt(User::getOrgCode));
@@ -183,7 +201,7 @@ public class ExportServiceImpl implements ExportService {
                 if (user.getOrgCode() == 0) {
                     org1EndRowNum = startRow;
                 }
-                addUserRow(startRow, sheet, cellStyle, user);
+                addUserRow(startRow, sheet, cellStyle, user, idAndPositionMap);
             }
         }
 
@@ -200,11 +218,14 @@ public class ExportServiceImpl implements ExportService {
         Row floodManager = sheet.createRow(startRow);
         createCell(floodManager, cellStyle, 0, "物资..");
         createCell(floodManager, cellStyle, 1, "抢险人员及抢险物资负责人");
-        createCell(floodManager, cellStyle, 2, company.getFloodManager());
-        createCell(floodManager, cellStyle, 3, "抢险人员及抢险物资负责人电话");
-        createCell(floodManager, cellStyle, 4, company.getFloodManagerPhone());
+        createCell(floodManager, cellStyle, 2, "");
+        createCell(floodManager, cellStyle, 3, company.getFloodManager());
+        createCell(floodManager, cellStyle, 4, "抢险人员及抢险物资负责人电话");
         createCell(floodManager, cellStyle, 5, "");
-        createCell(floodManager, cellStyle, 6, "");
+        createCell(floodManager, cellStyle, 6, company.getFloodManagerPhone());
+
+        mergeCell(sheet, startRow, startRow, 1, 2);
+        mergeCell(sheet, startRow, startRow, 4, 5);
 
         if (!CollectionUtils.isEmpty(assertsList)) {
             Row assertRow = null;
@@ -220,6 +241,8 @@ public class ExportServiceImpl implements ExportService {
                 createCell(assertRow, cellStyle, assertsIdx + 2, asserts.getAssertsValue());
             }
         }
+
+        assertsRowNum = startRow;
 
         startRow = startRow + 1;
         Row endRow = createRow(sheet, startRow);
@@ -248,19 +271,25 @@ public class ExportServiceImpl implements ExportService {
         createRow(sheet, startRow);
 
         mergeCell(sheet, headStartRowNum, headStartRowNum + 1, 0, 6);
-//        if (org1EndRowNum != -1) {
-//            mergeCell(sheet, headStartRowNum+3, org1EndRowNum, 0, 0);//指挥部
-//        }
-//        if (org2EndRowNum != -1) {
-//            mergeCell(sheet, 3, org1EndRowNum, 0, 6);//指挥部
-//        }
+        if (org1EndRowNum != -1) {
+            mergeCell(sheet, headStartRowNum+3, org1EndRowNum, 0, 0);//指挥部
+        }
+        if (org2EndRowNum != -1) {
+            mergeCell(sheet, org1EndRowNum + 1, org2EndRowNum, 0, 0);//指挥部
+        }
+        if (assertsRowNum != -1) {
+            mergeCell(sheet, org2EndRowNum + 1, assertsRowNum, 0, 0);//指挥部
+        }
 //        mergeCell(sheet, headStartRowNum, headStartRowNum + 1, 0, 6);
-//        mergeCell(sheet, headStartRowNum, headStartRowNum + 1, 0, 6);
+//        mergeCell(sheet, he•adStartRowNum, headStartRowNum + 1, 0, 6);
 
         return startRow;
     }
 
     private void mergeCell(Sheet sheet, int firstRow, int lastRow, int firstCol, int lastCol) {
+        if ((firstRow == lastRow) && (firstCol == lastCol)) {
+            return;
+        }
         // 合并单元格
         CellRangeAddress cra =new CellRangeAddress(firstRow, lastRow, firstCol, lastCol);
         sheet.addMergedRegionUnsafe(cra);
@@ -288,14 +317,16 @@ public class ExportServiceImpl implements ExportService {
         Row companyRow = createRow(sheet, startRow);
         createCell(companyRow, cellStyle, 0, Orgnization.ORG2.getMsg());
         createCell(companyRow, cellStyle, 1, key);
-        createCell(companyRow, cellStyle, 2, value);
-        createCell(companyRow, cellStyle, 3, "");
+        createCell(companyRow, cellStyle, 2, "");
+        mergeCell(sheet, startRow, startRow, 1, 2);
+        createCell(companyRow, cellStyle, 3, value);
         createCell(companyRow, cellStyle, 4, "");
         createCell(companyRow, cellStyle, 5, "");
         createCell(companyRow, cellStyle, 6, "");
+        mergeCell(sheet, startRow, startRow, 3, 6);
     }
 
-    private void addUserRow(int startRow, Sheet sheet, CellStyle cellStyle, User user) {
+    private void addUserRow(int startRow, Sheet sheet, CellStyle cellStyle, User user, Map<Integer, CommonType> idAndPositionMap) {
         Row userRow = sheet.createRow(startRow);
         createCell(userRow, cellStyle, 0, user.getOrgTitle());
 
@@ -303,7 +334,8 @@ public class ExportServiceImpl implements ExportService {
 
         createCell(userRow, cellStyle, 2, user.getUserName());
 
-        createCell(userRow, cellStyle, 3, String.valueOf(user.getPositionId()));//todo
+        CommonType position = idAndPositionMap.get(user.getPositionId());
+        createCell(userRow, cellStyle, 3, position == null ? "未知": position.getName());
 
         createCell(userRow, cellStyle, 4, user.getWorkPhone());
 
@@ -312,14 +344,15 @@ public class ExportServiceImpl implements ExportService {
         createCell(userRow, cellStyle, 6, user.getFax());
     }
 
-    private void initHeadRow(int startRow, Sheet sheet, CellStyle cellStyle, Company company) {
+    private void initHeadRow(int startRow, Sheet sheet, Workbook workbook, Company company) {
         Row titleRow = sheet.createRow(startRow);
-        createCell(titleRow, cellStyle, 0, String.format(COMPANY_TITLE_FORMAT, company.getName()));
+        // HSSFColor.HSSFColorPredefined.LIGHT_ORANGE
+        createCell(titleRow, getCellStyle(workbook), 0, String.format(COMPANY_TITLE_FORMAT, company.getName()));
         sheet.createRow(startRow + 1);
 
         Row headRow = sheet.createRow(startRow + 2);
         for (int i = 0; i < headList.size(); i++) {
-            createCell(headRow, cellStyle, i, headList.get(i));
+            createCell(headRow, getCellStyle(workbook, HSSFColor.HSSFColorPredefined.LIGHT_GREEN), i, headList.get(i));
         }
     }
 

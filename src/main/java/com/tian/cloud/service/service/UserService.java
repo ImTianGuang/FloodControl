@@ -10,5 +10,5 @@ public interface UserService {
 
     List<User> getUserByCompany(int companyId);
 
-    List<User> getAllUser();
+    List<User> getAllUsableUser();
 }

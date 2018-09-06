@@ -29,7 +29,7 @@
         company_id = #{companyId} and status = 1
     </select>
 
-    <select id="getAllUser" parameterType="Object" resultMap="BaseResultMap">
+    <select id="getAllUsableUser" parameterType="Object" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from `user`
