@@ -5,6 +5,7 @@ import com.tian.cloud.service.service.ExportService;
 import com.tian.cloud.service.util.OhMyEmail;
 import com.tian.cloud.service.util.excel.ExcelExportUtil;
 import com.tian.cloud.service.util.excel.MySheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.junit.Test;
 
@@ -39,7 +40,7 @@ public class ExportServiceImplTest extends TestBase {
 
     @Test
     public void companyInfo() throws Exception {
-        Workbook workbook = exportService.getCompanySummary();
+        Workbook workbook = exportService.exportAll();
         ExcelExportUtil.writeToFile(workbook, filePath);
 
     }

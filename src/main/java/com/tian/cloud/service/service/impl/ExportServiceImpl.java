@@ -17,7 +17,9 @@ import com.tian.cloud.service.model.export.ExportUser;
 import com.tian.cloud.service.model.export.Pair;
 import com.tian.cloud.service.service.ExportService;
 import com.tian.cloud.service.service.UserService;
+import com.tian.cloud.service.util.excel.ExcelExportUtil;
 import com.tian.cloud.service.util.excel.MySheet;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -34,6 +36,7 @@ import java.util.*;
  * 2018/9/3 下午3:57
  **/
 @Service
+@Slf4j
 public class ExportServiceImpl implements ExportService {
 
     @Resource
@@ -47,6 +50,10 @@ public class ExportServiceImpl implements ExportService {
 
     @Resource
     private CommonTypeMapper commonTypeMapper;
+
+    private static final List<String> headList = Lists.newArrayList(" ", "名称", "姓名", "职务", "办公电话", "手机", "传真");
+
+    private static final String COMPANY_TITLE_FORMAT = "%s防汛指挥部通讯录";
 
     private static final Joiner PLUS_JOINER = Joiner.on("+").skipNulls();
 
@@ -102,16 +109,12 @@ public class ExportServiceImpl implements ExportService {
         return mySheet;
     }
 
-    private static final List<String> headList = Lists.newArrayList(" ", "名称", "姓名", "职务", "办公电话", "手机", "传真");
-
-    private static final String COMPANY_TITLE_FORMAT = "%s防汛指挥部通讯录";
-
     @Override
-    public Workbook getCompanySummary() {
+    public Workbook getCompanySummary(Workbook workbook) {
         List<Company> allCompany = companyMapper.selectAll();
         List<User> allUser = userService.getAllUser();
         List<Asserts> asserts = assertsMapper.selectAllUsable();
-        Workbook workbook = new HSSFWorkbook();
+
         Sheet sheet = workbook.createSheet("汇总");
 
         CellStyle cellStyle = getCellStyle(workbook);
@@ -119,11 +122,34 @@ public class ExportServiceImpl implements ExportService {
         //设置自动换行
         cellStyle.setWrapText(true);
 
+        int startRow = -1;
         if (!CollectionUtils.isEmpty(allCompany)) {
             for (Company company : allCompany) {
-                addCompanyToSheet(1, sheet, cellStyle, company, allUser, asserts);
+                if (company.getStatus() != LineStatusEnum.USABLE.getCode()) {
+                    continue;
+                }
+                startRow ++;
+                startRow = addCompanyToSheet(startRow, sheet, cellStyle, company, allUser, asserts);
             }
         }
+        for (int i = 0; i < headList.size(); i++) {
+            sheet.autoSizeColumn(i);
+            int width = sheet.getColumnWidth(i);
+            width = width * 16 / 10;
+            sheet.setColumnWidth(i,width);
+        }
+        return workbook;
+    }
+
+    @Override
+    public Workbook exportAll() {
+        List<MySheet> userSheetList = getAllUserSheetList();
+        MySheet assertsSheet = getAssertsSheet();
+        if (assertsSheet != null) {
+            userSheetList.add(assertsSheet);
+        }
+        Workbook workbook = ExcelExportUtil.exportWorkbook(userSheetList);
+        getCompanySummary(workbook);
         return workbook;
     }
 
@@ -140,8 +166,9 @@ public class ExportServiceImpl implements ExportService {
         return cellStyle;
     }
 
-    private void addCompanyToSheet(int startRow, Sheet sheet, CellStyle cellStyle, Company company, List<User> userList, List<Asserts> assertsList) {
+    private int addCompanyToSheet(int startRow, Sheet sheet, CellStyle cellStyle, Company company, List<User> userList, List<Asserts> assertsList) {
 
+        int headStartRowNum = startRow;
         int org1EndRowNum = -1;
         int org2EndRowNum = -1;
         int assertsRowNum = -1;
@@ -156,7 +183,7 @@ public class ExportServiceImpl implements ExportService {
                 if (user.getOrgCode() == 0) {
                     org1EndRowNum = startRow;
                 }
-                addUserRow(startRow, sheet, user);
+                addUserRow(startRow, sheet, cellStyle, user);
             }
         }
 
@@ -171,16 +198,16 @@ public class ExportServiceImpl implements ExportService {
 
         startRow = startRow + 1;
         Row floodManager = sheet.createRow(startRow);
-        Cell fMCell0 = createCell(floodManager, cellStyle, 0, "物资..");
-        Cell fMCell1 = createCell(floodManager, cellStyle, 1, "抢险人员及抢险物资负责人");
-        Cell fMCell2 = createCell(floodManager, cellStyle, 2, company.getFloodManager());
-        Cell fMCell3 = createCell(floodManager, cellStyle, 3, "抢险人员及抢险物资负责人电话");
-        Cell fMCell4 = createCell(floodManager, cellStyle, 4, company.getFloodManagerPhone());
-
+        createCell(floodManager, cellStyle, 0, "物资..");
+        createCell(floodManager, cellStyle, 1, "抢险人员及抢险物资负责人");
+        createCell(floodManager, cellStyle, 2, company.getFloodManager());
+        createCell(floodManager, cellStyle, 3, "抢险人员及抢险物资负责人电话");
+        createCell(floodManager, cellStyle, 4, company.getFloodManagerPhone());
+        createCell(floodManager, cellStyle, 5, "");
+        createCell(floodManager, cellStyle, 6, "");
 
         if (!CollectionUtils.isEmpty(assertsList)) {
-            startRow = startRow + 1;
-            Row assertRow = createRow(sheet, startRow);
+            Row assertRow = null;
             for (int i = 0;i < assertsList.size(); i++) {
                 if (i % 3 == 0) {
                     startRow = startRow + 1;
@@ -188,16 +215,16 @@ public class ExportServiceImpl implements ExportService {
                     createCell(assertRow, cellStyle, 0, "物资..");
                 }
                 Asserts asserts = assertsList.get(i);
-                int assertsIdx = i % 3;
-                createCell(assertRow, cellStyle, assertsIdx, asserts.getAssertsTypeName());
-                createCell(assertRow, cellStyle, assertsIdx, asserts.getAssertsValue());
+                int assertsIdx = (i % 3) * 2;
+                createCell(assertRow, cellStyle, assertsIdx + 1, asserts.getAssertsTypeName());
+                createCell(assertRow, cellStyle, assertsIdx + 2, asserts.getAssertsValue());
             }
         }
 
         startRow = startRow + 1;
         Row endRow = createRow(sheet, startRow);
-        Cell recordPerson = createCell(endRow, cellStyle, 0, "填表人");
-        Cell recordPersonName = createCell(endRow, cellStyle, 1, company.getRecordPerson());
+        createCell(endRow, cellStyle, 0, "填表人");
+        createCell(endRow, cellStyle, 1, company.getRecordPerson());
 
         Cell recordPersonPhone = createCell(endRow, cellStyle, 2, "填表人电话");
         Cell recordPersonPhoneValue = createCell(endRow, cellStyle, 3, company.getRecordPersonPhone());
@@ -205,8 +232,8 @@ public class ExportServiceImpl implements ExportService {
         Cell checkPerson = createCell(endRow, cellStyle, 4, "审核人");
         Cell checkPersonName = createCell(endRow, cellStyle, 5, company.getCheckPerson());
 
-        Cell checkPersonPhone = createCell(endRow, cellStyle, 6, "审核人电话");
-        Cell checkPersonPhoneValue = createCell(endRow, cellStyle, 7, company.getCheckPersonPhone());
+        Cell checkPersonPhone = createCell(endRow, cellStyle, 6, "填表日期:2018-09-04");
+//        Cell checkPersonPhoneValue = createCell(endRow, cellStyle, 7, company.getCheckPersonPhone());
 
         startRow = startRow + 1;
         createRow(sheet, startRow);
@@ -214,14 +241,29 @@ public class ExportServiceImpl implements ExportService {
         startRow = startRow + 1;
         createRow(sheet, startRow);
 
-        for (int i = 0; i < headList.size(); i++) {
-            sheet.autoSizeColumn(i);
-//            sheet.setColumnWidth(i,sheet.getColumnWidth(i)*13/10);
-        }
+        startRow = startRow + 1;
+        createRow(sheet, startRow);
 
+        startRow = startRow + 1;
+        createRow(sheet, startRow);
+
+        mergeCell(sheet, headStartRowNum, headStartRowNum + 1, 0, 6);
+//        if (org1EndRowNum != -1) {
+//            mergeCell(sheet, headStartRowNum+3, org1EndRowNum, 0, 0);//指挥部
+//        }
+//        if (org2EndRowNum != -1) {
+//            mergeCell(sheet, 3, org1EndRowNum, 0, 6);//指挥部
+//        }
+//        mergeCell(sheet, headStartRowNum, headStartRowNum + 1, 0, 6);
+//        mergeCell(sheet, headStartRowNum, headStartRowNum + 1, 0, 6);
+
+        return startRow;
+    }
+
+    private void mergeCell(Sheet sheet, int firstRow, int lastRow, int firstCol, int lastCol) {
         // 合并单元格
-        CellRangeAddress cra =new CellRangeAddress(1, 3, 1, 3); // 起始行, 终止行, 起始列, 终止列
-        sheet.addMergedRegion(cra);
+        CellRangeAddress cra =new CellRangeAddress(firstRow, lastRow, firstCol, lastCol);
+        sheet.addMergedRegionUnsafe(cra);
 
         // 使用RegionUtil类为合并后的单元格添加边框
         RegionUtil.setBorderBottom(1, cra, sheet); // 下边框
@@ -247,37 +289,35 @@ public class ExportServiceImpl implements ExportService {
         createCell(companyRow, cellStyle, 0, Orgnization.ORG2.getMsg());
         createCell(companyRow, cellStyle, 1, key);
         createCell(companyRow, cellStyle, 2, value);
+        createCell(companyRow, cellStyle, 3, "");
+        createCell(companyRow, cellStyle, 4, "");
+        createCell(companyRow, cellStyle, 5, "");
+        createCell(companyRow, cellStyle, 6, "");
     }
 
-    private void addUserRow(int startRow, Sheet sheet, User user) {
+    private void addUserRow(int startRow, Sheet sheet, CellStyle cellStyle, User user) {
         Row userRow = sheet.createRow(startRow);
-        Cell org = userRow.createCell(0);
-        org.setCellValue(user.getOrgTitle());
+        createCell(userRow, cellStyle, 0, user.getOrgTitle());
 
-        Cell title = userRow.createCell(1);
-        title.setCellValue(user.getFloodTitle());
+        createCell(userRow, cellStyle, 1, user.getFloodTitle());
 
-        Cell name = userRow.createCell(2);
-        name.setCellValue(user.getUserName());
+        createCell(userRow, cellStyle, 2, user.getUserName());
 
-        Cell position = userRow.createCell(3);
-        position.setCellValue(user.getPositionId());//todo
+        createCell(userRow, cellStyle, 3, String.valueOf(user.getPositionId()));//todo
 
-        Cell workPhone = userRow.createCell(4);
-        workPhone.setCellValue(user.getWorkPhone());
+        createCell(userRow, cellStyle, 4, user.getWorkPhone());
 
-        Cell phone = userRow.createCell(5);
-        phone.setCellValue(user.getUserPhone());
+        createCell(userRow, cellStyle, 5, user.getUserPhone());
 
-        Cell fax = userRow.createCell(6);
-        fax.setCellValue(user.getFax());
+        createCell(userRow, cellStyle, 6, user.getFax());
     }
 
     private void initHeadRow(int startRow, Sheet sheet, CellStyle cellStyle, Company company) {
         Row titleRow = sheet.createRow(startRow);
         createCell(titleRow, cellStyle, 0, String.format(COMPANY_TITLE_FORMAT, company.getName()));
+        sheet.createRow(startRow + 1);
 
-        Row headRow = sheet.createRow(startRow + 1);
+        Row headRow = sheet.createRow(startRow + 2);
         for (int i = 0; i < headList.size(); i++) {
             createCell(headRow, cellStyle, i, headList.get(i));
         }

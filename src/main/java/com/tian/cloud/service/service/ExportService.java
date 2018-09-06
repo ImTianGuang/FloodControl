@@ -12,5 +12,7 @@ public interface ExportService {
 
     MySheet getAssertsSheet();
 
-    Workbook getCompanySummary();
+    Workbook getCompanySummary(Workbook workbook);
+
+    Workbook exportAll();
 }
