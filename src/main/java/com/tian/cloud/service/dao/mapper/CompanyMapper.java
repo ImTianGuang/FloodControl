@@ -9,6 +9,8 @@ public interface CompanyMapper {
 
     Company selectById(@Param("id") Integer id);
 
+    List<Company> selectByIdList(@Param("idList") List<Integer> idList);
+
     List<Company> selectAllUsable();
 
     List<Company> selectAll();

@@ -1,25 +1,27 @@
 package com.tian.cloud.service.service.impl;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import com.google.common.collect.*;
-import com.tian.cloud.service.dao.entity.Asserts;
-import com.tian.cloud.service.dao.entity.CommonType;
-import com.tian.cloud.service.dao.entity.Company;
-import com.tian.cloud.service.dao.entity.User;
-import com.tian.cloud.service.dao.mapper.AssertsMapper;
-import com.tian.cloud.service.dao.mapper.CommonTypeMapper;
-import com.tian.cloud.service.dao.mapper.CompanyMapper;
+import com.tian.cloud.service.config.ExportConfig;
+import com.tian.cloud.service.controller.request.CommonSearchReq;
+import com.tian.cloud.service.dao.entity.*;
+import com.tian.cloud.service.dao.mapper.*;
 import com.tian.cloud.service.enums.CommonTypeEnum;
 import com.tian.cloud.service.enums.LineStatusEnum;
 import com.tian.cloud.service.enums.Orgnization;
 import com.tian.cloud.service.model.export.ExportAsserts;
+import com.tian.cloud.service.model.export.ExportContext;
 import com.tian.cloud.service.model.export.ExportUser;
 import com.tian.cloud.service.model.export.Pair;
 import com.tian.cloud.service.service.ExportService;
 import com.tian.cloud.service.service.UserService;
+import com.tian.cloud.service.util.OhMyEmail;
+import com.tian.cloud.service.util.ParamCheckUtil;
 import com.tian.cloud.service.util.excel.ExcelExportUtil;
 import com.tian.cloud.service.util.excel.MySheet;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -29,6 +31,11 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import javax.mail.MessagingException;
+import java.io.File;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -51,17 +58,28 @@ public class ExportServiceImpl implements ExportService {
     @Resource
     private CommonTypeMapper commonTypeMapper;
 
+    @Resource
+    private ExportConfig exportConfig;
+
+    @Resource
+    private FloodSituationDetailMapper floodSituationDetailMapper;
+
+    @Resource
+    private SituationMapper situationMapper;
+
     private static final List<String> headList = Lists.newArrayList(" ", "名称", "姓名", "职务", "办公电话", "手机", "传真");
 
     private static final String COMPANY_TITLE_FORMAT = "%s防汛指挥部通讯录";
 
     private static final Joiner PLUS_JOINER = Joiner.on("+").skipNulls();
 
+    private static final Splitter SPLITTER = Splitter.on(';').trimResults().omitEmptyStrings();
+
     @Override
-    public List<MySheet> getAllUserSheetList() {
-        List<Company> allCompany = companyMapper.selectAll();
+    public List<MySheet> buildAllUserSheetList(ExportContext context) {
+        List<Company> allCompany = context.getAllCompany();
         Map<Integer, Company> idCompanyMap = Maps.uniqueIndex(allCompany, Company::getId);
-        List<User> allUser = userService.getAllUsableUser();
+        List<User> allUser = context.getAllUsableUser();
         Multimap<String, User> floodTitleUserMap = Multimaps.index(allUser, User::getFloodTitle);
         List<MySheet> mySheets = Lists.newArrayList();
         for (String floodTitle : floodTitleUserMap.keySet()) {
@@ -79,17 +97,14 @@ public class ExportServiceImpl implements ExportService {
     }
 
     @Override
-    public MySheet getAssertsSheet() {
-        List<Company> allCompany = companyMapper.selectAll();
-        List<CommonType> assertsTypeList = commonTypeMapper.selectUsableByType(CommonTypeEnum.ASSERTS.getCode());
-        List<Asserts> asserts = assertsMapper.selectAllUsable();
+    public MySheet buildAssertsSheet(ExportContext context) {
+        List<Company> allCompany = context.getAllCompany();
+        List<CommonType> assertsTypeList = context.getAssertsTypeList();
+        List<Asserts> asserts = context.getUsableAsserts();
         Multimap<Integer, Asserts> companyIdMap = Multimaps.index(asserts, Asserts::getCompanyId);
 
         List<ExportAsserts> exportAssertsList = Lists.newArrayList();
         for (Company company : allCompany) {
-            if (LineStatusEnum.DELETED.getCode() == company.getStatus()) {
-                continue;
-            }
             ExportAsserts exportAsserts = new ExportAsserts();
             exportAsserts.setCompanyName(company.getName());
             exportAsserts.setFloodManager(company.getFloodManager());
@@ -110,11 +125,11 @@ public class ExportServiceImpl implements ExportService {
     }
 
     @Override
-    public Workbook getCompanySummary(Workbook workbook) {
-        List<Company> allCompany = companyMapper.selectAll();
-        List<User> allUser = userService.getAllUsableUser();
-        List<Asserts> asserts = assertsMapper.selectAllUsable();
-        List<CommonType> positionList = commonTypeMapper.selectAllByType(CommonTypeEnum.POSITION.getCode());
+    public Workbook buildCompanySummary(Workbook workbook, ExportContext context) {
+        List<Company> allCompany = context.getAllCompany();
+        List<User> allUsableUser = context.getAllUsableUser();
+        List<Asserts> asserts = context.getUsableAsserts();
+        List<CommonType> positionList = context.getAssertsTypeList();
         Map<Integer, CommonType> idAndPositionMap = Maps.uniqueIndex(positionList, CommonType::getId);
         Sheet sheet = workbook.createSheet("汇总");
 
@@ -130,7 +145,7 @@ public class ExportServiceImpl implements ExportService {
                     continue;
                 }
                 startRow ++;
-                startRow = addCompanyToSheet(startRow, workbook, sheet, cellStyle, company, allUser, asserts, idAndPositionMap);
+                startRow = addCompanyToSheet(startRow, workbook, sheet, cellStyle, company, allUsableUser, asserts, idAndPositionMap);
             }
         }
         for (int i = 0; i < headList.size(); i++) {
@@ -143,14 +158,66 @@ public class ExportServiceImpl implements ExportService {
     }
 
     @Override
-    public Workbook exportAll() {
-        List<MySheet> userSheetList = getAllUserSheetList();
-        MySheet assertsSheet = getAssertsSheet();
+    public Workbook buildAll() {
+        ExportContext context = new ExportContext();
+        List<Company> allUsableCompany = companyMapper.selectAllUsable();
+        List<User> allUsableUser = userService.getAllUsableUser();
+        List<Asserts> allUsableAsserts = assertsMapper.selectAllUsable();
+        List<CommonType> assertsTypeList = commonTypeMapper.selectUsableByType(CommonTypeEnum.ASSERTS.getCode());
+        List<CommonType> positionTypeList = commonTypeMapper.selectUsableByType(CommonTypeEnum.POSITION.getCode());
+
+        context.setAllCompany(allUsableCompany);
+        context.setAllUsableUser(allUsableUser);
+        context.setUsableAsserts(allUsableAsserts);
+        context.setAssertsTypeList(assertsTypeList);
+        context.setPositionTypeList(positionTypeList);
+
+        List<MySheet> userSheetList = buildAllUserSheetList(context);
+        MySheet assertsSheet = buildAssertsSheet(context);
         if (assertsSheet != null) {
             userSheetList.add(assertsSheet);
         }
         Workbook workbook = ExcelExportUtil.exportWorkbook(userSheetList);
-        getCompanySummary(workbook);
+        buildCompanySummary(workbook, context);
+        return workbook;
+    }
+
+    @Override
+    public void exportAll(String emails) {
+        ParamCheckUtil.assertTrue(!StringUtils.isEmpty(emails), "邮箱必填");
+        try {
+
+            Workbook workbook = buildAll();
+
+            String filePath = exportConfig.getFilePath() + "companyBooks.xls";
+            ExcelExportUtil.writeToFile(workbook, filePath);
+            File file = new File(filePath);
+
+            OhMyEmail.subject("汛前通讯录-导出")
+                    .from("防汛小程序")
+                    .to(emails)
+                    .text("汛前通讯录已导出，请查看附件")
+                    .attach(file, "汛前通讯录.xls")
+                    .send();
+        } catch (Exception e) {
+            log.error("导出错误:", e);
+        }
+    }
+
+    @Override
+    public void exportFlood(CommonSearchReq searchReq) {
+        List<FloodSituation> floodSituations = situationMapper.search(searchReq);
+        if (CollectionUtils.isEmpty(floodSituations)) {
+            return;
+        }
+        List<FloodSituationDetail> details = floodSituationDetailMapper.getBySituationIdList(Lists.transform(floodSituations, FloodSituation::getId));
+        List<Company> companyList = companyMapper.selectByIdList(Lists.transform(floodSituations, FloodSituation::getCompanyId));
+        Workbook workbook = buildFloodWorkBook(floodSituations, details, companyList);
+    }
+
+    private Workbook buildFloodWorkBook(List<FloodSituation> floodSituations, List<FloodSituationDetail> details, List<Company> companyList) {
+        Workbook workbook = new HSSFWorkbook();
+        Sheet sheet = workbook.createSheet("汛期中-实时上报表");
         return workbook;
     }
 
@@ -216,7 +283,7 @@ public class ExportServiceImpl implements ExportService {
 
         startRow = startRow + 1;
         Row floodManager = sheet.createRow(startRow);
-        createCell(floodManager, cellStyle, 0, "物资..");
+        createCell(floodManager, cellStyle, 0, "防汛抢险人员、物资统计");
         createCell(floodManager, cellStyle, 1, "抢险人员及抢险物资负责人");
         createCell(floodManager, cellStyle, 2, "");
         createCell(floodManager, cellStyle, 3, company.getFloodManager());
@@ -233,7 +300,7 @@ public class ExportServiceImpl implements ExportService {
                 if (i % 3 == 0) {
                     startRow = startRow + 1;
                     assertRow = createRow(sheet, startRow);
-                    createCell(assertRow, cellStyle, 0, "物资..");
+                    createCell(assertRow, cellStyle, 0, "防汛抢险人员、物资统计");
                 }
                 Asserts asserts = assertsList.get(i);
                 int assertsIdx = (i % 3) * 2;
@@ -249,13 +316,16 @@ public class ExportServiceImpl implements ExportService {
         createCell(endRow, cellStyle, 0, "填表人");
         createCell(endRow, cellStyle, 1, company.getRecordPerson());
 
-        Cell recordPersonPhone = createCell(endRow, cellStyle, 2, "填表人电话");
-        Cell recordPersonPhoneValue = createCell(endRow, cellStyle, 3, company.getRecordPersonPhone());
+        createCell(endRow, cellStyle, 2, "填表人电话");
+        createCell(endRow, cellStyle, 3, company.getRecordPersonPhone());
 
-        Cell checkPerson = createCell(endRow, cellStyle, 4, "审核人");
-        Cell checkPersonName = createCell(endRow, cellStyle, 5, company.getCheckPerson());
+        createCell(endRow, cellStyle, 4, "审核人");
+        createCell(endRow, cellStyle, 5, company.getCheckPerson());
 
-        Cell checkPersonPhone = createCell(endRow, cellStyle, 6, "填表日期:2018-09-04");
+        Date updateDate = new Date(company.getUpdateTime());
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(updateDate.toInstant(), ZoneId.systemDefault());
+
+        createCell(endRow, cellStyle, 6, "填表日期:" + localDateTime.toLocalDate().format(DateTimeFormatter.ISO_LOCAL_DATE));
 //        Cell checkPersonPhoneValue = createCell(endRow, cellStyle, 7, company.getCheckPersonPhone());
 
         startRow = startRow + 1;
@@ -376,11 +446,10 @@ public class ExportServiceImpl implements ExportService {
         for (User user : users) {
             ExportUser exportUser = new ExportUser();
             Company company = idCompanyMap.get(user.getCompanyId());
-            if (company != null) {
-                exportUser.setCompanyName(company.getName());
-            } else {
-                exportUser.setCompanyName("未知");
+            if (company == null) {
+                continue;
             }
+            exportUser.setCompanyName(company.getName());
             exportUser.setFax(user.getFax());
             exportUser.setName(user.getUserName());
             exportUser.setPersonPhone(user.getUserPhone());

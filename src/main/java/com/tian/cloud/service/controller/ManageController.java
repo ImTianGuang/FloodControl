@@ -1,5 +1,6 @@
 package com.tian.cloud.service.controller;
 
+import com.tian.cloud.service.controller.request.CommonSearchReq;
 import com.tian.cloud.service.controller.response.BaseResponse;
 import com.tian.cloud.service.controller.response.CompanyInfo;
 import com.tian.cloud.service.controller.response.FloodSituationInfo;
@@ -7,6 +8,7 @@ import com.tian.cloud.service.dao.entity.CommonType;
 import com.tian.cloud.service.dao.entity.Company;
 import com.tian.cloud.service.dao.entity.Message;
 import com.tian.cloud.service.service.*;
+import com.tian.cloud.service.util.DateUtil;
 import com.tian.cloud.service.util.excel.ExcelExportUtil;
 import com.tian.cloud.service.util.excel.MySheet;
 import lombok.extern.slf4j.Slf4j;
@@ -88,24 +90,22 @@ public class ManageController {
     // export company
     @RequestMapping("exportCompany")
     @ResponseBody
-    public BaseResponse<Boolean> exportCompany(HttpServletRequest request, HttpServletResponse response) throws Exception{
-        List<MySheet> mySheets = exportService.getAllUserSheetList();
-        Workbook workbook = ExcelExportUtil.exportWorkbook(mySheets);
-        OutputStream outputstream = response.getOutputStream();
+    public BaseResponse<Boolean> exportCompany(HttpServletRequest request, HttpServletResponse response, String emails) throws Exception{
 
-        //清空输出流
-        response.reset();
-        //设置响应头和下载保存的文件名
-        workbook.write(outputstream);
-//        response.setHeader("content-disposition","inline;filename=test.xls");
-        //定义输出类型
-        response.setContentType("application/excel");
-
-
-        outputstream.close();
-        response.flushBuffer();
+        exportService.exportAll(emails);
         return BaseResponse.success(null);
     }
-    // export message flood-situation
+    // export flood-situation
 
+    @RequestMapping("exportFlood")
+    public BaseResponse<Boolean> exportFlood(@RequestBody CommonSearchReq request) {
+        if (request.getStartDateStr() != null) {
+            request.setStartTime(DateUtil.str2Date(request.getStartDateStr(), DateUtil.FMT_YYYY_MM1).getTime());
+        }
+        if (request.getEndDateStr() != null) {
+            request.setEndTime(DateUtil.str2Date(request.getEndDateStr(), DateUtil.FMT_YYYY_MM1).getTime());
+        }
+        exportService.exportFlood(request);
+        return BaseResponse.success(null);
+    }
 }

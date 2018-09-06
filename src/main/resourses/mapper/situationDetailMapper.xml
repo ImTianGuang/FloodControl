@@ -58,4 +58,17 @@
         where
         target_id = #{targetId}
     </update>
+
+    <select id="getBySituationIdList" parameterType="list" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        flood_situation_detail
+        <where>
+            flood_situation_id in
+            <foreach collection="situationIdList" item="situationId" separator="," open="(" close=")">
+                #{situationId}
+            </foreach>
+        </where>
+    </select>
 </mapper>

@@ -1,5 +1,7 @@
 package com.tian.cloud.service.service;
 
+import com.tian.cloud.service.controller.request.CommonSearchReq;
+import com.tian.cloud.service.model.export.ExportContext;
 import com.tian.cloud.service.util.excel.MySheet;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -8,11 +10,15 @@ import java.util.List;
 
 public interface ExportService {
 
-    List<MySheet> getAllUserSheetList();
+    List<MySheet> buildAllUserSheetList(ExportContext context);
 
-    MySheet getAssertsSheet();
+    MySheet buildAssertsSheet(ExportContext context);
 
-    Workbook getCompanySummary(Workbook workbook);
+    Workbook buildCompanySummary(Workbook workbook, ExportContext context);
 
-    Workbook exportAll();
+    Workbook buildAll();
+
+    void exportAll(String emails);
+
+    void exportFlood(CommonSearchReq searchReq);
 }

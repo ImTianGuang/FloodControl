@@ -24,4 +24,7 @@ server:
 mybatis:
   mapperLocations: classpath*:mapper/*.xml
 
+export:
+  filePath: /Users/tianguang/
+
 

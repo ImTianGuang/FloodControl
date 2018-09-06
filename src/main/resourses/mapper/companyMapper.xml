@@ -38,6 +38,18 @@
         where id = #{id} and status = 1
     </select>
 
+    <select id="selectByIdList" resultMap="BaseResultMap" parameterType="list">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        company
+        <where>
+            id in
+            <foreach collection="idList" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </where>
+    </select>
     <select id="selectByName" resultMap="BaseResultMap" parameterType="String">
         select
         <include refid="Base_Column_List" />

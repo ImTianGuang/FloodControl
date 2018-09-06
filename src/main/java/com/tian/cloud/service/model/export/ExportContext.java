@@ -1,6 +1,9 @@
 package com.tian.cloud.service.model.export;
 
+import com.tian.cloud.service.dao.entity.Asserts;
+import com.tian.cloud.service.dao.entity.CommonType;
 import com.tian.cloud.service.dao.entity.Company;
+import com.tian.cloud.service.dao.entity.User;
 import lombok.Data;
 
 import java.util.List;
@@ -13,4 +16,12 @@ import java.util.List;
 public class ExportContext {
 
     private List<Company> allCompany;
+
+    private List<User> allUsableUser;
+
+    private List<Asserts> usableAsserts;
+
+    private List<CommonType> assertsTypeList;
+
+    private List<CommonType> positionTypeList;
 }

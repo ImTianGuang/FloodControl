@@ -26,7 +26,7 @@ public class OhMyEmail {
     private List<MimeBodyPart> attachments = new ArrayList<MimeBodyPart>();
 
     static {
-        config(SMTP_QQ(false), "308929467@qq.com", "yfakdbefotssbibd");
+        config(SMTP_163(false), "17601045529@163.com", "qaz753159");
     }
 
     private OhMyEmail() {
