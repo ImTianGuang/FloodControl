@@ -11,6 +11,8 @@ import com.tian.cloud.service.enums.CommonTypeEnum;
 import com.tian.cloud.service.enums.LineStatusEnum;
 import com.tian.cloud.service.enums.Orgnization;
 import com.tian.cloud.service.enums.SituationTargetEnum;
+import com.tian.cloud.service.exception.ErrorCode;
+import com.tian.cloud.service.exception.InternalException;
 import com.tian.cloud.service.model.export.*;
 import com.tian.cloud.service.service.ExportService;
 import com.tian.cloud.service.service.UserService;
@@ -29,7 +31,6 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
-import javax.mail.MessagingException;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -77,13 +78,13 @@ public class ExportServiceImpl implements ExportService {
     public List<MySheet> buildAllUserSheetList(ExportContext context) {
         List<Company> allCompany = context.getAllCompany();
         Map<Integer, Company> idCompanyMap = Maps.uniqueIndex(allCompany, Company::getId);
-        List<User> allUser = context.getAllUsableUser();
-        Multimap<String, User> floodTitleUserMap = Multimaps.index(allUser, User::getFloodTitle);
+        List<CompanyUser> allUser = context.getAllUsableUser();
+        Multimap<String, CompanyUser> floodTitleUserMap = Multimaps.index(allUser, CompanyUser::getFloodTitle);
         List<MySheet> mySheets = Lists.newArrayList();
         for (String floodTitle : floodTitleUserMap.keySet()) {
             MySheet mySheet = new MySheet();
             mySheet.setSheetName(floodTitle);
-            Collection<User> users = floodTitleUserMap.get(floodTitle);
+            Collection<CompanyUser> users = floodTitleUserMap.get(floodTitle);
             if (CollectionUtils.isEmpty(users)) {
                 continue;
             }
@@ -125,7 +126,7 @@ public class ExportServiceImpl implements ExportService {
     @Override
     public Workbook buildCompanySummary(Workbook workbook, ExportContext context) {
         List<Company> allCompany = context.getAllCompany();
-        List<User> allUsableUser = context.getAllUsableUser();
+        List<CompanyUser> allUsableUser = context.getAllUsableUser();
         List<Asserts> asserts = context.getUsableAsserts();
         List<CommonType> positionList = context.getAssertsTypeList();
         Map<Integer, CommonType> idAndPositionMap = Maps.uniqueIndex(positionList, CommonType::getId);
@@ -157,7 +158,7 @@ public class ExportServiceImpl implements ExportService {
     public Workbook buildAll() {
         ExportContext context = new ExportContext();
         List<Company> allUsableCompany = companyMapper.selectAllUsable();
-        List<User> allUsableUser = userService.getAllUsableUser();
+        List<CompanyUser> allUsableUser = userService.getAllUsableUser();
         List<Asserts> allUsableAsserts = assertsMapper.selectAllUsable();
         List<CommonType> assertsTypeList = commonTypeMapper.selectUsableByType(CommonTypeEnum.ASSERTS.getCode());
         List<CommonType> positionTypeList = commonTypeMapper.selectUsableByType(CommonTypeEnum.POSITION.getCode());
@@ -232,6 +233,7 @@ public class ExportServiceImpl implements ExportService {
                     .send();
         } catch (Exception e) {
             log.error("导出错误:,req:{}", searchReq, e);
+            throw new InternalException(ErrorCode.SYS_ERROR, "邮件发送失败");
         } finally {
             if (file != null) {
                 file.deleteOnExit();
@@ -459,7 +461,7 @@ public class ExportServiceImpl implements ExportService {
         return cellStyle;
     }
 
-    private int addCompanyToSheet(int startRow, Workbook workbook, Sheet sheet, CellStyle cellStyle, Company company, List<User> userList, List<Asserts> assertsList,
+    private int addCompanyToSheet(int startRow, Workbook workbook, Sheet sheet, CellStyle cellStyle, Company company, List<CompanyUser> userList, List<Asserts> assertsList,
                                   Map<Integer, CommonType> idAndPositionMap) {
 
         int headStartRowNum = startRow;
@@ -470,10 +472,10 @@ public class ExportServiceImpl implements ExportService {
         initHeadRow(startRow, sheet, workbook, company);
         startRow = startRow + 2;
         if (!CollectionUtils.isEmpty(userList)) {
-            userList.sort(Comparator.comparingInt(User::getOrgCode));
+            userList.sort(Comparator.comparingInt(CompanyUser::getOrgCode));
             for (int i = 0; i < userList.size(); i++) {
                 startRow = startRow + 1;
-                User user = userList.get(i);
+                CompanyUser user = userList.get(i);
                 if (user.getOrgCode() == 0) {
                     org1EndRowNum = startRow;
                 }
@@ -606,7 +608,7 @@ public class ExportServiceImpl implements ExportService {
         mergeCell(sheet, startRow, startRow, 3, 6);
     }
 
-    private void addUserRow(int startRow, Sheet sheet, CellStyle cellStyle, User user, Map<Integer, CommonType> idAndPositionMap) {
+    private void addUserRow(int startRow, Sheet sheet, CellStyle cellStyle, CompanyUser user, Map<Integer, CommonType> idAndPositionMap) {
         Row userRow = sheet.createRow(startRow);
         createCell(userRow, cellStyle, 0, user.getOrgTitle());
 
@@ -651,9 +653,9 @@ public class ExportServiceImpl implements ExportService {
         return pairList;
     }
 
-    private List<ExportUser> toExportUser(Collection<User> users, Map<Integer, Company> idCompanyMap) {
+    private List<ExportUser> toExportUser(Collection<CompanyUser> users, Map<Integer, Company> idCompanyMap) {
         List<ExportUser> exportUsers = Lists.newArrayList();
-        for (User user : users) {
+        for (CompanyUser user : users) {
             ExportUser exportUser = new ExportUser();
             Company company = idCompanyMap.get(user.getCompanyId());
             if (company == null) {

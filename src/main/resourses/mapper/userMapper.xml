@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.tian.cloud.service.dao.mapper.UserMapper" >
-    <resultMap id="BaseResultMap" type="com.tian.cloud.service.dao.entity.User" >
+    <resultMap id="BaseResultMap" type="com.tian.cloud.service.dao.entity.CompanyUser" >
         <id column="id" property="id" jdbcType="INTEGER" />
         <result column="company_id" property="companyId" jdbcType="INTEGER" />
         <result column="position_id" property="positionId" jdbcType="INTEGER" />
@@ -62,7 +62,7 @@
         </foreach>
     </insert>
 
-    <update id="update" parameterType="com.tian.cloud.service.dao.entity.User">
+    <update id="update" parameterType="com.tian.cloud.service.dao.entity.CompanyUser">
         update `user`
         set
         company_id = #{companyId},

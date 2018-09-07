@@ -30,6 +30,4 @@ public class ExportUser {
 
     @ExcelField(name = "传真")
     private String fax;
-
-    private List<Pair> pairs = Lists.newArrayList(new Pair("新的一列", "333"));
 }

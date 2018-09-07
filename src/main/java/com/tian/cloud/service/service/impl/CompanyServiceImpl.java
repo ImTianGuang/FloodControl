@@ -56,7 +56,7 @@ public class CompanyServiceImpl implements CompanyService {
     public CompanyInfo getCompanyInfo(int companyId) {
         Company company = companyMapper.selectById(companyId);
         List<Asserts> asserts = assertsService.getAssertsByCompany(companyId);
-        List<User> users = userService.getUserByCompany(companyId);
+        List<CompanyUser> users = userService.getUserByCompany(companyId);
         if (CollectionUtils.isEmpty(users) || users.size() < 2) {
             users = defaultUsers(users, company);
         }
@@ -68,7 +68,7 @@ public class CompanyServiceImpl implements CompanyService {
         return companyInfo;
     }
 
-    private List<User> defaultUsers(List<User> userList, Company company) {
+    private List<CompanyUser> defaultUsers(List<CompanyUser> userList, Company company) {
         if (CollectionUtils.isEmpty(userList)) {
             userList = Lists.newArrayList();
         }
@@ -79,14 +79,14 @@ public class CompanyServiceImpl implements CompanyService {
         createDefaultIfEmpty(floodTitleList, CommonTypeEnum.FLOOD_TITLE);
 
         CommonType commonType = commonTypeList.get(0);
-        User user = new User();
+        CompanyUser user = new CompanyUser();
         user.setCompanyId(company.getId());
         user.setOrgCode(Orgnization.ORG1.getCode());
         user.setOrgTitle(Orgnization.ORG1.getMsg());
         user.setFloodTitle(floodTitleList.get(0).getName());
         user.setPositionId(commonType.getId());
 
-        User user1 = new User();
+        CompanyUser user1 = new CompanyUser();
         user1.setCompanyId(company.getId());
         user1.setOrgCode(Orgnization.ORG2.getCode());
         user1.setOrgTitle(Orgnization.ORG2.getMsg());
@@ -96,7 +96,7 @@ public class CompanyServiceImpl implements CompanyService {
         boolean containOrg1 = false;
         boolean containOrg2 = false;
 
-        for (User user2 : userList) {
+        for (CompanyUser user2 : userList) {
             if (user2.getOrgCode() == Orgnization.ORG1.getCode()) {
                 containOrg1 = true;
             }
@@ -186,14 +186,14 @@ public class CompanyServiceImpl implements CompanyService {
         return companyMapper.updateCompany(company) > 0;
     }
 
-    private List<CompanyInfo.PhoneInfo> toPhoneInfos(List<User> users) {
+    private List<CompanyInfo.PhoneInfo> toPhoneInfos(List<CompanyUser> users) {
         if (CollectionUtils.isEmpty(users)) {
             return Lists.newArrayList();
         }
-        ImmutableListMultimap<Integer, User> orgCodeMap = Multimaps.index(users, User::getOrgCode);
+        ImmutableListMultimap<Integer, CompanyUser> orgCodeMap = Multimaps.index(users, CompanyUser::getOrgCode);
         List<CompanyInfo.PhoneInfo> phoneInfos = Lists.newArrayList();
         for (Orgnization orgnization : Orgnization.values()) {
-            List<User> userList = orgCodeMap.get(orgnization.getCode());
+            List<CompanyUser> userList = orgCodeMap.get(orgnization.getCode());
             CompanyInfo.PhoneInfo phoneInfo = new CompanyInfo.PhoneInfo();
             phoneInfo.setId(orgnization.getCode());
             phoneInfo.setName(orgnization.getMsg());

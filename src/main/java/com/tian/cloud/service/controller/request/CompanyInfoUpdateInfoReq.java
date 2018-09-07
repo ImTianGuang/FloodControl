@@ -2,7 +2,7 @@ package com.tian.cloud.service.controller.request;
 
 import com.tian.cloud.service.dao.entity.Asserts;
 import com.tian.cloud.service.dao.entity.Company;
-import com.tian.cloud.service.dao.entity.User;
+import com.tian.cloud.service.dao.entity.CompanyUser;
 import lombok.Data;
 
 import java.util.List;
@@ -16,7 +16,7 @@ public class CompanyInfoUpdateInfoReq {
     // company
     private Company company;
     // users
-    private List<User> userList;
+    private List<CompanyUser> userList;
     // asserts
     private List<Asserts> assertsList;
     // plan todo

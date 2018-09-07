@@ -1,18 +1,18 @@
 package com.tian.cloud.service.dao.mapper;
 
-import com.tian.cloud.service.dao.entity.User;
+import com.tian.cloud.service.dao.entity.CompanyUser;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
 public interface UserMapper {
-    void update(User user);
+    void update(CompanyUser user);
 
-    void insertBatch(@Param("userList") List<User> userList);
+    void insertBatch(@Param("userList") List<CompanyUser> userList);
 
-    List<User> getUserByCompany(int companyId);
+    List<CompanyUser> getUserByCompany(int companyId);
 
-    List<User> getAllUsableUser();
+    List<CompanyUser> getAllUsableUser();
 
     void deleteByPositionId(@Param("id") Integer id);
 

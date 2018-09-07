@@ -2,7 +2,7 @@ package com.tian.cloud.service.controller.response;
 
 import com.tian.cloud.service.dao.entity.Asserts;
 import com.tian.cloud.service.dao.entity.Company;
-import com.tian.cloud.service.dao.entity.User;
+import com.tian.cloud.service.dao.entity.CompanyUser;
 import lombok.Data;
 
 import java.util.List;
@@ -27,6 +27,6 @@ public class CompanyInfo {
 
         private String name;
 
-        private List<User> userList;
+        private List<CompanyUser> userList;
     }
 }
