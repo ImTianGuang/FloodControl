@@ -10,10 +10,8 @@ import com.tian.cloud.service.dao.mapper.*;
 import com.tian.cloud.service.enums.CommonTypeEnum;
 import com.tian.cloud.service.enums.LineStatusEnum;
 import com.tian.cloud.service.enums.Orgnization;
-import com.tian.cloud.service.model.export.ExportAsserts;
-import com.tian.cloud.service.model.export.ExportContext;
-import com.tian.cloud.service.model.export.ExportUser;
-import com.tian.cloud.service.model.export.Pair;
+import com.tian.cloud.service.enums.SituationTargetEnum;
+import com.tian.cloud.service.model.export.*;
 import com.tian.cloud.service.service.ExportService;
 import com.tian.cloud.service.service.UserService;
 import com.tian.cloud.service.util.OhMyEmail;
@@ -135,8 +133,6 @@ public class ExportServiceImpl implements ExportService {
 
         CellStyle cellStyle = getCellStyle(workbook);
 
-        //设置自动换行
-        cellStyle.setWrapText(true);
 
         int startRow = -1;
         if (!CollectionUtils.isEmpty(allCompany)) {
@@ -144,7 +140,7 @@ public class ExportServiceImpl implements ExportService {
                 if (company.getStatus() != LineStatusEnum.USABLE.getCode()) {
                     continue;
                 }
-                startRow ++;
+                startRow++;
                 startRow = addCompanyToSheet(startRow, workbook, sheet, cellStyle, company, allUsableUser, asserts, idAndPositionMap);
             }
         }
@@ -152,7 +148,7 @@ public class ExportServiceImpl implements ExportService {
             sheet.autoSizeColumn(i);
             int width = sheet.getColumnWidth(i);
             width = width * 13 / 10;
-            sheet.setColumnWidth(i,width);
+            sheet.setColumnWidth(i, width);
         }
         return workbook;
     }
@@ -185,15 +181,17 @@ public class ExportServiceImpl implements ExportService {
     @Override
     public void exportAll(String emails) {
         ParamCheckUtil.assertTrue(!StringUtils.isEmpty(emails), "邮箱必填");
+        File file = null;
         try {
 
             Workbook workbook = buildAll();
 
-            String filePath = exportConfig.getFilePath() + "companyBooks.xls";
+            long now = System.currentTimeMillis() / 1000;
+            String filePath = exportConfig.getFilePath() + "companyBooks-"+ now +".xls";
             ExcelExportUtil.writeToFile(workbook, filePath);
-            File file = new File(filePath);
+            file = new File(filePath);
 
-            OhMyEmail.subject("汛前通讯录-导出")
+            OhMyEmail.subject("汛前通讯录-导出" + System.currentTimeMillis())
                     .from("防汛小程序")
                     .to(emails)
                     .text("汛前通讯录已导出，请查看附件")
@@ -201,24 +199,232 @@ public class ExportServiceImpl implements ExportService {
                     .send();
         } catch (Exception e) {
             log.error("导出错误:", e);
+        } finally {
+            if (file != null) {
+                file.deleteOnExit();
+            }
         }
     }
 
     @Override
     public void exportFlood(CommonSearchReq searchReq) {
-        List<FloodSituation> floodSituations = situationMapper.search(searchReq);
-        if (CollectionUtils.isEmpty(floodSituations)) {
-            return;
+        File file = null;
+        try {
+            List<FloodSituation> floodSituations = situationMapper.search(searchReq);
+            if (CollectionUtils.isEmpty(floodSituations)) {
+                return;
+            }
+            List<FloodSituationDetail> details = floodSituationDetailMapper.getBySituationIdList(Lists.transform(floodSituations, FloodSituation::getId));
+            List<Company> companyList = companyMapper.selectByIdList(Lists.transform(floodSituations, FloodSituation::getCompanyId));
+            List<CommonType> situationAndSolution = commonTypeMapper.selectAllByTypes(Lists.newArrayList(CommonTypeEnum.SITUATION.getCode(), CommonTypeEnum.SOLUTION
+                    .getCode()));
+            Workbook workbook = buildFloodWorkBook(floodSituations, details, companyList, situationAndSolution);
+            long now = System.currentTimeMillis() / 1000;
+            String filePath = exportConfig.getFilePath() + "flood-"+ now +".xls";
+            ExcelExportUtil.writeToFile(workbook, filePath);
+            file = new File(filePath);
+
+            OhMyEmail.subject("汛期中实时上报表已导出-请查收" + System.currentTimeMillis())
+                    .from("防汛小程序")
+                    .to(searchReq.getEmails())
+                    .text("汛期中实时上报表已导出-请查看附件")
+                    .attach(file, "汛期中实时上报表.xls")
+                    .send();
+        } catch (Exception e) {
+            log.error("导出错误:,req:{}", searchReq, e);
+        } finally {
+            if (file != null) {
+                file.deleteOnExit();
+            }
         }
-        List<FloodSituationDetail> details = floodSituationDetailMapper.getBySituationIdList(Lists.transform(floodSituations, FloodSituation::getId));
-        List<Company> companyList = companyMapper.selectByIdList(Lists.transform(floodSituations, FloodSituation::getCompanyId));
-        Workbook workbook = buildFloodWorkBook(floodSituations, details, companyList);
     }
 
-    private Workbook buildFloodWorkBook(List<FloodSituation> floodSituations, List<FloodSituationDetail> details, List<Company> companyList) {
+    private Workbook buildFloodWorkBook(List<FloodSituation> floodSituations, List<FloodSituationDetail> details, List<Company> companyList, List<CommonType>
+            situationAndSolution) {
         Workbook workbook = new HSSFWorkbook();
-        Sheet sheet = workbook.createSheet("汛期中-实时上报表");
+        Map<Integer, CommonType> commonTypeMap = Maps.uniqueIndex(situationAndSolution, CommonType::getId);
+        Map<Integer, Company> companyMap = Maps.uniqueIndex(companyList, Company::getId);
+        addFloodDetailSheet(floodSituations, details, companyMap, commonTypeMap, workbook);
+        addFloodSummarySheet(details, workbook, commonTypeMap);
         return workbook;
+    }
+
+    private void addFloodSummarySheet(List<FloodSituationDetail> details, Workbook workbook, Map<Integer, CommonType> commonTypeMap) {
+        Sheet summarySheet = workbook.createSheet("汇总情况");
+        CellStyle defaultCellStyle = getCellStyle(workbook);
+        int startRow = 0;
+        Row firstRow = summarySheet.createRow(startRow);
+        createCell(firstRow, getCellStyle(workbook, HSSFColor.HSSFColorPredefined.LIGHT_ORANGE), 0, "实时上报信息表");
+        createCell(firstRow, defaultCellStyle, 1, "");
+        createCell(firstRow, defaultCellStyle, 2, "");
+        mergeCell(summarySheet, startRow, startRow, 0, 2);
+
+        startRow ++;
+        Row secondRow = summarySheet.createRow(startRow);
+        createCell(secondRow, defaultCellStyle, 0, "上报时间:" + LocalDateTime.now().toLocalDate().format(DateTimeFormatter.ISO_LOCAL_DATE));
+        createCell(secondRow, defaultCellStyle, 1, "");
+        createCell(secondRow, defaultCellStyle, 2, "");
+        mergeCell(summarySheet, startRow, startRow, 0, 1);
+
+        startRow ++;
+        Row thirdRow = summarySheet.createRow(startRow);
+        createCell(thirdRow, getCellStyle(workbook, HSSFColor.HSSFColorPredefined.LIGHT_BLUE), 0, "序号");
+        createCell(thirdRow, getCellStyle(workbook, HSSFColor.HSSFColorPredefined.LIGHT_BLUE), 1, "项目");
+        createCell(thirdRow, getCellStyle(workbook, HSSFColor.HSSFColorPredefined.LIGHT_BLUE), 2, "内容");
+
+        Multimap<Integer, FloodSituationDetail> detailMultimap = Multimaps.index(details, FloodSituationDetail::getTargetId);
+        List<ExportFlood> situationExportList = Lists.newArrayList();
+        List<ExportFlood> solutionExportList = Lists.newArrayList();
+        for (Integer targetId : detailMultimap.keySet()) {
+            List<FloodSituationDetail> detailList = (List<FloodSituationDetail>) detailMultimap.get(targetId);
+            CommonType commonType = commonTypeMap.get(targetId);
+            ExportFlood exportFlood = null;
+            for (int i = 0; i<detailList.size();i++) {
+                FloodSituationDetail detail = detailList.get(i);
+                if (exportFlood == null) {
+                    String name = commonType == null ? "未知" : commonType.getName();
+                    exportFlood = new ExportFlood(name, detail.getTargetValue());
+                } else {
+                    exportFlood.addValue(detail.getTargetValue());
+                }
+
+            }
+            if (detailList.get(0).getSituationTargetCode() == SituationTargetEnum.SITUATION.getCode()) {
+                situationExportList.add(exportFlood);
+            } else {
+                solutionExportList.add(exportFlood);
+            }
+        }
+
+        if (!CollectionUtils.isEmpty(situationExportList)) {
+            startRow++;
+            Row exportRow = createRow(summarySheet, startRow);
+            createCell(exportRow, getCellStyle(workbook, HSSFColor.HSSFColorPredefined.LIGHT_GREEN), 0, "主要汛情、险情和灾情");
+            createCell(exportRow, defaultCellStyle, 1, "");
+            createCell(exportRow, defaultCellStyle, 2, "");
+            mergeCell(summarySheet, startRow,  startRow, 0, 2);
+            for (int i = 0; i < situationExportList.size(); i++) {
+                ExportFlood exportFlood = situationExportList.get(i);
+                startRow++;
+                Row row = createRow(summarySheet, startRow);
+                createCell(row, defaultCellStyle, 0, String.valueOf(i+1));
+                createCell(row, defaultCellStyle, 1, exportFlood.getName());
+                createCell(row, defaultCellStyle, 2, exportFlood.getShowValue());
+            }
+        }
+        if (!CollectionUtils.isEmpty(solutionExportList)) {
+            startRow++;
+            Row exportRow = createRow(summarySheet, startRow);
+            createCell(exportRow, getCellStyle(workbook, HSSFColor.HSSFColorPredefined.LIGHT_GREEN), 0, "应对措施");
+            createCell(exportRow, defaultCellStyle, 1, "");
+            createCell(exportRow, defaultCellStyle, 2, "");
+            mergeCell(summarySheet, startRow,  startRow, 0, 2);
+            for (int i = 0; i < solutionExportList.size(); i++) {
+                ExportFlood exportFlood = solutionExportList.get(i);
+                startRow++;
+                Row row = createRow(summarySheet, startRow);
+                createCell(row, defaultCellStyle, 0, String.valueOf(i+1));
+                createCell(row, defaultCellStyle, 1, exportFlood.getName());
+
+                createCell(row, defaultCellStyle, 2, exportFlood.getShowValue());
+            }
+        }
+        for (int i = 0; i < 3; i++) {
+            summarySheet.autoSizeColumn(i);
+            int width = summarySheet.getColumnWidth(i);
+            width = width * 13 / 10;
+            summarySheet.setColumnWidth(i, width);
+        }
+    }
+
+    private void addFloodDetailSheet(List<FloodSituation> floodSituations, List<FloodSituationDetail> details, Map<Integer, Company> companyMap, Map<Integer, CommonType> commonTypeMap, Workbook workbook) {
+        Sheet sheet = workbook.createSheet("各单位分表");
+        CellStyle defaultCellStyle = getCellStyle(workbook);
+
+        int startRow = 0;
+        Row firstRow = createRow(sheet, startRow);
+        createCell(firstRow, getCellStyle(workbook, HSSFColor.HSSFColorPredefined.LIGHT_ORANGE), 0, "实时上报信息表");
+        createCell(firstRow, defaultCellStyle, 1, "");
+        createCell(firstRow, defaultCellStyle, 2, "");
+        mergeCell(sheet, startRow, startRow, 0, 2);
+
+        startRow++;
+        Row secondRow = createRow(sheet, startRow);
+        LocalDateTime localDateTime = LocalDateTime.now();
+
+        createCell(secondRow, defaultCellStyle, 0, "上报时间:" + localDateTime.toLocalDate().format(DateTimeFormatter.ISO_LOCAL_DATE));
+        createCell(secondRow, defaultCellStyle, 1, "");
+        createCell(secondRow, defaultCellStyle, 2, "");
+        mergeCell(sheet, startRow, startRow, 0, 2);
+        Multimap<Integer, FloodSituationDetail> detailMultimap = Multimaps.index(details, FloodSituationDetail::getFloodSituationId);
+        for (int i = 0; i < floodSituations.size(); i++) {
+            FloodSituation floodSituation = floodSituations.get(i);
+
+            startRow = addSituationToSheet(workbook, sheet, defaultCellStyle, i, startRow, floodSituation, companyMap, detailMultimap, commonTypeMap);
+        }
+
+        for (int i = 0; i < 3; i++) {
+            sheet.autoSizeColumn(i);
+            int width = sheet.getColumnWidth(i);
+            width = width * 13 / 10;
+            sheet.setColumnWidth(i, width);
+        }
+    }
+
+    private int addSituationToSheet(Workbook workbook, Sheet sheet, CellStyle cellStyle, int i, int startRow, FloodSituation floodSituation, Map<Integer, Company> companyMap,
+                                    Multimap<Integer, FloodSituationDetail> detailMultimap, Map<Integer, CommonType> commonTypeMap) {
+        int situationStartRow = startRow + 2;
+        int situationEndRow = -1;
+        int solutionEndRow = -1;
+        startRow++;
+        Row headRow = createRow(sheet, startRow);
+        Company company = companyMap.get(floodSituation.getCompanyId());
+        String companyName = company == null ? "未知" : company.getName();
+        createCell(headRow, getCellStyle(workbook, HSSFColor.HSSFColorPredefined.LIGHT_GREEN), 0, (i + 1) + companyName);
+        createCell(headRow, cellStyle, 1, "");
+        createCell(headRow, cellStyle, 2, "");
+        mergeCell(sheet, startRow, startRow, 0, 2);
+
+        List<FloodSituationDetail> details = (List<FloodSituationDetail>) detailMultimap.get(floodSituation.getId());
+        if (!CollectionUtils.isEmpty(details)) {
+            for (int j = 0; j < details.size(); j++) {
+                FloodSituationDetail detail = details.get(j);
+                startRow++;
+                String targetName;
+                if (detail.getSituationTargetCode() == SituationTargetEnum.SITUATION.getCode()) {
+                    situationEndRow = startRow;
+                    targetName = "主要汛情、险情和灾情";
+                } else {
+                    solutionEndRow = startRow;
+                    targetName = "应对措施";
+                }
+                Row floodRow = createRow(sheet, startRow);
+                createCell(floodRow, cellStyle, 0, targetName);
+                String name = "未知";
+                CommonType commonType = commonTypeMap.get(detail.getTargetId());
+                name = commonType == null ? name : commonType.getName();
+                createCell(floodRow, cellStyle, 1, name);
+                createCell(floodRow, cellStyle, 2, detail.getTargetValue());
+            }
+        }
+
+        if (situationEndRow != -1) {
+            mergeCell(sheet, situationStartRow, situationEndRow, 0, 0);
+        }
+
+        if (solutionEndRow != -1) {
+            mergeCell(sheet, situationEndRow + 1, solutionEndRow, 0, 0);
+        }
+
+        startRow++;
+        Row floodDesc = createRow(sheet, startRow);
+        createCell(floodDesc, cellStyle, 0, "受灾详情:");
+        createCell(floodDesc, cellStyle, 1, floodSituation.getFloodDesc());
+        createCell(floodDesc, cellStyle, 2, "");
+        mergeCell(sheet, startRow, startRow, 1, 2);
+
+
+        return startRow;
     }
 
     private CellStyle getCellStyle(Workbook workbook) {
@@ -231,6 +437,8 @@ public class ExportServiceImpl implements ExportService {
         cellStyle.setBorderRight(BorderStyle.THIN);
         cellStyle.setBorderBottom(BorderStyle.THIN);
         cellStyle.setBorderLeft(BorderStyle.THIN);
+
+        cellStyle.setWrapText(true);
         return cellStyle;
     }
 
@@ -251,7 +459,8 @@ public class ExportServiceImpl implements ExportService {
         return cellStyle;
     }
 
-    private int addCompanyToSheet(int startRow, Workbook workbook, Sheet sheet, CellStyle cellStyle, Company company, List<User> userList, List<Asserts> assertsList, Map<Integer, CommonType> idAndPositionMap) {
+    private int addCompanyToSheet(int startRow, Workbook workbook, Sheet sheet, CellStyle cellStyle, Company company, List<User> userList, List<Asserts> assertsList,
+                                  Map<Integer, CommonType> idAndPositionMap) {
 
         int headStartRowNum = startRow;
         int org1EndRowNum = -1;
@@ -262,7 +471,7 @@ public class ExportServiceImpl implements ExportService {
         startRow = startRow + 2;
         if (!CollectionUtils.isEmpty(userList)) {
             userList.sort(Comparator.comparingInt(User::getOrgCode));
-            for (int i = 0;i < userList.size(); i++) {
+            for (int i = 0; i < userList.size(); i++) {
                 startRow = startRow + 1;
                 User user = userList.get(i);
                 if (user.getOrgCode() == 0) {
@@ -273,11 +482,11 @@ public class ExportServiceImpl implements ExportService {
         }
 
         startRow = startRow + 1;
-        addCompanyInfo(startRow, sheet,cellStyle, "单位邮箱", company.getEmail());
+        addCompanyInfo(startRow, sheet, cellStyle, "单位邮箱", company.getEmail());
         startRow = startRow + 1;
-        addCompanyInfo(startRow, sheet,cellStyle, "地址", company.getAddress());
+        addCompanyInfo(startRow, sheet, cellStyle, "地址", company.getAddress());
         startRow = startRow + 1;
-        addCompanyInfo(startRow, sheet,cellStyle, "邮编", company.getPostCode());
+        addCompanyInfo(startRow, sheet, cellStyle, "邮编", company.getPostCode());
 
         org2EndRowNum = startRow;
 
@@ -296,7 +505,7 @@ public class ExportServiceImpl implements ExportService {
 
         if (!CollectionUtils.isEmpty(assertsList)) {
             Row assertRow = null;
-            for (int i = 0;i < assertsList.size(); i++) {
+            for (int i = 0; i < assertsList.size(); i++) {
                 if (i % 3 == 0) {
                     startRow = startRow + 1;
                     assertRow = createRow(sheet, startRow);
@@ -342,7 +551,7 @@ public class ExportServiceImpl implements ExportService {
 
         mergeCell(sheet, headStartRowNum, headStartRowNum + 1, 0, 6);
         if (org1EndRowNum != -1) {
-            mergeCell(sheet, headStartRowNum+3, org1EndRowNum, 0, 0);//指挥部
+            mergeCell(sheet, headStartRowNum + 3, org1EndRowNum, 0, 0);//指挥部
         }
         if (org2EndRowNum != -1) {
             mergeCell(sheet, org1EndRowNum + 1, org2EndRowNum, 0, 0);//指挥部
@@ -361,7 +570,7 @@ public class ExportServiceImpl implements ExportService {
             return;
         }
         // 合并单元格
-        CellRangeAddress cra =new CellRangeAddress(firstRow, lastRow, firstCol, lastCol);
+        CellRangeAddress cra = new CellRangeAddress(firstRow, lastRow, firstCol, lastCol);
         sheet.addMergedRegionUnsafe(cra);
 
         // 使用RegionUtil类为合并后的单元格添加边框
@@ -375,13 +584,14 @@ public class ExportServiceImpl implements ExportService {
         return sheet.createRow(rownum);
     }
 
-    private Cell createCell (Row row, CellStyle cellStyle, int column, String value) {
+    private Cell createCell(Row row, CellStyle cellStyle, int column, String value) {
         Cell cell = row.createCell(column);
         value = StringUtils.isEmpty(value) ? "无" : value;
         cell.setCellValue(value);
         cell.setCellStyle(cellStyle);
         return cell;
     }
+
     private void addCompanyInfo(int startRow, Sheet sheet, CellStyle cellStyle, String key, String value) {
 
         Row companyRow = createRow(sheet, startRow);
@@ -405,7 +615,7 @@ public class ExportServiceImpl implements ExportService {
         createCell(userRow, cellStyle, 2, user.getUserName());
 
         CommonType position = idAndPositionMap.get(user.getPositionId());
-        createCell(userRow, cellStyle, 3, position == null ? "未知": position.getName());
+        createCell(userRow, cellStyle, 3, position == null ? "未知" : position.getName());
 
         createCell(userRow, cellStyle, 4, user.getWorkPhone());
 

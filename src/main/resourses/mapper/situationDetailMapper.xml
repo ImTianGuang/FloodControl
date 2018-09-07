@@ -70,5 +70,6 @@
                 #{situationId}
             </foreach>
         </where>
+        order by target_enum
     </select>
 </mapper>

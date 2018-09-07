@@ -22,4 +22,6 @@ public class CommonSearchReq {
     private Long startTime;
 
     private Long endTime;
+
+    private  String emails;
 }

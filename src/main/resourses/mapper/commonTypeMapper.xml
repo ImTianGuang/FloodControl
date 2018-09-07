@@ -59,6 +59,18 @@
         </where>
     </select>
 
+    <select id="selectAllByTypes" resultMap="BaseResultMap" parameterType="list">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        common_type
+        <where>
+            common_type_enum  in
+            <foreach collection="typeIdList" item="typeEnum" separator="," open="(" close=")">
+                #{typeEnum}
+            </foreach>
+        </where>
+    </select>
     <select id="selectAllUsable" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         select
         <include refid="Base_Column_List"/>

@@ -3,6 +3,7 @@ package com.tian.cloud.service.dao.mapper;
 import com.tian.cloud.service.dao.entity.CommonType;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface CommonTypeMapper {
@@ -18,4 +19,6 @@ public interface CommonTypeMapper {
     void update(CommonType commonType);
 
     List<CommonType> selectAllByType(int code);
+
+    List<CommonType> selectAllByTypes(@Param("typeIdList") List<Integer> typeIdList);
 }

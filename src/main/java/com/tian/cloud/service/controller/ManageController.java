@@ -87,7 +87,6 @@ public class ManageController {
         return BaseResponse.success(true);
     }
 
-    // export company
     @RequestMapping("exportCompany")
     @ResponseBody
     public BaseResponse<Boolean> exportCompany(HttpServletRequest request, HttpServletResponse response, String emails) throws Exception{
@@ -95,7 +94,6 @@ public class ManageController {
         exportService.exportAll(emails);
         return BaseResponse.success(null);
     }
-    // export flood-situation
 
     @RequestMapping("exportFlood")
     public BaseResponse<Boolean> exportFlood(@RequestBody CommonSearchReq request) {
