@@ -11,4 +11,6 @@ public interface UserService {
     List<CompanyUser> getUserByCompany(int companyId);
 
     List<CompanyUser> getAllUsableUser();
+
+    void deleteByCompanyId(Integer id);
 }

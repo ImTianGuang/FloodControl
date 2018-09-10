@@ -8,7 +8,7 @@ create table `asserts` (
     `create_time` bigint(20) NOT NULL,
     `update_time` bigint(20) NOT NULL,
     PRIMARY KEY (`id`)
-)ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+)ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
 create table `common_type` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -18,7 +18,7 @@ create table `common_type` (
     `create_time` bigint(20) NOT NULL,
     `update_time` bigint(20) NOT NULL,
     PRIMARY KEY (`id`)
-)ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+)ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
 create table `company` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -37,7 +37,7 @@ create table `company` (
     `create_time` bigint(20) NOT NULL,
     `update_time` bigint(20) NOT NULL,
     PRIMARY KEY (`id`)
-)ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+)ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
 create table `flood_situation` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -50,7 +50,7 @@ create table `flood_situation` (
     `create_time` bigint(20) NOT NULL,
     `update_time` bigint(20) NOT NULL,
     PRIMARY KEY (`id`)
-)ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+)ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
 create table `flood_situation_detail` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -63,7 +63,7 @@ create table `flood_situation_detail` (
     `create_time` bigint(20) NOT NULL,
     `update_time` bigint(20) NOT NULL,
     PRIMARY KEY (`id`)
-)ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+)ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
 create table `message` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -75,7 +75,7 @@ create table `message` (
     `create_time` bigint(20) NOT NULL,
     `update_time` bigint(20) NOT NULL,
     PRIMARY KEY (`id`)
-)ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+)ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
 create table `position` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -85,7 +85,7 @@ create table `position` (
     `create_time` bigint(20) NOT NULL,
     `update_time` bigint(20) NOT NULL,
     PRIMARY KEY (`id`)
-)ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+)ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
 create table `user` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -102,7 +102,18 @@ create table `user` (
     `create_time` bigint(20) NOT NULL,
     `update_time` bigint(20) NOT NULL,
     PRIMARY KEY (`id`)
-)ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+)ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
+
+create table flood_user (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `status` int(11) NOT NULL DEFAULT '1',
+    `user_name` varchar(64) NOT NULL default '',
+    `password` varchar(64) NOT NULL default '',
+    `create_time` bigint(20) NOT NULL,
+    `update_time` bigint(20) NOT NULL,
+    unique key `uniq_name` (`user_name`),
+    PRIMARY KEY (`id`)
+)ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
 #####
 insert into common_type

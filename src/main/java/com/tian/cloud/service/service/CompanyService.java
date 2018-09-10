@@ -13,7 +13,9 @@ public interface CompanyService {
 
     CompanyInfo getCompanyInfo(int companyId);
 
-    boolean saveCompanyInfo(CompanyInfo companyInfo);
+    Company saveOrUpdateCompanyInfo(CompanyInfo companyInfo);
+
+    Company updateCompanyInfo(CompanyInfo companyInfo);
 
     void saveOrUpdate(List<Company> companyList);
 

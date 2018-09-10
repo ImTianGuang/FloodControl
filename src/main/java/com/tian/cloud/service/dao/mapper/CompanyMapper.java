@@ -21,5 +21,7 @@ public interface CompanyMapper {
 
     void insertBatch(@Param("saveList") List<Company> saveList);
 
+    int insert(Company company);
+
     Company selectByName(@Param("name") String name);
 }

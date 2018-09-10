@@ -53,6 +53,13 @@
         flood_title = #{floodTitle}
     </update>
 
+    <update id="deleteByCompanyId" parameterType="Object">
+        update
+        `user`
+        set status = 0
+        where
+        company_id = #{companyId}
+    </update>
     <insert id="insertBatch" parameterType="list" useGeneratedKeys="true" keyProperty="id">
         insert into `user`
         (company_id, position_id, status, user_name, user_phone, work_phone, fax,org_code, org_title, create_time, update_time, flood_title)

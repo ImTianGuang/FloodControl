@@ -60,4 +60,10 @@ public class ExportServiceImplTest extends TestBase {
         log.info("req:{}", req);
         exportService.exportFlood(req);
     }
+
+    @Test
+    public void buildAll() throws Exception {
+        Workbook workbook = exportService.buildAll();
+        ExcelExportUtil.writeToFile(workbook, filePath);
+    }
 }

@@ -16,4 +16,6 @@ public interface AssertsMapper {
     List<Asserts> selectAllUsable();
 
     void deleteByAssertsTypeId(@Param("assertsTypeId") Integer assertsTypeId);
+
+    void deleteByCompanyId(@Param("companyId") Integer companyId);
 }

@@ -2,6 +2,7 @@ package com.tian.cloud.service.dao.mapper;
 
 import com.tian.cloud.service.controller.request.CommonSearchReq;
 import com.tian.cloud.service.dao.entity.FloodSituation;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -18,4 +19,6 @@ public interface SituationMapper {
     void save(FloodSituation floodSituation);
 
     List<FloodSituation> search(CommonSearchReq request);
+
+    void deleteById(@Param("id") int id);
 }

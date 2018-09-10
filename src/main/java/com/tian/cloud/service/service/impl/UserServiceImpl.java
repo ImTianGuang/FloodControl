@@ -66,4 +66,9 @@ public class UserServiceImpl implements UserService {
     public List<CompanyUser> getAllUsableUser() {
         return userMapper.getAllUsableUser();
     }
+
+    @Override
+    public void deleteByCompanyId(Integer id) {
+        userMapper.deleteByCompanyId(id);
+    }
 }

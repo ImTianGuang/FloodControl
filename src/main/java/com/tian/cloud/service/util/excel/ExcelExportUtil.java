@@ -37,10 +37,6 @@ public class ExcelExportUtil {
     private static void makeSheet(Workbook workbook, MySheet mySheet){
         try {
             List<?> sheetDataList = mySheet.getDataList();
-            // data
-            if (sheetDataList==null || sheetDataList.size()==0) {
-                throw new RuntimeException(">>>>>>>>>>> xxl-excel error, data can not be empty.");
-            }
 
             String sheetName = mySheet.getSheetName();
             int headColorIndex = mySheet.getSheetColor().getIndex();
@@ -61,6 +57,10 @@ public class ExcelExportUtil {
 
             Sheet sheet = workbook.createSheet(sheetName);
 
+            // data
+            if (sheetDataList==null || sheetDataList.size()==0) {
+                return;
+            }
             // sheet field
             Class<?> sheetClass = sheetDataList.get(0).getClass();
             List<Field> fields = new ArrayList<Field>();

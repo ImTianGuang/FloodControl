@@ -1,5 +1,6 @@
 package com.tian.cloud.service.service.impl;
 
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimaps;
@@ -54,18 +55,65 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public CompanyInfo getCompanyInfo(int companyId) {
+        if (companyId == -1) {
+            return emptyCompanyInfo();
+        }
         Company company = companyMapper.selectById(companyId);
+        ParamCheckUtil.assertTrue(company != null, "单位不存在");
         List<Asserts> asserts = assertsService.getAssertsByCompany(companyId);
         List<CompanyUser> users = userService.getUserByCompany(companyId);
         if (CollectionUtils.isEmpty(users) || users.size() < 2) {
             users = defaultUsers(users, company);
         }
+        fillAbsentAsserts(asserts);
         List<CompanyInfo.PhoneInfo> phoneInfos = toPhoneInfos(users);
         CompanyInfo companyInfo = new CompanyInfo();
         companyInfo.setAssertsList(asserts);
         companyInfo.setCompany(company);
         companyInfo.setPhoneList(phoneInfos);
         return companyInfo;
+    }
+
+    private CompanyInfo emptyCompanyInfo() {
+        CompanyInfo companyInfo = new CompanyInfo();
+        Company company = new Company();
+        company.setId(-1);
+        company.setStatus(LineStatusEnum.USABLE.getCode());
+        List<CompanyUser> users = Lists.newArrayList();
+        users = defaultUsers(users, company);
+        List<CompanyInfo.PhoneInfo> phoneInfos = toPhoneInfos(users);
+        List<Asserts> asserts = Lists.newArrayList();
+        fillAbsentAsserts(asserts);
+
+        companyInfo.setCompany(company);
+        companyInfo.setPhoneList(phoneInfos);
+        companyInfo.setAssertsList(asserts);
+        return companyInfo;
+    }
+
+    private void fillAbsentAsserts(List<Asserts> assertsList) {
+        List<CommonType> commonTypeList = commonTypeMapper.selectUsableByType(CommonTypeEnum.ASSERTS.getCode());
+        for (CommonType assertsType: commonTypeList) {
+            if (containAsserts(assertsList, assertsType.getId())) {
+                continue;
+            }
+            Asserts asserts = new Asserts();
+            asserts.setStatus(1);
+            asserts.setAssertsValue("0");
+            asserts.setAssertsTypeName(assertsType.getName());
+            asserts.setAssertsTypeId(assertsType.getId());
+
+            assertsList.add(asserts);
+        }
+    }
+
+    private boolean containAsserts(List<Asserts> asserts, Integer id) {
+        for (Asserts asserts1 : asserts) {
+            if (Objects.equal(asserts1.getAssertsTypeId(),id)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private List<CompanyUser> defaultUsers(List<CompanyUser> userList, Company company) {
@@ -80,14 +128,14 @@ public class CompanyServiceImpl implements CompanyService {
 
         CommonType commonType = commonTypeList.get(0);
         CompanyUser user = new CompanyUser();
-        user.setCompanyId(company.getId());
+        user.setCompanyId(company.getId() == null ? -1 : company.getId());
         user.setOrgCode(Orgnization.ORG1.getCode());
         user.setOrgTitle(Orgnization.ORG1.getMsg());
         user.setFloodTitle(floodTitleList.get(0).getName());
         user.setPositionId(commonType.getId());
 
         CompanyUser user1 = new CompanyUser();
-        user1.setCompanyId(company.getId());
+        user1.setCompanyId(company.getId() == null ? -1 : company.getId());
         user1.setOrgCode(Orgnization.ORG2.getCode());
         user1.setOrgTitle(Orgnization.ORG2.getMsg());
         user1.setPositionId(commonType.getId());
@@ -129,12 +177,52 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public boolean saveCompanyInfo(CompanyInfo companyInfo) {
-
+    public Company updateCompanyInfo(CompanyInfo companyInfo) {
+        if (companyInfo.getCompany().getStatus() == LineStatusEnum.DELETED.getCode()) {
+            userService.deleteByCompanyId(companyInfo.getCompany().getId());
+            assertsService.deleteByCompanyId(companyInfo.getCompany().getId());
+        }
+        ensureCompanyId(companyInfo.getCompany(), companyInfo.getAssertsList(), companyInfo.getPhoneList());
         this.updateCompany(companyInfo.getCompany());
         assertsService.saveOrUpdate(companyInfo.getAssertsList());
         userService.saveOrUpdate(companyInfo.getPhoneList());
-        return true;
+        return companyInfo.getCompany();
+    }
+
+    public Company saveOrUpdateCompanyInfo(CompanyInfo companyInfo) {
+        if (companyInfo.getCompany().getId() != -1) {
+            return this.updateCompanyInfo(companyInfo);
+        } else {
+            return this.saveCompanyInfo(companyInfo);
+        }
+    }
+
+    private Company saveCompanyInfo(CompanyInfo companyInfo) {
+        Company company = companyInfo.getCompany();
+        companyMapper.insert(company);
+        ParamCheckUtil.assertTrue(company.getId() != -1, "添加单位失败");
+        ensureCompanyId(company, companyInfo.getAssertsList(), companyInfo.getPhoneList());
+        assertsService.saveOrUpdate(companyInfo.getAssertsList());
+        userService.saveOrUpdate(companyInfo.getPhoneList());
+        return company;
+    }
+
+    private void ensureCompanyId(Company company, List<Asserts> assertsList, List<CompanyInfo.PhoneInfo> phoneList) {
+        if (!CollectionUtils.isEmpty(assertsList)) {
+            for (Asserts asserts : assertsList) {
+                asserts.setCompanyId(company.getId());
+            }
+        }
+        if (!CollectionUtils.isEmpty(phoneList)) {
+            for (CompanyInfo.PhoneInfo phoneInfo : phoneList) {
+                if (CollectionUtils.isEmpty(phoneInfo.getUserList())) {
+                    continue;
+                }
+                for (CompanyUser user : phoneInfo.getUserList()) {
+                    user.setCompanyId(company.getId());
+                }
+            }
+        }
     }
 
     @Override

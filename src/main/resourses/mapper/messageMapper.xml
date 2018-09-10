@@ -58,7 +58,7 @@
                 and <![CDATA[ create_time <= #{endTime} ]]>
             </if>
         </where>
-        order by create_time desc
+        order by id desc
         <if test="len != null">
             limit #{len}
         </if>

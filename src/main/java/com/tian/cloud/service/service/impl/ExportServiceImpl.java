@@ -1,6 +1,7 @@
 package com.tian.cloud.service.service.impl;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Objects;
 import com.google.common.base.Splitter;
 import com.google.common.collect.*;
 import com.tian.cloud.service.config.ExportConfig;
@@ -28,6 +29,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.RegionUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
@@ -36,6 +38,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author tianguang
@@ -187,17 +190,20 @@ public class ExportServiceImpl implements ExportService {
 
             Workbook workbook = buildAll();
 
+            long start = System.currentTimeMillis();
             long now = System.currentTimeMillis() / 1000;
             String filePath = exportConfig.getFilePath() + "companyBooks-"+ now +".xls";
             ExcelExportUtil.writeToFile(workbook, filePath);
             file = new File(filePath);
 
+            log.info("build:{}", System.currentTimeMillis() - start);
             OhMyEmail.subject("汛前通讯录-导出" + System.currentTimeMillis())
                     .from("防汛小程序")
                     .to(emails)
                     .text("汛前通讯录已导出，请查看附件")
                     .attach(file, "汛前通讯录.xls")
                     .send();
+            log.info("sendEmail:{}", System.currentTimeMillis() - start);
         } catch (Exception e) {
             log.error("导出错误:", e);
         } finally {
@@ -231,6 +237,8 @@ public class ExportServiceImpl implements ExportService {
                     .text("汛期中实时上报表已导出-请查看附件")
                     .attach(file, "汛期中实时上报表.xls")
                     .send();
+        } catch (InternalException e) {
+            throw e;
         } catch (Exception e) {
             log.error("导出错误:,req:{}", searchReq, e);
             throw new InternalException(ErrorCode.SYS_ERROR, "邮件发送失败");
@@ -465,14 +473,15 @@ public class ExportServiceImpl implements ExportService {
                                   Map<Integer, CommonType> idAndPositionMap) {
 
         int headStartRowNum = startRow;
-        int org1EndRowNum = -1;
         int org2EndRowNum = -1;
         int assertsRowNum = -1;
 
         initHeadRow(startRow, sheet, workbook, company);
         startRow = startRow + 2;
+        int org1EndRowNum = startRow;
         if (!CollectionUtils.isEmpty(userList)) {
             userList.sort(Comparator.comparingInt(CompanyUser::getOrgCode));
+            userList = userList.stream().filter(user -> Objects.equal(user.getCompanyId(), company.getId())).collect(Collectors.toList());
             for (int i = 0; i < userList.size(); i++) {
                 startRow = startRow + 1;
                 CompanyUser user = userList.get(i);
@@ -552,7 +561,7 @@ public class ExportServiceImpl implements ExportService {
         createRow(sheet, startRow);
 
         mergeCell(sheet, headStartRowNum, headStartRowNum + 1, 0, 6);
-        if (org1EndRowNum != -1) {
+        if (org1EndRowNum != headStartRowNum + 2) {
             mergeCell(sheet, headStartRowNum + 3, org1EndRowNum, 0, 0);//指挥部
         }
         if (org2EndRowNum != -1) {

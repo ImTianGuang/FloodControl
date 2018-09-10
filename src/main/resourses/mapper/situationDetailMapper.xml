@@ -43,7 +43,7 @@
         target_enum = #{situationTargetCode},
         status = #{status},
         target_id = #{targetId},
-        target_value = #{targetValue}
+        target_value = #{targetValue},
         update_time = #{updateTime}
         <where>
             id = #{id}
@@ -59,6 +59,14 @@
         target_id = #{targetId}
     </update>
 
+    <update id="deleteByFloodSituationId" parameterType="Object">
+        update
+        flood_situation_detail
+        set
+        status = 0
+        where
+        flood_situation_id = #{situationId}
+    </update>
     <select id="getBySituationIdList" parameterType="list" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>

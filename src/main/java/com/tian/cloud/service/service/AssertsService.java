@@ -9,4 +9,6 @@ public interface AssertsService {
     void saveOrUpdate(List<Asserts> assertsList);
 
     List<Asserts> getAssertsByCompany(int companyId);
+
+    void deleteByCompanyId(Integer id);
 }

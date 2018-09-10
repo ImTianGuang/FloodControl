@@ -11,11 +11,13 @@ public class FloodUser {
 
     private int id;
 
-    private String userId;
-
-    private String wechatUserId;
-
     private String userName;
 
     private String password;
+
+    private Integer status;
+
+    private long createTime;
+
+    private long updateTime;
 }

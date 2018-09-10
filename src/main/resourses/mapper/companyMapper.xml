@@ -13,6 +13,7 @@
         <result column="check_person_phone" property="checkPersonPhone" jdbcType="VARCHAR" />
         <result column="flood_manager" property="floodManager" jdbcType="VARCHAR" />
         <result column="flood_manager_phone" property="floodManagerPhone" jdbcType="VARCHAR" />
+        <result column="flood_plan" property="floodPlan" jdbcType="VARCHAR" />
         <result column="status" property="status" jdbcType="INTEGER" />
         <result column="create_time" property="createTime" jdbcType="BIGINT" />
         <result column="update_time" property="updateTime" jdbcType="BIGINT" />
@@ -22,7 +23,7 @@
         id, name, address, post_code, email, record_person, record_person_phone, check_person, check_person_phone, status, create_time, update_time,flood_plan,flood_manager,flood_manager_phone
     </sql>
 
-    <insert id="insertBatch" parameterType="list">
+    <insert id="insertBatch" parameterType="list" useGeneratedKeys="true" keyProperty="id">
         insert into company
         (name, address, post_code, email, record_person, record_person_phone, check_person, check_person_phone, status, create_time, update_time,flood_plan)
         values
@@ -31,6 +32,12 @@
         </foreach>
     </insert>
 
+    <insert id="insert" parameterType="Object" useGeneratedKeys="true" keyProperty="id">
+        insert into company
+        (name, address, post_code, email, record_person, record_person_phone, check_person, check_person_phone, status, create_time, update_time,flood_plan)
+        values
+        (#{name},#{address},#{postCode},#{email},#{recordPerson},#{recordPersonPhone},#{checkPerson},#{checkPersonPhone},#{status},#{createTime},#{updateTime},#{floodPlan})
+    </insert>
     <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
         select
         <include refid="Base_Column_List" />

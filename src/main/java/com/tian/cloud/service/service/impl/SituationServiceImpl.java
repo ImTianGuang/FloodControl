@@ -82,6 +82,12 @@ public class SituationServiceImpl implements SituationService {
     }
 
     @Override
+    public void deleteById(int situationId) {
+        situationMapper.deleteById(situationId);
+        floodSituationDetailMapper.deleteByFloodSituationId(situationId);
+    }
+
+    @Override
     public List<FloodSituation> search(CommonSearchReq request) {
         return situationMapper.search(request);
     }
@@ -118,7 +124,18 @@ public class SituationServiceImpl implements SituationService {
         }
 
         if (!CollectionUtils.isEmpty(saveList)) {
+            ensureSaveField(situationInfo.getFloodSituation(), saveList);
             floodSituationDetailMapper.saveBatch(saveList);
+        }
+    }
+
+    private void ensureSaveField(FloodSituation floodSituation, List<FloodSituationDetail> saveList) {
+        if (CollectionUtils.isEmpty(saveList)) {
+            return;
+        }
+        for (FloodSituationDetail detail : saveList) {
+            detail.setFloodSituationId(floodSituation.getId());
+            detail.setCompanyId(floodSituation.getCompanyId());
         }
     }
 

@@ -56,12 +56,20 @@
                 and status = 1
             </if>
         </where>
-        order by create_time desc
+        order by id desc
         <if test="len != null">
             limit #{len}
         </if>
     </select>
 
+    <update id="deleteById" parameterType="int">
+        update
+        flood_situation
+        set
+        status = 0
+        where
+        id = #{id}
+    </update>
     <update id="update" parameterType="com.tian.cloud.service.dao.entity.FloodSituation">
         update
         flood_situation

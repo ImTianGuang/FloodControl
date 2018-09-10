@@ -12,5 +12,7 @@ public interface SituationService {
 
     void saveOrUpdate(FloodSituationInfo situationInfo);
 
+    void deleteById(int situationId);
+
     List<FloodSituation> search(CommonSearchReq request);
 }

@@ -1,5 +1,6 @@
 package com.tian.cloud.service.controller;
 
+import com.tian.cloud.service.controller.request.AccountCheckReq;
 import com.tian.cloud.service.controller.request.CommonSearchReq;
 import com.tian.cloud.service.controller.response.BaseResponse;
 import com.tian.cloud.service.controller.response.CompanyInfo;
@@ -48,6 +49,17 @@ public class ManageController {
     @Resource
     private ExportService exportService;
 
+    @Resource
+    private AuthService authService;
+
+    @RequestMapping("checkAccount")
+    @ResponseBody
+    public BaseResponse<Boolean> checkAccount(@RequestBody AccountCheckReq checkReq) {
+        log.info("check:{}", checkReq);
+        boolean result = authService.checkAccount(checkReq);
+        return BaseResponse.success(result);
+    }
+
     @RequestMapping("updateCompanyList")
     @ResponseBody
     public BaseResponse<Boolean> updateCompanyList(@RequestBody Company company) {
@@ -59,9 +71,9 @@ public class ManageController {
     // addOrUpdate company
     @RequestMapping("updateCompany")
     @ResponseBody
-    public BaseResponse<Boolean> saveOrUpdateCompanyInfo(@RequestBody CompanyInfo companyInfo) {
-        companyService.saveCompanyInfo(companyInfo);
-        return BaseResponse.success(true);
+    public BaseResponse<Company> saveOrUpdateCompanyInfo(@RequestBody CompanyInfo companyInfo) {
+        Company company = companyService.saveOrUpdateCompanyInfo(companyInfo);
+        return BaseResponse.success(company);
     }
 
     @RequestMapping("updateCommonType")
@@ -84,6 +96,14 @@ public class ManageController {
     public BaseResponse<Boolean> saveOrUpdateFloodSituation(@RequestBody FloodSituationInfo situationInfo) {
         log.info("updateFlood:{}", situationInfo);
         situationService.saveOrUpdate(situationInfo);
+        return BaseResponse.success(true);
+    }
+
+    @RequestMapping("deleteSituation")
+    @ResponseBody
+    public BaseResponse<Boolean> deleteSituation(int situationId) {
+        log.info("deleteFlood:{}", situationId);
+        situationService.deleteById(situationId);
         return BaseResponse.success(true);
     }
 

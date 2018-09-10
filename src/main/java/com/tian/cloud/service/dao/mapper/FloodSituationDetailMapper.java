@@ -16,4 +16,6 @@ public interface FloodSituationDetailMapper {
     void deleteByTargetId(@Param("targetId") Integer targetId);
 
     List<FloodSituationDetail> getBySituationIdList(@Param("situationIdList") List<Integer> situationIdList);
+
+    void deleteByFloodSituationId(@Param("situationId") int situationId);
 }

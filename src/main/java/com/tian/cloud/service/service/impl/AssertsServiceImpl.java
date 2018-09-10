@@ -52,4 +52,9 @@ public class AssertsServiceImpl implements AssertsService {
         List<Asserts> asserts =  assertsMapper.getByCompany(companyId);
         return asserts;
     }
+
+    @Override
+    public void deleteByCompanyId(Integer id) {
+        assertsMapper.deleteByCompanyId(id);
+    }
 }
