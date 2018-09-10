@@ -180,11 +180,6 @@
     <resources>
       <resource>
         <directory>src/main/resources</directory>
-          <includes>
-              <include>**/*.xml</include>
-              <include>**/*.yml</include>
-              <include>**/*.properties</include>
-          </includes>
       </resource>
     </resources>
 
@@ -268,6 +263,10 @@
           <source>1.8</source>
           <target>1.8</target>
         </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.0.2</version>
       </plugin>
     </plugins>
   </build>
