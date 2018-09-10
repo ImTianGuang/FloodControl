@@ -25,6 +25,6 @@ mybatis:
   mapperLocations: classpath*:mapper/*.xml
 
 export:
-  filePath: /Users/tianguang/
+  filePath: /home/flood/file/temp/
 
 
