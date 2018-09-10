@@ -219,6 +219,9 @@
     <plugin>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+            <mainClass>com.tian.cloud.service.boot.Application</mainClass>
+        </configuration>
     </plugin>
     </plugins>
   </build>
