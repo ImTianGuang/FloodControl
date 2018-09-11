@@ -26,10 +26,10 @@ server:
     remote-ip-header: x-forwarded-for
     uri-encoding: UTF-8
     accesslog:
-      directory: /home/shared/log
+      directory: /var/log/flood/
       enabled: true
       pattern: common
-      prefix: kids-api-access
+      prefix: flood-access
       rotate: true
       suffix: .log
 
