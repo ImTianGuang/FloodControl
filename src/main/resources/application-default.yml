@@ -28,4 +28,7 @@ mybatis:
 export:
   filePath: /Users/tianguang/
 
-
+logging:
+  config: classpath:logback-spring-default.xml
+  path: /var/log/flood
+  level: DEBUG

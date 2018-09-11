@@ -27,4 +27,8 @@ mybatis:
 export:
   filePath: /home/flood/file/temp/
 
+logging:
+  config: classpath:logback-spring-dev.xml
+  path: /var/log/flood
+  level: INFO
 

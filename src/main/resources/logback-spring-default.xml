@@ -6,24 +6,13 @@
     <property name="LOG_PATH" value="${logPath}"/>
     <property name="LOG_LEVEL" value="${logLevel}"/>
     <appender name="S" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>${LOG_PATH}/kids-api.log</File>
+        <File>${LOG_PATH}/flood.log</File>
         <encoder>
             <charset>UTF-8</charset>
             <pattern>%d{yyyy-MM-dd HH:mm:ss} [%p] [%t] [%logger{80}] %m%n</pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_PATH}/kids-api.log-%d{yyyy-MM-dd}</fileNamePattern>
-        </rollingPolicy>
-    </appender>
-
-    <appender name="BenchmarkAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>${LOG_PATH}/kids-api-benchmark.log</File>
-        <encoder>
-            <charset>UTF-8</charset>
-            <pattern>%m%n</pattern>
-        </encoder>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_PATH}/kids-api-benchmark.log-%d{yyyy-MM-dd}</fileNamePattern>
+            <fileNamePattern>${LOG_PATH}/flood.log-%d{yyyy-MM-dd}</fileNamePattern>
         </rollingPolicy>
     </appender>
 
