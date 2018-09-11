@@ -38,7 +38,7 @@ mybatis:
 
 
 export:
-  filePath: /Users/tianguang/
+  filePath: /var/file/flood/temp/
 
 logging:
   config: classpath:logback-spring-online.xml

@@ -37,7 +37,7 @@ mybatis:
   mapperLocations: classpath*:mapper/*.xml
 
 export:
-  filePath: /home/flood/file/temp/
+  filePath: /var/file/flood/temp/
 
 logging:
   config: classpath:logback-spring-dev.xml
