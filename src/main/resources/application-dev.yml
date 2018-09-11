@@ -20,6 +20,18 @@ spring:
 
 server:
   port: 8081
+  tomcat:
+    max-threads: 128
+    max-connections: 1024
+    remote-ip-header: x-forwarded-for
+    uri-encoding: UTF-8
+    accesslog:
+      directory: /home/shared/log
+      enabled: true
+      pattern: common
+      prefix: kids-api-access
+      rotate: true
+      suffix: .log
 
 mybatis:
   mapperLocations: classpath*:mapper/*.xml

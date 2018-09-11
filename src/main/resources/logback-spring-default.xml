@@ -23,9 +23,6 @@
         </encoder>
     </appender>
 
-    <logger name="com.fenbi.kids.api.KidsApiBenchmarkLogger" level="INFO" additivity="false">
-        <appender-ref ref="BenchmarkAppender"/>
-    </logger>
     <root level="${LOG_LEVEL}">
         <appender-ref ref="S"/>
         <appender-ref ref="consoleLog"/>
