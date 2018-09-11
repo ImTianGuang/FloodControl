@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+    <springProperty scope="context" name="logPath" source="log.path" defaultValue="./logs"/>
+    <springProperty scope="context" name="logLevel" source="log.level" defaultValue="info"/>
+    <property name="LOG_PATH" value="${logPath}"/>
+    <property name="LOG_LEVEL" value="${logLevel}"/>
+    <appender name="S" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${LOG_PATH}/kids-api.log</File>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%p] [%t] [%logger{80}] %m%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/kids-api.log-%d{yyyy-MM-dd}</fileNamePattern>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="BenchmarkAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${LOG_PATH}/kids-api-benchmark.log</File>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%m%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/kids-api-benchmark.log-%d{yyyy-MM-dd}</fileNamePattern>
+        </rollingPolicy>
+    </appender>
+
+    <!-- Configure the Sentry appender, overriding the logging threshold to the WARN level -->
+    <appender name="Sentry" class="io.sentry.logback.SentryAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+    </appender>
+
+    <logger name="com.fenbi.kids.api.KidsApiBenchmarkLogger" level="INFO" additivity="false">
+        <appender-ref ref="BenchmarkAppender"/>
+    </logger>
+
+    <root level="${LOG_LEVEL}">
+        <appender-ref ref="S"/>
+        <appender-ref ref="Sentry"/>
+    </root>
+</configuration>
