@@ -199,7 +199,7 @@ public class ExportServiceImpl implements ExportService {
 
             log.info("build:{}", System.currentTimeMillis() - start);
             OhMyEmail.subject("汛前通讯录-导出" + System.currentTimeMillis())
-                    .from("<<flood-smallSoft>>")
+                    .from("flood-smallSoft")
                     .to(emails)
                     .text("汛前通讯录已导出，请查看附件")
                     .attach(file, MimeUtility.encodeText(MimeUtility.encodeText("汛前通讯录.xls")))
@@ -236,7 +236,7 @@ public class ExportServiceImpl implements ExportService {
             file = new File(filePath);
 
             OhMyEmail.subject("汛期中实时上报表已导出-请查收" + System.currentTimeMillis())
-                    .from("<<flood-smallSoft>>")
+                    .from("flood-smallSoft")
                     .to(searchReq.getEmails())
                     .text("汛期中实时上报表已导出-请查看附件")
                     .attach(file, MimeUtility.encodeText("汛期中实时上报表.xls"))
