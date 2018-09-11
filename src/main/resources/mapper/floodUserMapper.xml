@@ -23,4 +23,11 @@
         user_name = #{userName} and status = 1 and password = #{password}
     </select>
 
+    <select id="selectByName" parameterType="Object" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from `flood_user`
+        where
+        user_name = #{userName} and status = 1
+    </select>
 </mapper>

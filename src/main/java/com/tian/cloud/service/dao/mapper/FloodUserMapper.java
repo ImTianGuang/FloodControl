@@ -10,4 +10,6 @@ import org.apache.ibatis.annotations.Param;
 public interface FloodUserMapper {
 
     FloodUser selectByNameAndPass(@Param("userName") String userName, @Param("password") String password);
+
+    FloodUser selectByName(@Param("userName") String userName);
 }

@@ -13,6 +13,12 @@ public class InternalException extends RuntimeException {
 
     private String errorMsgCn;
 
+    public InternalException(ErrorCode code, Throwable cause) {
+        super(code.getMsg(), cause);
+        this.errorMsgCn = code.getMsg();
+        this.errorCode = code.getCode();
+    }
+
     public InternalException(String code, String errorMsgCn, String errorMsg) {
         super(errorMsg);
         this.errorCode = code;

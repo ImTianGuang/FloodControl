@@ -18,4 +18,5 @@ public class ErrorCode {
     public static final ErrorCode SYS_ERROR = new ErrorCode("0001", "系统异常");
     public static final ErrorCode PARAM_ERROR = new ErrorCode("0002", "参数错误");
     public static final ErrorCode EMAIL_SEND_FAIL = new ErrorCode("0003", "邮件发送失败");
+    public static final ErrorCode LOGIN_FAIL = new ErrorCode("0004", "登陆失败");
 }

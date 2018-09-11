@@ -54,9 +54,15 @@ public class ManageController {
 
     @RequestMapping("checkAccount")
     @ResponseBody
-    public BaseResponse<Boolean> checkAccount(@RequestBody AccountCheckReq checkReq) {
-        log.info("check:{}", checkReq);
-        boolean result = authService.checkAccount(checkReq);
+    public BaseResponse<String> checkAccount(@RequestBody AccountCheckReq checkReq) {
+        String token = authService.checkAccount(checkReq);
+        return BaseResponse.success(token);
+    }
+
+    @RequestMapping("checkToken")
+    @ResponseBody
+    public BaseResponse<Boolean> checkToken(String token) {
+        boolean result = authService.checkToken(token);
         return BaseResponse.success(result);
     }
 

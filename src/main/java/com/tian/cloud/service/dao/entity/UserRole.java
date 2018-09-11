@@ -4,12 +4,14 @@ import lombok.Data;
 
 /**
  * @author tianguang
- * 2018/9/11 下午7:39
+ * 2018/9/11 下午7:44
  **/
 @Data
-public class Role {
+public class UserRole {
 
     private Integer id;
 
-    private String roleName;
+    private Integer roleId;
+
+    private Integer userId;
 }
