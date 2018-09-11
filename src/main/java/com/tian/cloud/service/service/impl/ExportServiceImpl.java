@@ -201,7 +201,7 @@ public class ExportServiceImpl implements ExportService {
             OhMyEmail.subject("汛前通讯录-导出" + System.currentTimeMillis())
                     .from("flood-smallSoft")
                     .to(emails)
-                    .text("汛前通讯录已导出，请查看附件")
+                    .text(MimeUtility.encodeText("汛前通讯录已导出，请查看附件"))
                     .attach(file, MimeUtility.encodeText(MimeUtility.encodeText("汛前通讯录.xls")))
                     .send();
             log.info("sendEmail:{}", System.currentTimeMillis() - start);
