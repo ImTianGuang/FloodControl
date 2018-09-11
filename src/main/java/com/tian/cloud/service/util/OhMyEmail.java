@@ -5,6 +5,7 @@ import javax.activation.FileDataSource;
 import javax.mail.*;
 import javax.mail.internet.*;
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 /**
@@ -111,7 +112,7 @@ public class OhMyEmail {
      * @return
      * @throws MessagingException
      */
-    public static OhMyEmail subject(String subject) throws MessagingException {
+    public static OhMyEmail subject(String subject) throws MessagingException, UnsupportedEncodingException {
         OhMyEmail ohMyEmail = new OhMyEmail();
         ohMyEmail.msg = new MimeMessage(session);
         ohMyEmail.msg.setSubject(subject, "UTF-8");
@@ -193,8 +194,8 @@ public class OhMyEmail {
         return this;
     }
 
-    public OhMyEmail text(String text) {
-        this.text = text;
+    public OhMyEmail text(String text) throws UnsupportedEncodingException {
+        this.text = MimeUtility.encodeText(text);
         return this;
     }
 
