@@ -184,10 +184,10 @@ public class ExportServiceImpl implements ExportService {
 
     @Override
     public void exportAll(String emails) {
-        ParamCheckUtil.assertTrue(!StringUtils.isEmpty(emails), "邮箱必填");
         File file = null;
         try {
 
+            ParamCheckUtil.assertTrue(!StringUtils.isEmpty(emails), "邮箱必填");
             Workbook workbook = buildAll();
 
             long start = System.currentTimeMillis();
@@ -204,8 +204,11 @@ public class ExportServiceImpl implements ExportService {
                     .attach(file, "汛前通讯录.xls")
                     .send();
             log.info("sendEmail:{}", System.currentTimeMillis() - start);
+        } catch (InternalException e) {
+            throw e;
         } catch (Exception e) {
-            log.error("导出错误:", e);
+            log.error("导出错误:,req:{}", emails, e);
+            throw new InternalException(ErrorCode.SYS_ERROR, "邮件发送失败");
         } finally {
             if (file != null) {
                 file.deleteOnExit();
