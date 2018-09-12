@@ -11,13 +11,17 @@ import com.tian.cloud.service.dao.mapper.CompanyMapper;
 import com.tian.cloud.service.enums.CommonTypeEnum;
 import com.tian.cloud.service.enums.LineStatusEnum;
 import com.tian.cloud.service.enums.Orgnization;
+import com.tian.cloud.service.exception.ErrorCode;
+import com.tian.cloud.service.exception.InternalException;
 import com.tian.cloud.service.service.AssertsService;
 import com.tian.cloud.service.service.CompanyService;
 import com.tian.cloud.service.service.UserService;
 import com.tian.cloud.service.util.ParamCheckUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
@@ -190,11 +194,20 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     public Company saveOrUpdateCompanyInfo(CompanyInfo companyInfo) {
+
+        Company company = companyInfo.getCompany();
+        ParamCheckUtil.assertTrue(StringUtils.isEmpty(companyInfo.getCompany().getName()), "单位名称不能为空");
+
+        Company dbCompany = companyMapper.selectByName(companyInfo.getCompany().getName());
+        if (dbCompany != null && !Objects.equal(company.getId(), dbCompany.getId())) {
+            throw new InternalException(ErrorCode.PARAM_ERROR, "单位名称不能重复");
+        }
         if (companyInfo.getCompany().getId() != -1) {
             return this.updateCompanyInfo(companyInfo);
         } else {
             return this.saveCompanyInfo(companyInfo);
         }
+
     }
 
     private Company saveCompanyInfo(CompanyInfo companyInfo) {

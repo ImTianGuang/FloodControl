@@ -10,6 +10,7 @@ import com.tian.cloud.service.exception.ErrorCode;
 import com.tian.cloud.service.exception.InternalException;
 import com.tian.cloud.service.service.AuthService;
 import com.tian.cloud.service.util.DesUtil;
+import com.tian.cloud.service.util.MD5Util;
 import jetbrick.util.StringUtils;
 import jetbrick.util.codec.MD5Utils;
 import lombok.extern.slf4j.Slf4j;
@@ -75,6 +76,6 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private String calcuMD5(String userName, String password) {
-        return new String(MD5Utils.md5(salt + userName+ password));
+        return MD5Util.getMD5(salt + userName+ password);
     }
 }

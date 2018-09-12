@@ -41,7 +41,7 @@
         <include refid="Base_Column_List"/>
         from message
         <where>
-            <if test="keyword != null">
+            <if test="keyword != null and keyword != ''">
                 (
                 title like CONCAT('%', #{keyword}, '%')
                 or
