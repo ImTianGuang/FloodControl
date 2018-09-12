@@ -140,7 +140,7 @@ public class OhMyEmail {
      */
     public OhMyEmail from(String nickName, String from) throws MessagingException {
         try {
-            nickName = MimeUtility.encodeText(nickName);
+            nickName = MimeUtility.encodeText(nickName, "UTF-8", null);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -195,7 +195,7 @@ public class OhMyEmail {
     }
 
     public OhMyEmail text(String text) throws UnsupportedEncodingException {
-        this.text = MimeUtility.encodeText(text);
+        this.text = text;
         return this;
     }
 
@@ -219,7 +219,7 @@ public class OhMyEmail {
         FileDataSource fds            = new FileDataSource(file);
         attachmentPart.setDataHandler(new DataHandler(fds));
         try {
-            attachmentPart.setFileName(null == fileName ? MimeUtility.encodeText(fds.getName()) : MimeUtility.encodeText(fileName));
+            attachmentPart.setFileName(null == fileName ? MimeUtility.encodeText(fds.getName(), "UTF-8", null) : MimeUtility.encodeText(fileName, "UTF-8", null));
         } catch (Exception e) {
             e.printStackTrace();
         }

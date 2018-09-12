@@ -45,7 +45,7 @@ public class ExportServiceImplTest extends TestBase {
 
     @Test
     public void exportAll() throws Exception {
-        exportService.exportAll("308929467@qq.com;1412777822@qq.com");
+        exportService.exportAll("308929467@qq.com");
 
     }
 

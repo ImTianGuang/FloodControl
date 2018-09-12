@@ -192,17 +192,17 @@ public class ExportServiceImpl implements ExportService {
             Workbook workbook = buildAll();
 
             long start = System.currentTimeMillis();
-            long now = System.currentTimeMillis() / 1000;
-            String filePath = exportConfig.getFilePath() + "companyBooks-"+ now +".xls";
+
+            String filePath = exportConfig.getFilePath() + "companyBooks-"+ LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) +".xls";
             ExcelExportUtil.writeToFile(workbook, filePath);
             file = new File(filePath);
 
             log.info("build:{}", System.currentTimeMillis() - start);
-            OhMyEmail.subject("汛前通讯录-导出" + System.currentTimeMillis())
+            OhMyEmail.subject("汛前通讯录-导出 " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
                     .from("flood-smallSoft")
                     .to(emails)
-                    .text(MimeUtility.encodeText("汛前通讯录已导出，请查看附件"))
-                    .attach(file, MimeUtility.encodeText(MimeUtility.encodeText("汛前通讯录.xls")))
+                    .text("汛前通讯录已导出，请查看附件")
+                    .attach(file, "汛前通讯录.xls")
                     .send();
             log.info("sendEmail:{}", System.currentTimeMillis() - start);
         } catch (InternalException e) {
@@ -235,11 +235,11 @@ public class ExportServiceImpl implements ExportService {
             ExcelExportUtil.writeToFile(workbook, filePath);
             file = new File(filePath);
 
-            OhMyEmail.subject("汛期中实时上报表已导出-请查收" + System.currentTimeMillis())
+            OhMyEmail.subject("汛期中实时上报表已导出-请查收 " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
                     .from("flood-smallSoft")
                     .to(searchReq.getEmails())
                     .text("汛期中实时上报表已导出-请查看附件")
-                    .attach(file, MimeUtility.encodeText("汛期中实时上报表.xls"))
+                    .attach(file, "汛期中实时上报表.xls")
                     .send();
         } catch (InternalException e) {
             throw e;
