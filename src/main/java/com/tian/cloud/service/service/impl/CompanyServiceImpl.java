@@ -196,7 +196,7 @@ public class CompanyServiceImpl implements CompanyService {
     public Company saveOrUpdateCompanyInfo(CompanyInfo companyInfo) {
 
         Company company = companyInfo.getCompany();
-        ParamCheckUtil.assertTrue(StringUtils.isEmpty(companyInfo.getCompany().getName()), "单位名称不能为空");
+        ParamCheckUtil.assertTrue(!StringUtils.isEmpty(companyInfo.getCompany().getName()), "单位名称不能为空");
 
         Company dbCompany = companyMapper.selectByName(companyInfo.getCompany().getName());
         if (dbCompany != null && !Objects.equal(company.getId(), dbCompany.getId())) {
