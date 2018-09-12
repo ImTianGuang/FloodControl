@@ -19,7 +19,7 @@ spring:
       charset: UTF-8
 
 server:
-  port: 80
+  port: 8081
   tomcat:
     max-threads: 128
     max-connections: 1024
