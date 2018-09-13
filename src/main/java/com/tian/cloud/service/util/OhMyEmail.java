@@ -273,7 +273,7 @@ public class OhMyEmail {
 
     private MimeBodyPart textPart() throws MessagingException {
         MimeBodyPart bodyPart = new MimeBodyPart();
-        bodyPart.setText(text);
+        bodyPart.setText(text, "UTF-8");
         return bodyPart;
     }
 
