@@ -19,7 +19,14 @@ spring:
       force: true
       charset: UTF-8
 
+security:
+  require-ssl: true
 server:
+  ssl:
+    key-store: /etc/letsencrypt/live/seeld.eu/keystore.p12
+    key-store-password: guang4196
+    key-store-type: PKCS12
+    key-alias: tomcat
   port: 80
   tomcat:
     max-threads: 128
