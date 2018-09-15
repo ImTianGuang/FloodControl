@@ -21,6 +21,6 @@ public class CommonTypeServiceImplTest extends TestBase {
 
         List<CommonType> commonTypeList = commonTypeService.selectByType(CommonTypeEnum.SITUATION.getCode());
 
-        commonTypeService.saveOrUpdate(commonTypeList);
+//        commonTypeService.saveOrUpdate(commonTypeList);
     }
 }

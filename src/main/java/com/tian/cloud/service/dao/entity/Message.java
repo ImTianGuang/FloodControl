@@ -25,4 +25,7 @@ public class Message {
     private long createTime;
 
     private long updateTime;
+
+    /* for 前端展示 */
+    private String createTimeStr;
 }

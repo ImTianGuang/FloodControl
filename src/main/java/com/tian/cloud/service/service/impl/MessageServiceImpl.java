@@ -5,6 +5,7 @@ import com.tian.cloud.service.dao.entity.Message;
 import com.tian.cloud.service.dao.mapper.MessageMapper;
 import com.tian.cloud.service.enums.LineStatusEnum;
 import com.tian.cloud.service.service.MessageService;
+import com.tian.cloud.service.util.DateUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -38,7 +39,11 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public List<Message> search(CommonSearchReq request) {
-        return messageMapper.search(request);
+        List<Message> messageList = messageMapper.search(request);
+        for (Message message : messageList) {
+            message.setCreateTimeStr(DateUtil.instantToStr(message.getCreateTime()));
+        }
+        return messageList;
     }
 
     @Override

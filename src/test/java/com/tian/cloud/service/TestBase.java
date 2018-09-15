@@ -16,7 +16,7 @@ import javax.annotation.Resource;
  **/
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
-@ActiveProfiles("dev")
+@ActiveProfiles("local")
 public class TestBase {
 
     @Test

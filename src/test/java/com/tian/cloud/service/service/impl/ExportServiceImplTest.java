@@ -45,7 +45,7 @@ public class ExportServiceImplTest extends TestBase {
 
     @Test
     public void exportAll() throws Exception {
-        exportService.exportAll("308929467@qq.com");
+//        exportService.exportAll("308929467@qq.com");
 
     }
 
@@ -57,13 +57,13 @@ public class ExportServiceImplTest extends TestBase {
         req.setStartTime(0L);
         req.setEndTime(System.currentTimeMillis());
         req.setEmails("308929467@qq.com");
-        log.info("req:{}", req);
-        exportService.exportFlood(req);
+//        log.info("req:{}", req);
+//        exportService.exportFlood(req);
     }
 
     @Test
     public void buildAll() throws Exception {
-        Workbook workbook = exportService.buildAll();
-        ExcelExportUtil.writeToFile(workbook, filePath);
+//        Workbook workbook = exportService.buildAll();
+//        ExcelExportUtil.writeToFile(workbook, filePath);
     }
 }

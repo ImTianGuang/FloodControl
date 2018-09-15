@@ -39,7 +39,7 @@ public class CompanyServiceImplTest extends TestBase {
             company.setName("名称" + i++);
             company.setUpdateTime(System.currentTimeMillis());
         }
-        companyService.saveOrUpdate(companies);
+//        companyService.saveOrUpdate(companies);
     }
 
 }

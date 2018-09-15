@@ -23,7 +23,7 @@ public class AssertsServiceImplTest extends TestBase {
         for (Asserts asserts1 : asserts) {
             asserts1.setUpdateTime(System.currentTimeMillis());
         }
-        assertsService.saveOrUpdate(Lists.newArrayList(asserts));
+//        assertsService.saveOrUpdate(Lists.newArrayList(asserts));
     }
 
     @Test

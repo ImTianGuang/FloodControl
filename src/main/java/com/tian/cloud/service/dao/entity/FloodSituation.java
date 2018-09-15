@@ -27,4 +27,9 @@ public class FloodSituation {
     private long createTime;
 
     private long updateTime;
+
+    /* for前端展示-start */
+    private String companyName;
+
+    private String createTimeStr;
 }

@@ -1,6 +1,7 @@
 package com.tian.cloud.service.service.impl;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.tian.cloud.service.controller.request.CommonSearchReq;
 import com.tian.cloud.service.controller.response.FloodSituationInfo;
 import com.tian.cloud.service.dao.entity.CommonType;
@@ -12,6 +13,7 @@ import com.tian.cloud.service.dao.mapper.FloodSituationDetailMapper;
 import com.tian.cloud.service.dao.mapper.SituationMapper;
 import com.tian.cloud.service.enums.SituationTargetEnum;
 import com.tian.cloud.service.service.SituationService;
+import com.tian.cloud.service.util.DateUtil;
 import com.tian.cloud.service.util.ParamCheckUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -19,6 +21,7 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author tianguang
@@ -89,7 +92,20 @@ public class SituationServiceImpl implements SituationService {
 
     @Override
     public List<FloodSituation> search(CommonSearchReq request) {
-        return situationMapper.search(request);
+        List<FloodSituation> floodSituations = situationMapper.search(request);
+        if (CollectionUtils.isEmpty(floodSituations)) {
+            return floodSituations;
+        }
+        List<Company> companies = companyMapper.selectByIdList(Lists.transform(floodSituations, FloodSituation::getCompanyId));
+        Map<Integer, Company> companyMap = Maps.uniqueIndex(companies, Company::getId);
+        for (FloodSituation floodSituation : floodSituations) {
+            Company company = companyMap.get(floodSituation.getCompanyId());
+            if (company != null) {
+                floodSituation.setCompanyName(company.getName());
+            }
+            floodSituation.setCreateTimeStr(DateUtil.instantToStr(floodSituation.getCreateTime()));
+        }
+        return floodSituations;
     }
 
     private void update(FloodSituationInfo situationInfo) {

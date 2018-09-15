@@ -26,6 +26,6 @@ public class MessageServiceImplTest extends TestBase {
         message.setCreateTime(System.currentTimeMillis());
         message.setUpdateTime(System.currentTimeMillis());
 
-        messageService.saveOrUpdate(message);
+//        messageService.saveOrUpdate(message);
     }
 }

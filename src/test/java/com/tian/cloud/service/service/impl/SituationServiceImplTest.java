@@ -25,7 +25,7 @@ public class SituationServiceImplTest extends TestBase {
     public void search() {
         CommonSearchReq commonSearchReq = new CommonSearchReq();
         commonSearchReq.setLen(15);
-        List<FloodSituation> floodSituationList = situationService.search(commonSearchReq);
+//        List<FloodSituation> floodSituationList = situationService.search(commonSearchReq);
         System.out.println();
     }
 }

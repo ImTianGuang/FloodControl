@@ -19,20 +19,20 @@ public class UserServiceImplTest extends TestBase {
 
     @Test
     public void saveOrUpdate() {
-        List<CompanyInfo.PhoneInfo> phoneInfos = Lists.newArrayList();
-        CompanyInfo.PhoneInfo phoneInfo = new CompanyInfo.PhoneInfo();
-        phoneInfo.setId(Orgnization.ORG1.getCode());
-        phoneInfo.setName(Orgnization.ORG1.getMsg());
-        List<CompanyUser> userList = userService.getUserByCompany(0);
-        for (CompanyUser user : userList) {
-            user.setUpdateTime(System.currentTimeMillis());
-        }
-
-        phoneInfo.setUserList(userList);
-
-        phoneInfos.add(phoneInfo);
-        userService.saveOrUpdate(phoneInfos);
-        System.out.println(1);
+//        List<CompanyInfo.PhoneInfo> phoneInfos = Lists.newArrayList();
+//        CompanyInfo.PhoneInfo phoneInfo = new CompanyInfo.PhoneInfo();
+//        phoneInfo.setId(Orgnization.ORG1.getCode());
+//        phoneInfo.setName(Orgnization.ORG1.getMsg());
+//        List<CompanyUser> userList = userService.getUserByCompany(0);
+//        for (CompanyUser user : userList) {
+//            user.setUpdateTime(System.currentTimeMillis());
+//        }
+//
+//        phoneInfo.setUserList(userList);
+//
+//        phoneInfos.add(phoneInfo);
+//        userService.saveOrUpdate(phoneInfos);
+//        System.out.println(1);
     }
 
     @Test
