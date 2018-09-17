@@ -13,15 +13,15 @@ public enum UploadType {
     FLOOD_IMG(4, "floodImg", "汛情图片"),
     ;
 
-    UploadType(int code, String fileName, String msg) {
+    UploadType(int code, String directory, String msg) {
         this.code = code;
-        this.fileName = fileName;
+        this.directory = directory;
         this.msg = msg;
     }
 
     private int code;
 
-    private String fileName;
+    private String directory;
 
     private String msg;
 
@@ -53,11 +53,11 @@ public enum UploadType {
         this.msg = msg;
     }
 
-    public String getFileName() {
-        return fileName;
+    public String getDirectory() {
+        return directory;
     }
 
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
+    public void setDirectory(String directory) {
+        this.directory = directory;
     }
 }
