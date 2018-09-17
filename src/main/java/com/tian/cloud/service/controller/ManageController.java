@@ -138,7 +138,7 @@ public class ManageController {
     public ModelAndView upLoadFlood() {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("upLoad");
-        modelAndView.addObject("uploadPath", "http://localhost:80/manage/doUpLoad");
+        modelAndView.addObject("uploadPath", "http://localhost:8081/manage/doUpload");
         return modelAndView;
     }
 

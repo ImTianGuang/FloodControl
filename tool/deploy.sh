@@ -7,4 +7,5 @@ else
 fi
 
 mvn clean package -Dmaven.test.skip=true
+echo "nohup java -jar -Dspring.profiles.active=$runEnv target/common-web.jar > /dev/null 2>&1 &"
 nohup java -jar -Dspring.profiles.active=$runEnv target/common-web.jar > /dev/null 2>&1 &
