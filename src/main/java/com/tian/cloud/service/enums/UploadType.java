@@ -6,11 +6,11 @@ import java.util.Map;
 
 public enum UploadType {
 
-    FLOOD_PLAN(0, "floodPlan", "防汛预案"),
-    NOTICE(1, "notice", "通知"),
-    NOTICE_IMG(2, "noticeImg", "通知图片"),
-    FLOOD(3, "flood", "汛情"),
-    FLOOD_IMG(4, "floodImg", "汛情图片"),
+    FLOOD_PLAN(0, "floodPlan", "防汛预案上传"),
+    NOTICE(1, "notice", "通知上传"),
+    NOTICE_IMG(2, "noticeImg", "通知图片上传"),
+    FLOOD(3, "flood", "汛情上传"),
+    FLOOD_IMG(4, "floodImg", "汛情图片上传"),
     ;
 
     UploadType(int code, String directory, String msg) {

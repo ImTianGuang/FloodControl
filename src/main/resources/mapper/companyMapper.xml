@@ -121,6 +121,6 @@
             flood_plan = #{floodPlan}
         </if>
         where
-        id = {id}
+        id = #{id}
     </update>
 </mapper>

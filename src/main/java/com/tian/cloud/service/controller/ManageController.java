@@ -11,6 +11,7 @@ import com.tian.cloud.service.dao.entity.Message;
 import com.tian.cloud.service.enums.UploadType;
 import com.tian.cloud.service.service.*;
 import com.tian.cloud.service.util.DateUtil;
+import com.tian.cloud.service.util.ParamCheckUtil;
 import com.tian.cloud.service.util.excel.ExcelExportUtil;
 import com.tian.cloud.service.util.excel.MySheet;
 import lombok.extern.slf4j.Slf4j;
@@ -137,13 +138,25 @@ public class ManageController {
         return BaseResponse.success(null);
     }
 
+    @RequestMapping("uploadUrl")
+    @ResponseBody
+    public BaseResponse<String> uploadUrl(int uploadType, Integer refId) throws Exception {
+        UploadType uploadType1 = UploadType.toEnum(uploadType);
+        ParamCheckUtil.assertTrue(uploadType1 != null, "系统异常");
+        ParamCheckUtil.assertTrue(refId != null, "系统异常");
+
+        String ext = uploadService.encryptExtra(uploadType1, refId);
+        return BaseResponse.success("/manage/upload?ext=" + ext + "&title=" + uploadType1.getMsg());
+    }
+
     @RequestMapping("upload")
-    public ModelAndView upLoadFlood() throws Exception{
-        String ext = uploadService.encryptExtra(UploadType.FLOOD_PLAN, 1);
+    public ModelAndView upLoadFlood(@RequestParam(value = "ext") String ext, @RequestParam("title") String title) throws Exception{
+
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("upLoad");
         modelAndView.addObject("ext", ext);
-        modelAndView.addObject("uploadPath", "http://localhost:8081/manage/doUpload");
+        modelAndView.addObject("title", title);
+        modelAndView.addObject("uploadPath", "/manage/doUpload");
         return modelAndView;
     }
 
@@ -153,5 +166,11 @@ public class ManageController {
         log.info("extraData:{}", extraData);
         uploadService.upload(file, extraData);
         return BaseResponse.success(true);
+    }
+
+    @RequestMapping("download")
+    @ResponseBody
+    public Object download (HttpServletRequest request, HttpServletResponse response, String path) {
+        return null;
     }
 }
