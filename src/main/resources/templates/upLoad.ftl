@@ -9,7 +9,7 @@
 </head>
 
 <body>
-<form id="form1" action="{{upLoadPath}}" target="frame1" method="post" enctype="multipart/form-data">
+<form id="form1" action="${upLoadPath}" target="frame1" method="post" enctype="multipart/form-data">
     <input type="file" name="file">
     <input type="button" value="上传" onclick="upload()">
 </form>

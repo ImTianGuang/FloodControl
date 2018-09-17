@@ -134,15 +134,15 @@ public class ManageController {
         return BaseResponse.success(null);
     }
 
-    @RequestMapping("upLoadFlood")
+    @RequestMapping("uploadFlood")
     public ModelAndView upLoadFlood() {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("upLoad");
-        modelAndView.addObject("upLoadPath", "http://localhost:80/manage/doUpLoad");
+        modelAndView.addObject("uploadPath", "http://localhost:80/manage/doUpLoad");
         return modelAndView;
     }
 
-    @RequestMapping("doUpLoad")
+    @RequestMapping("doUpload")
     @ResponseBody
     public Object doUpload() {
         return null;
