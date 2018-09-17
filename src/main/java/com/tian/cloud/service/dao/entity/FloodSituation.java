@@ -21,7 +21,6 @@ public class FloodSituation {
 
     private String title = "";
 
-    @Deprecated
     private String floodDesc = "";
 
     private long createTime;

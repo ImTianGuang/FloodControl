@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -131,5 +132,19 @@ public class ManageController {
         }
         exportService.exportFlood(request);
         return BaseResponse.success(null);
+    }
+
+    @RequestMapping("upLoadFlood")
+    public ModelAndView upLoadFlood() {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("upLoad");
+        modelAndView.addObject("upLoadPath", "http://localhost:80/manage/doUpLoad");
+        return modelAndView;
+    }
+
+    @RequestMapping("doUpLoad")
+    @ResponseBody
+    public Object doUpload() {
+        return null;
     }
 }

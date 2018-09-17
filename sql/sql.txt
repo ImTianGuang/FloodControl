@@ -33,7 +33,7 @@ create table `company` (
     `flood_manager` varchar(64) NOT NULL default '',
     `flood_manager_phone` varchar(64) NOT NULL default '',
     `status` int(11) NOT NULL default 1,
-    `flood_plan` mediumtext not null,
+    `flood_plan` MEDIUMTEXT not null default '',
     `create_time` bigint(20) NOT NULL,
     `update_time` bigint(20) NOT NULL,
     PRIMARY KEY (`id`)
@@ -46,7 +46,7 @@ create table `flood_situation` (
     `start_time` bigint(20) NOT NULL,
     `end_time` bigint(20) NOT NULL,
     `title` varchar(64) NOT NULL default '',
-    `flood_desc` varchar(64) NOT NULL default '',
+    `flood_desc` MEDIUMTEXT not null default '',
     `create_time` bigint(20) NOT NULL,
     `update_time` bigint(20) NOT NULL,
     PRIMARY KEY (`id`)
@@ -71,7 +71,7 @@ create table `message` (
     `message_type` int(11) NOT NULL default 0,
     `status` int(11) NOT NULL default 1,
     `title` varchar(64) NOT NULL default '',
-    `content` varchar(1024) NOT NULL default '',
+    `content` MEDIUMTEXT not null default '',
     `create_time` bigint(20) NOT NULL,
     `update_time` bigint(20) NOT NULL,
     PRIMARY KEY (`id`)
