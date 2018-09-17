@@ -134,6 +134,8 @@ public class ExportServiceImpl implements ExportService {
         List<Asserts> asserts = context.getUsableAsserts();
         List<CommonType> positionList = context.getAssertsTypeList();
         Map<Integer, CommonType> idAndPositionMap = Maps.uniqueIndex(positionList, CommonType::getId);
+        Multimap<Integer, Asserts> companyAssertsMap = Multimaps.index(asserts, Asserts::getCompanyId);
+
         Sheet sheet = workbook.createSheet("汇总");
 
         CellStyle cellStyle = getCellStyle(workbook);
@@ -145,8 +147,9 @@ public class ExportServiceImpl implements ExportService {
                 if (company.getStatus() != LineStatusEnum.USABLE.getCode()) {
                     continue;
                 }
+                List<Asserts> companyAsserts = (List<Asserts>) companyAssertsMap.get(company.getId());
                 startRow++;
-                startRow = addCompanyToSheet(startRow, workbook, sheet, cellStyle, company, allUsableUser, asserts, idAndPositionMap);
+                startRow = addCompanyToSheet(startRow, workbook, sheet, cellStyle, company, allUsableUser, companyAsserts, idAndPositionMap);
             }
         }
         for (int i = 0; i < headList.size(); i++) {
