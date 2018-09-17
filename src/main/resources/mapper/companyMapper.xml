@@ -112,4 +112,15 @@
             id = #{id}
         </where>
     </update>
+
+    <update id="updateSelective" parameterType="com.tian.cloud.service.dao.entity.Company">
+        update
+        company
+        set
+        <if test="floodPlan != null">
+            flood_plan = #{floodPlan}
+        </if>
+        where
+        id = {id}
+    </update>
 </mapper>

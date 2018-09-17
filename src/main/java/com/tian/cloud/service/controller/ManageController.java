@@ -8,6 +8,7 @@ import com.tian.cloud.service.controller.response.FloodSituationInfo;
 import com.tian.cloud.service.dao.entity.CommonType;
 import com.tian.cloud.service.dao.entity.Company;
 import com.tian.cloud.service.dao.entity.Message;
+import com.tian.cloud.service.enums.UploadType;
 import com.tian.cloud.service.service.*;
 import com.tian.cloud.service.util.DateUtil;
 import com.tian.cloud.service.util.excel.ExcelExportUtil;
@@ -51,6 +52,9 @@ public class ManageController {
 
     @Resource
     private AuthService authService;
+
+    @Resource
+    private UploadService uploadService;
 
     @RequestMapping("checkAccount")
     @ResponseBody
@@ -134,16 +138,20 @@ public class ManageController {
     }
 
     @RequestMapping("upload")
-    public ModelAndView upLoadFlood() {
+    public ModelAndView upLoadFlood() throws Exception{
+        String ext = uploadService.encryptExtra(UploadType.FLOOD_PLAN, 1);
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("upLoad");
+        modelAndView.addObject("ext", ext);
         modelAndView.addObject("uploadPath", "http://localhost:8081/manage/doUpload");
         return modelAndView;
     }
 
     @RequestMapping("doUpload")
     @ResponseBody
-    public Object doUpload(@RequestParam("file") MultipartFile file, String extraData) {
-        return null;
+    public BaseResponse<Boolean> doUpload(@RequestParam("file") MultipartFile file, String extraData) throws Exception{
+        log.info("extraData:{}", extraData);
+        uploadService.upload(file, extraData);
+        return BaseResponse.success(true);
     }
 }

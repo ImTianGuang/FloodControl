@@ -23,6 +23,10 @@ public class FloodSituation {
 
     private String floodDesc = "";
 
+    private String photos;
+
+    private String attatch;
+
     private long createTime;
 
     private long updateTime;

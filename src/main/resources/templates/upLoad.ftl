@@ -11,6 +11,7 @@
 <body>
 <form id="form1" action="${uploadPath}" target="frame1" method="post" enctype="multipart/form-data">
     <input type="file" name="file">
+    <input type="text" name="extraData" value="${ext}" hidden="true">
     <input type="button" value="上传" onclick="upload()">
 </form>
 <iframe name="frame1" frameborder="0" height="40"></iframe>

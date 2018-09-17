@@ -24,4 +24,6 @@ public interface CompanyMapper {
     int insert(Company company);
 
     Company selectByName(@Param("name") String name);
+
+    void updateSelective(Company company);
 }

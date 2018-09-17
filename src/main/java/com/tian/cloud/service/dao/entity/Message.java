@@ -22,9 +22,14 @@ public class Message {
 
     private String content;
 
+    private String photos;
+
+    private String attatch;
+
     private long createTime;
 
     private long updateTime;
+
 
     /* for 前端展示 */
     private String createTimeStr;

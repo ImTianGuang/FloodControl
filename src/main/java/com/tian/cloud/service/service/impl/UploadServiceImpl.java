@@ -1,6 +1,8 @@
 package com.tian.cloud.service.service.impl;
 
 import com.google.gson.Gson;
+import com.tian.cloud.service.dao.entity.Company;
+import com.tian.cloud.service.dao.mapper.CompanyMapper;
 import com.tian.cloud.service.enums.UploadType;
 import com.tian.cloud.service.model.UpLoadExt;
 import com.tian.cloud.service.service.FileService;
@@ -28,6 +30,9 @@ public class UploadServiceImpl implements UploadService {
     @Resource
     private FileService fileService;
 
+    @Resource
+    private CompanyMapper companyMapper;
+
     @Override
     public boolean upload(MultipartFile file, String extraData) throws Exception {
         String decrypt = DesUtil.decrypt(extraData, signKey);
@@ -35,8 +40,13 @@ public class UploadServiceImpl implements UploadService {
         ParamCheckUtil.assertTrue((System.currentTimeMillis() - ext.getTimestamp()) < TEN_MINUTE, "链接已过期，请重新获取");
         UploadType uploadType = UploadType.toEnum(ext.getUploadType());
         String filePath = fileService.uploadFile(file, uploadType.getDirectory());
-
-        return false;
+        if (UploadType.FLOOD_PLAN.equals(uploadType)) {
+            Company company = new Company();
+            company.setId(ext.getRefId());
+            company.setFloodPlan(filePath);
+            companyMapper.updateSelective(company);
+        }
+        return true;
     }
 
     @Override
