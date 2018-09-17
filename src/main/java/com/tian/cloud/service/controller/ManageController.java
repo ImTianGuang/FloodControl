@@ -13,11 +13,10 @@ import com.tian.cloud.service.util.DateUtil;
 import com.tian.cloud.service.util.excel.ExcelExportUtil;
 import com.tian.cloud.service.util.excel.MySheet;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Param;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
@@ -134,7 +133,7 @@ public class ManageController {
         return BaseResponse.success(null);
     }
 
-    @RequestMapping("uploadFlood")
+    @RequestMapping("upload")
     public ModelAndView upLoadFlood() {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("upLoad");
@@ -144,7 +143,7 @@ public class ManageController {
 
     @RequestMapping("doUpload")
     @ResponseBody
-    public Object doUpload() {
+    public Object doUpload(@RequestParam("file") MultipartFile file, String extraData) {
         return null;
     }
 }
