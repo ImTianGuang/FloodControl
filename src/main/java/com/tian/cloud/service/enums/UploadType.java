@@ -6,7 +6,10 @@ import java.util.Map;
 
 public enum UploadType {
 
-    VAR0(0, "000"),;
+    FLOOD_PLAN(0, "防汛预案"),
+    NOTICE(1, "通知"),
+    FLOOD(2, "汛情"),
+    ;
 
     UploadType(int code, String msg) {
         this.code = code;
