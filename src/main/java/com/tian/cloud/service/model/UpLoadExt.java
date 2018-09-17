@@ -8,4 +8,10 @@ import lombok.Data;
  **/
 @Data
 public class UpLoadExt {
+
+    private int uploadType;
+
+    private Integer refId;
+
+    private long timestamp;
 }

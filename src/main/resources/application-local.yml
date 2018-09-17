@@ -48,6 +48,9 @@ mybatis:
 export:
   filePath: /var/file/flood/temp/
 
+upload:
+  filePath: /var/file/upload/
+
 logging:
   config: classpath:logback-spring-default.xml
   path: /var/log/flood
