@@ -6,17 +6,22 @@ import java.util.Map;
 
 public enum UploadType {
 
-    FLOOD_PLAN(0, "防汛预案"),
-    NOTICE(1, "通知"),
-    FLOOD(2, "汛情"),
+    FLOOD_PLAN(0, "floodPlan", "防汛预案"),
+    NOTICE(1, "notice", "通知"),
+    NOTICE_IMG(2, "noticeImg", "通知图片"),
+    FLOOD(3, "flood", "汛情"),
+    FLOOD_IMG(4, "floodImg", "汛情图片"),
     ;
 
-    UploadType(int code, String msg) {
+    UploadType(int code, String fileName, String msg) {
         this.code = code;
+        this.fileName = fileName;
         this.msg = msg;
     }
 
     private int code;
+
+    private String fileName;
 
     private String msg;
 
@@ -46,5 +51,13 @@ public enum UploadType {
 
     public void setMsg(String msg) {
         this.msg = msg;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 }
