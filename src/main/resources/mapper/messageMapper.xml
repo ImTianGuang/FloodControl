@@ -8,12 +8,14 @@
         <result column="status" property="status" jdbcType="INTEGER" />
         <result column="title" property="title" jdbcType="VARCHAR"/>
         <result column="content" property="content" jdbcType="VARCHAR"/>
+        <result column="attatch" property="attatch" jdbcType="VARCHAR"/>
+        <result column="photos" property="photos" jdbcType="VARCHAR"/>
         <result column="create_time" property="createTime" jdbcType="BIGINT" />
         <result column="update_time" property="updateTime" jdbcType="BIGINT" />
     </resultMap>
 
     <sql id="Base_Column_List" >
-        id, company_id, message_type, status, title, content, create_time, update_time
+        id, company_id, message_type, status, title, content, create_time, update_time, attatch, photos
     </sql>
 
     <insert id="save" parameterType="com.tian.cloud.service.dao.entity.Message" useGeneratedKeys="true" keyProperty="id">
@@ -36,6 +38,18 @@
         id = #{id}
     </update>
 
+    <update id="updateSelective" parameterType="com.tian.cloud.service.dao.entity.Message">
+        update `message`
+        set
+        <if test="attatch != null">
+            attatch = #{attatch},
+        </if>
+        <if test="photos != null">
+            photos = #{photos}
+        </if>
+        where
+        id = #{id}
+    </update>
     <select id="search" parameterType="com.tian.cloud.service.controller.request.CommonSearchReq" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>

@@ -16,12 +16,11 @@ import com.tian.cloud.service.exception.InternalException;
 import com.tian.cloud.service.service.AssertsService;
 import com.tian.cloud.service.service.CompanyService;
 import com.tian.cloud.service.service.UserService;
+import com.tian.cloud.service.util.FileUtils;
 import com.tian.cloud.service.util.ParamCheckUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
@@ -66,13 +65,14 @@ public class CompanyServiceImpl implements CompanyService {
         ParamCheckUtil.assertTrue(company != null, "单位不存在");
         List<Asserts> asserts = assertsService.getAssertsByCompany(companyId);
         List<CompanyUser> users = userService.getUserByCompany(companyId);
-        if (CollectionUtils.isEmpty(users) || users.size() < 2) {
-            users = defaultUsers(users, company);
-        }
+        fillAbsentUsers(users, company);
         fillAbsentAsserts(asserts);
         List<CompanyInfo.PhoneInfo> phoneInfos = toPhoneInfos(users);
         CompanyInfo companyInfo = new CompanyInfo();
         companyInfo.setAssertsList(asserts);
+        if (!StringUtils.isEmpty(company.getFloodPlan())) {
+            company.setFloodPlan(FileUtils.getFileName(company.getFloodPlan()));
+        }
         companyInfo.setCompany(company);
         companyInfo.setPhoneList(phoneInfos);
         return companyInfo;
@@ -84,7 +84,7 @@ public class CompanyServiceImpl implements CompanyService {
         company.setId(-1);
         company.setStatus(LineStatusEnum.USABLE.getCode());
         List<CompanyUser> users = Lists.newArrayList();
-        users = defaultUsers(users, company);
+        fillAbsentUsers(users, company);
         List<CompanyInfo.PhoneInfo> phoneInfos = toPhoneInfos(users);
         List<Asserts> asserts = Lists.newArrayList();
         fillAbsentAsserts(asserts);
@@ -103,12 +103,44 @@ public class CompanyServiceImpl implements CompanyService {
             }
             Asserts asserts = new Asserts();
             asserts.setStatus(1);
-            asserts.setAssertsValue("0");
+            asserts.setAssertsValue("");
             asserts.setAssertsTypeName(assertsType.getName());
             asserts.setAssertsTypeId(assertsType.getId());
 
             assertsList.add(asserts);
         }
+    }
+    private void fillAbsentUsers(List<CompanyUser> userList, Company company) {
+        userList = userList == null ? Lists.newArrayList() : userList;
+        List<CommonType> commonTypeList = commonTypeMapper.selectUsableByType(CommonTypeEnum.POSITION.getCode());
+        List<CommonType> floodTitleList = commonTypeMapper.selectUsableByType(CommonTypeEnum.FLOOD_TITLE.getCode());
+        createDefaultIfEmpty(commonTypeList, CommonTypeEnum.POSITION);
+        createDefaultIfEmpty(floodTitleList, CommonTypeEnum.FLOOD_TITLE);
+        for (CommonType title : floodTitleList) {
+            if (containTitle(userList, title)) {
+                continue;
+            }
+            CompanyUser user = new CompanyUser();
+            user.setCompanyId(company.getId() == null ? -1 : company.getId());
+            user.setOrgCode(Orgnization.ORG1.getCode());
+            user.setOrgTitle(Orgnization.ORG1.getMsg());
+            if (Orgnization.isOrg2Title(title.getName())) {
+                user.setOrgCode(Orgnization.ORG2.getCode());
+                user.setOrgTitle(Orgnization.ORG2.getMsg());
+            }
+            user.setFloodTitle(title.getName());
+            user.setPositionId(-1);
+            userList.add(user);
+        }
+    }
+
+    private boolean containTitle(List<CompanyUser> userList, CommonType title) {
+        for (CompanyUser companyUser : userList) {
+            if (Objects.equal(companyUser.getFloodTitle(), title.getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean containAsserts(List<Asserts> asserts, Integer id) {

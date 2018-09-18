@@ -105,7 +105,6 @@
         check_person_phone = #{checkPersonPhone},
         status = #{status},
         update_time = #{updateTime},
-        flood_plan = #{floodPlan},
         flood_manager_phone = #{floodManagerPhone},
         flood_manager = #{floodManager}
         <where>

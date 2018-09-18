@@ -15,4 +15,6 @@ public interface MessageMapper {
     List<Message> search(CommonSearchReq req);
 
     Message getById(@Param("id") int id);
+
+    int updateSelective(Message message);
 }

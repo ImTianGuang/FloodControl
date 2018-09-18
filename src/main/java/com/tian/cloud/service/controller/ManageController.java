@@ -1,5 +1,6 @@
 package com.tian.cloud.service.controller;
 
+import com.google.common.base.Charsets;
 import com.tian.cloud.service.controller.request.AccountCheckReq;
 import com.tian.cloud.service.controller.request.CommonSearchReq;
 import com.tian.cloud.service.controller.response.BaseResponse;
@@ -15,6 +16,7 @@ import com.tian.cloud.service.util.ParamCheckUtil;
 import com.tian.cloud.service.util.excel.ExcelExportUtil;
 import com.tian.cloud.service.util.excel.MySheet;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.util.URLEncoder;
 import org.apache.ibatis.annotations.Param;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.web.bind.annotation.*;
@@ -146,6 +148,7 @@ public class ManageController {
         ParamCheckUtil.assertTrue(refId != null, "系统异常");
 
         String ext = uploadService.encryptExtra(uploadType1, refId);
+        ext = URLEncoder.QUERY.encode(ext, Charsets.UTF_8);
         return BaseResponse.success("/manage/upload?ext=" + ext + "&title=" + uploadType1.getMsg());
     }
 

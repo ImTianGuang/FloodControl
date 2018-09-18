@@ -9,12 +9,14 @@
         <result column="end_time" property="endTime" jdbcType="VARCHAR" />
         <result column="title" property="title" jdbcType="VARCHAR" />
         <result column="flood_desc" property="floodDesc" jdbcType="VARCHAR" />
+        <result column="attatch" property="attatch" jdbcType="VARCHAR" />
+        <result column="photos" property="photos" jdbcType="VARCHAR" />
         <result column="create_time" property="createTime" jdbcType="BIGINT" />
         <result column="update_time" property="updateTime" jdbcType="BIGINT" />
     </resultMap>
 
     <sql id="Base_Column_List" >
-        id, company_id, status, start_time, end_time, title, flood_desc, create_time, update_time
+        id, company_id, status, start_time, end_time, title, flood_desc, create_time, update_time, attatch, photos
     </sql>
 
     <insert id="save" parameterType="list" useGeneratedKeys="true" keyProperty="id">
@@ -70,6 +72,7 @@
         where
         id = #{id}
     </update>
+
     <update id="update" parameterType="com.tian.cloud.service.dao.entity.FloodSituation">
         update
         flood_situation
@@ -84,5 +87,19 @@
         <where>
             id = #{id}
         </where>
+    </update>
+
+    <update id="updateSelective" parameterType="com.tian.cloud.service.dao.entity.FloodSituation">
+        update
+        flood_situation
+        set
+        <if test="attatch != null">
+            attatch = attatch,
+        </if>
+        <if test="photos != null">
+            photos = photos
+        </if>
+        where
+        id = #{id}
     </update>
 </mapper>

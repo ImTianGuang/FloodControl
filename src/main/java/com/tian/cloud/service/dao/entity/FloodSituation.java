@@ -23,9 +23,9 @@ public class FloodSituation {
 
     private String floodDesc = "";
 
-    private String photos;
+    private String photos = "";
 
-    private String attatch;
+    private String attatch = "";
 
     private long createTime;
 

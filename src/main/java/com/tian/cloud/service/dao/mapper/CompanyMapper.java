@@ -25,5 +25,5 @@ public interface CompanyMapper {
 
     Company selectByName(@Param("name") String name);
 
-    void updateSelective(Company company);
+    int updateSelective(Company company);
 }

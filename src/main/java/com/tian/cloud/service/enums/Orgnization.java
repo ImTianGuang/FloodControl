@@ -1,8 +1,10 @@
 package com.tian.cloud.service.enums;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 
 import java.util.Map;
+import java.util.Set;
 
 public enum Orgnization {
 
@@ -19,6 +21,7 @@ public enum Orgnization {
 
     private String msg;
 
+    private static final Set<String> ORG2_TITLE_SET = ImmutableSet.of("24小时值班", "非汛期联系", "行政办公电话", "行政办公座机");
     private static final Map<Integer, Orgnization> codeMap = Maps.newHashMap();
 
     static {
@@ -27,6 +30,14 @@ public enum Orgnization {
         }
     }
 
+    public static boolean isOrg2Title(String titleName) {
+        for (String title : ORG2_TITLE_SET) {
+            if (titleName.contains(title)) {
+                return true;
+            }
+        }
+        return false;
+    }
     public static Orgnization toEnum(int code) {
         return codeMap.get(code);
     }

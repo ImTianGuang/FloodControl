@@ -21,4 +21,6 @@ public interface SituationMapper {
     List<FloodSituation> search(CommonSearchReq request);
 
     void deleteById(@Param("id") int id);
+
+    int updateSelective(FloodSituation floodSituation);
 }
