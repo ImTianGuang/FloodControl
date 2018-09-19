@@ -179,7 +179,7 @@ public class ManageController {
         ParamCheckUtil.assertTrue(type != null, "参数错误:type");
         ParamCheckUtil.assertTrue(refId != null, "参数错误:refId");
         String ext = uploadService.encryptDownloadExtra(type, refId);
-        return BaseResponse.success("/manage/download?ext=" + ext);
+        return BaseResponse.success("/manage/download?ext=" + URLEncoder.QUERY.encode(ext, Charsets.UTF_8));
     }
 
     @RequestMapping("download")
