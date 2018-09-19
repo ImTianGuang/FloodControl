@@ -14,6 +14,7 @@ import com.tian.cloud.service.dao.mapper.SituationMapper;
 import com.tian.cloud.service.enums.SituationTargetEnum;
 import com.tian.cloud.service.service.SituationService;
 import com.tian.cloud.service.util.DateUtil;
+import com.tian.cloud.service.util.FileUtils;
 import com.tian.cloud.service.util.ParamCheckUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -64,6 +65,7 @@ public class SituationServiceImpl implements SituationService {
 
         FloodSituationInfo floodSituationInfo = new FloodSituationInfo();
         floodSituationInfo.setCompany(company);
+        floodSituation.setAttatch(FileUtils.getFileName(floodSituation.getAttatch()));
         floodSituationInfo.setFloodSituation(floodSituation);
         floodSituationInfo.setSituationDetailList(situationDetailList);
         floodSituationInfo.setSolutionDetailList(solutionDetailList);
