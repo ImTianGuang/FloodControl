@@ -1,17 +1,16 @@
 package com.tian.cloud.service.service.impl;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
 import com.google.common.base.Splitter;
 import com.google.common.collect.*;
 import com.tian.cloud.service.config.ExportConfig;
+import com.tian.cloud.service.config.UploadConfig;
 import com.tian.cloud.service.controller.request.CommonSearchReq;
 import com.tian.cloud.service.dao.entity.*;
 import com.tian.cloud.service.dao.mapper.*;
-import com.tian.cloud.service.enums.CommonTypeEnum;
-import com.tian.cloud.service.enums.LineStatusEnum;
-import com.tian.cloud.service.enums.Orgnization;
-import com.tian.cloud.service.enums.SituationTargetEnum;
+import com.tian.cloud.service.enums.*;
 import com.tian.cloud.service.exception.ErrorCode;
 import com.tian.cloud.service.exception.InternalException;
 import com.tian.cloud.service.model.export.*;
@@ -19,6 +18,7 @@ import com.tian.cloud.service.service.ExportService;
 import com.tian.cloud.service.service.UserService;
 import com.tian.cloud.service.util.OhMyEmail;
 import com.tian.cloud.service.util.ParamCheckUtil;
+import com.tian.cloud.service.util.ZipUtil;
 import com.tian.cloud.service.util.excel.ExcelExportUtil;
 import com.tian.cloud.service.util.excel.MySheet;
 import lombok.extern.slf4j.Slf4j;
@@ -63,6 +63,9 @@ public class ExportServiceImpl implements ExportService {
 
     @Resource
     private ExportConfig exportConfig;
+
+    @Resource
+    private UploadConfig uploadConfig;
 
     @Resource
     private FloodSituationDetailMapper floodSituationDetailMapper;
@@ -140,7 +143,6 @@ public class ExportServiceImpl implements ExportService {
 
         CellStyle cellStyle = getCellStyle(workbook);
 
-
         int startRow = -1;
         if (!CollectionUtils.isEmpty(allCompany)) {
             for (Company company : allCompany) {
@@ -189,6 +191,7 @@ public class ExportServiceImpl implements ExportService {
     @Override
     public void exportAll(String emails) {
         File file = null;
+        File zipFile = null;
         try {
 
             ParamCheckUtil.assertTrue(!StringUtils.isEmpty(emails), "邮箱必填");
@@ -200,12 +203,17 @@ public class ExportServiceImpl implements ExportService {
             ExcelExportUtil.writeToFile(workbook, filePath);
             file = new File(filePath);
 
+            String nowString = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
             log.info("build:{}", System.currentTimeMillis() - start);
-            OhMyEmail.subject("汛前通讯录-导出 " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+            String zipFileName = "floodPlan-" + nowString + ".zip";
+            ZipUtil.zipFolder(uploadConfig.getFilePath() + UploadType.FLOOD_PLAN.getDirectory(),uploadConfig.getFilePath(), zipFileName, Charsets.UTF_8.name());
+            zipFile = new File(uploadConfig.getFilePath() + zipFileName);
+            OhMyEmail.subject("汛前通讯录-导出-" + nowString)
                     .from("flood-smallSoft")
                     .to(emails)
-                    .text("汛前通讯录已导出，请查看附件")
+                    .text("汛前通讯录与防汛预案已导出，请查看附件")
                     .attach(file, "汛前通讯录.xls")
+                    .attach(zipFile, "防汛预案.zip")
                     .send();
             log.info("sendEmail:{}", System.currentTimeMillis() - start);
         } catch (InternalException e) {
@@ -216,6 +224,9 @@ public class ExportServiceImpl implements ExportService {
         } finally {
             if (file != null) {
                 file.deleteOnExit();
+            }
+            if (zipFile != null) {
+                zipFile.deleteOnExit();
             }
         }
     }

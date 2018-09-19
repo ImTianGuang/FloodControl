@@ -256,17 +256,17 @@ public class ZipUtil {
 
     public static void main(String[] argv) {
 
-        String sourceFolder = "d:/ziptest";
-        String outputFolder = "d:/ziptest";
+        String sourceFolder = "/var/file/upload/floodPlan_back/";
+        String outputFolder = "/Users/tianguang";
         String outputFileName = "ziptest.zip";
         try {
-            zipFolder(sourceFolder, outputFolder, outputFileName, "GB2312");
+            zipFolder(sourceFolder, outputFolder, outputFileName, "UTF-8");
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        String zipFileFullName = "d:\\ziptest\\ziptest.zip";
-        unzip(zipFileFullName, "d:\\ziptest\\unzip", "GB2312");
+//        String zipFileFullName = "d:\\ziptest\\ziptest.zip";
+//        unzip(zipFileFullName, "d:\\ziptest\\unzip", "GB2312");
 
     }
 
