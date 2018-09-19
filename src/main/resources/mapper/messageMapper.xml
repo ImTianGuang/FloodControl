@@ -47,6 +47,7 @@
         <if test="photos != null">
             photos = #{photos}
         </if>
+        update_time = #{updateTime}
         where
         id = #{id}
     </update>

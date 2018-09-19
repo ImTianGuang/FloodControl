@@ -94,11 +94,12 @@
         flood_situation
         set
         <if test="attatch != null">
-            attatch = attatch,
+            attatch = #{attatch},
         </if>
         <if test="photos != null">
-            photos = photos
+            photos = #{photos}
         </if>
+        update_time = #{updateTime}
         where
         id = #{id}
     </update>

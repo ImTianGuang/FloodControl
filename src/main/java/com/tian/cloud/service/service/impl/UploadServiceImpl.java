@@ -68,6 +68,7 @@ public class UploadServiceImpl implements UploadService {
             FloodSituation floodSituation = new FloodSituation();
             floodSituation.setId(ext.getRefId());
             floodSituation.setAttatch(filePath);
+            floodSituation.setUpdateTime(System.currentTimeMillis());
             affectRow = situationMapper.updateSelective(floodSituation);
             dbFileName = dbSituation.getAttatch();
         } else if (UploadType.FLOOD_IMG.equals(uploadType)) {
@@ -77,12 +78,14 @@ public class UploadServiceImpl implements UploadService {
             FloodSituation floodSituation = new FloodSituation();
             floodSituation.setId(ext.getRefId());
             floodSituation.setPhotos(dbFloodSituation.getPhotos() + ";" + filePath);
+            floodSituation.setUpdateTime(System.currentTimeMillis());
             affectRow = situationMapper.updateSelective(floodSituation);
         } else if (UploadType.NOTICE.equals(uploadType)) {
             Message dbMessage = messageMapper.getById(ext.getRefId());
             Message message = new Message();
             message.setId(ext.getRefId());
             message.setAttatch(filePath);
+            message.setUpdateTime(System.currentTimeMillis());
             affectRow = messageMapper.updateSelective(message);
             dbFileName = dbMessage.getAttatch();
         } else if (UploadType.NOTICE_IMG.equals(uploadType)) {
@@ -90,6 +93,7 @@ public class UploadServiceImpl implements UploadService {
             Message message = new Message();
             message.setId(ext.getRefId());
             message.setPhotos(dbMessage.getPhotos() + ";" + filePath);
+            message.setUpdateTime(System.currentTimeMillis());
             affectRow = messageMapper.updateSelective(message);
         } else {
             throw new InternalException(ErrorCode.PARAM_ERROR, "未知的上传类型");
