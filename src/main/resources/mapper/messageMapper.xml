@@ -45,7 +45,7 @@
             attatch = #{attatch},
         </if>
         <if test="photos != null">
-            photos = #{photos}
+            photos = #{photos},
         </if>
         update_time = #{updateTime}
         where
