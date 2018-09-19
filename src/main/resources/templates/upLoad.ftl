@@ -10,49 +10,7 @@
 
 <style type="text/css">
     * { font-size:12px; }
-    .s_btn_wr {
-        width: 102px;
-        height: 38px;
-        border: 1px solid #38f;
-        border-bottom: 1px solid #2e7ae5;
-        background-color: #38f;
-    }
 
-    .btn {
-        cursor: pointer;
-        width: 102px;
-        height: 38px;
-        line-height: 38px;
-        padding: 0;
-        border: 0;
-        background: none;
-        background-color: #38f;
-        font-size: 16px;
-        color: white;
-        box-shadow: none;
-        font-weight: normal;
-    }
-
-    .file {
-        position: relative;
-        display: inline-block;
-        background: #D0EEFF;
-        border: 1px solid #99D3F5;
-        border-radius: 4px;
-        padding: 4px 12px;
-        overflow: hidden;
-        color: #1E88C7;
-        text-decoration: none;
-        text-indent: 0;
-        line-height: 20px;
-    }
-    .file input {
-        position: absolute;
-        font-size: 100px;
-        right: 0;
-        top: 0;
-        opacity: 0;
-    }
     .file:hover {
         background: #AADFFD;
         border-color: #78C3F3;
@@ -75,22 +33,35 @@
         text-align: center;
     }
 
+    .btn{
+        width:70px; color:#fff;background-color:#3598dc; border:0 none;height:28px; line-height:16px!important;cursor:pointer;
+        padding: 2px 6px;
+        margin-right: 4px;
+    }
+    .btn:hover{background-color:#63bfff;color:#fff;}
+
 </style>
 
 <body>
+
 <div class="head_wrapper">
-    <div class="s-p-top"></div>
+    <div class="s-p-top">
+
+    </div>
+    <h1 style="text-align: center;font-size: 16px;">${title}</h1>
+    <h2 style="text-align: center">最大上传大小:5MB,支持上传格式:jpeg,jpe,png,pdf,word</h2>
     <form id="form1" action="${uploadPath}" target="frame1" method="post" enctype="multipart/form-data" style="text-align: center;">
-        <label  class="btn" style="overflow: hidden">选择文件
-            <input style="opacity: 0; display: none; font-size: 28px;" type="file" name="file" id="file" onchange="bindFileName">
-        </label>
-        <input type="text" style="width: 350px" name="fileName" id="fileName"/>
+
+        <input type="text" style="width: 350px;margin-left: 6px;" name="fileName" id="fileName"/>
         <input type="text" name="extraData" value="${ext}" hidden="true">
+        <label  class="btn" style="overflow: hidden">选择文件
+            <input style="opacity: 0; display: none; font-size: 28px;" type="file" name="file" id="file" onchange="document.getElementById('fileName').value=this.files[0].name">
+        </label>
         <label onclick="upload()" class="btn">上传</label>
     </form>
 </div>
 
-<iframe name="frame1" frameborder="0" height="40"></iframe>
+<iframe name="frame1" frameborder="0" height="40" hidden="true"></iframe>
 <!-- 其实我们可以把iframe标签隐藏掉 -->
 <script type="text/javascript">
     function upload() {
@@ -99,13 +70,13 @@
             //获取iframe标签里body元素里的文字。即服务器响应过来的"上传成功"或"上传失败"
             var word = $("iframe[name='frame1']").contents().find("body").text();
             if(word != "") {
-//						alert(word); //弹窗提示是否上传成功
-//						clearInterval(t); //清除定时器
+						alert(word); //弹窗提示是否上传成功
+						clearInterval(t); //清除定时器
             }
         }, 1000);
     }
-    function bindFileName (){
-        var filePath=$(this).val();
+    function bindFileName () {
+        var filePath=$("#file").val();
         console.log(filePath)
         var arr=filePath.split('\\');
         var fileName=arr[arr.length-1];

@@ -14,6 +14,8 @@ spring:
   application:
     name: demo-service
   http:
+    multipart:
+      max-file-size: 5MB
     encoding:
       enabled: true
       force: true

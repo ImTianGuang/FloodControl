@@ -36,6 +36,7 @@ create table `company` (
     `flood_plan` MEDIUMTEXT not null default '',
     `create_time` bigint(20) NOT NULL,
     `update_time` bigint(20) NOT NULL,
+    `record_date` varchar(64) NOT NULL DEFAULT '',
     PRIMARY KEY (`id`)
 )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
