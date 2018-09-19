@@ -85,6 +85,7 @@ public class ExportServiceImpl implements ExportService {
     public List<MySheet> buildAllUserSheetList(ExportContext context) {
         List<Company> allCompany = context.getAllCompany();
         Map<Integer, Company> idCompanyMap = Maps.uniqueIndex(allCompany, Company::getId);
+        Map<Integer, CommonType> idPositionMap = Maps.uniqueIndex(context.getPositionTypeList(), CommonType::getId);
         List<CompanyUser> allUser = context.getAllUsableUser();
         Multimap<String, CompanyUser> floodTitleUserMap = Multimaps.index(allUser, CompanyUser::getFloodTitle);
         List<MySheet> mySheets = Lists.newArrayList();
@@ -95,7 +96,7 @@ public class ExportServiceImpl implements ExportService {
             if (CollectionUtils.isEmpty(users)) {
                 continue;
             }
-            List<ExportUser> exportUsers = toExportUser(floodTitleUserMap.get(floodTitle), idCompanyMap);
+            List<ExportUser> exportUsers = toExportUser(floodTitleUserMap.get(floodTitle), idCompanyMap, idPositionMap);
             mySheet.setDataList(exportUsers);
             mySheets.add(mySheet);
         }
@@ -685,7 +686,7 @@ public class ExportServiceImpl implements ExportService {
         return pairList;
     }
 
-    private List<ExportUser> toExportUser(Collection<CompanyUser> users, Map<Integer, Company> idCompanyMap) {
+    private List<ExportUser> toExportUser(Collection<CompanyUser> users, Map<Integer, Company> idCompanyMap, Map<Integer, CommonType> idPositionMap) {
         List<ExportUser> exportUsers = Lists.newArrayList();
         for (CompanyUser user : users) {
             ExportUser exportUser = new ExportUser();
@@ -698,7 +699,12 @@ public class ExportServiceImpl implements ExportService {
             exportUser.setName(user.getUserName());
             exportUser.setPersonPhone(user.getUserPhone());
             exportUser.setWorkPhone(user.getWorkPhone());
-
+            CommonType position = idPositionMap.get(user.getPositionId());
+            if (position != null) {
+                exportUser.setPosition(position.getName());
+            } else {
+                exportUser.setPosition(user.getPositionId().toString());
+            }
             exportUsers.add(exportUser);
         }
         return exportUsers;
