@@ -21,4 +21,6 @@ public interface ExportService {
     void exportAll(String emails);
 
     void exportFlood(CommonSearchReq searchReq);
+
+    void exportMessage(CommonSearchReq request);
 }

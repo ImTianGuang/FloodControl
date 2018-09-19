@@ -10,6 +10,7 @@ import com.tian.cloud.service.service.CompanyService;
 import com.tian.cloud.service.service.MessageService;
 import com.tian.cloud.service.service.SituationService;
 import com.tian.cloud.service.util.DateUtil;
+import com.tian.cloud.service.util.FileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -81,6 +82,7 @@ public class SearchController {
     @RequestMapping("messageInfo")
     public BaseResponse<Message> messageInfo(int id) {
         Message message = messageService.getMessage(id);
+        message.setAttatch(FileUtils.getFileName(message.getAttatch()));
         return BaseResponse.success(message);
     }
 

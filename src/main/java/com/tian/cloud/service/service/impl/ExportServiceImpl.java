@@ -267,6 +267,11 @@ public class ExportServiceImpl implements ExportService {
         }
     }
 
+    @Override
+    public void exportMessage(CommonSearchReq request) {
+        log.info("start-export:{}", request);
+    }
+
     private Workbook buildFloodWorkBook(List<FloodSituation> floodSituations, List<FloodSituationDetail> details, List<Company> companyList, List<CommonType>
             situationAndSolution) {
         Workbook workbook = new HSSFWorkbook();

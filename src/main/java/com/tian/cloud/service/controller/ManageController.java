@@ -141,6 +141,18 @@ public class ManageController {
         return BaseResponse.success(null);
     }
 
+    @RequestMapping("exportMessage")
+    public BaseResponse<Boolean> exportMessage(@RequestBody CommonSearchReq request) {
+        if (request.getStartDateStr() != null) {
+            request.setStartTime(DateUtil.str2Date(request.getStartDateStr(), DateUtil.FMT_YYYY_MM1).getTime());
+        }
+        if (request.getEndDateStr() != null) {
+            request.setEndTime(DateUtil.str2Date(request.getEndDateStr(), DateUtil.FMT_YYYY_MM1).getTime());
+        }
+        exportService.exportMessage(request);
+        return BaseResponse.success(null);
+    }
+
     @RequestMapping("uploadUrl")
     @ResponseBody
     public BaseResponse<String> uploadUrl(int uploadType, Integer refId) throws Exception {
