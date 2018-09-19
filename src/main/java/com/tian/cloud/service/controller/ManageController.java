@@ -171,9 +171,9 @@ public class ManageController {
         return BaseResponse.success(true);
     }
 
-    @RequestMapping("download")
+    @RequestMapping("downloadUrl")
     @ResponseBody
-    public Object download (HttpServletRequest request, HttpServletResponse response, String path) {
+    public Object downloadUrl (HttpServletRequest request, HttpServletResponse response, int uploadType, Integer refId, String fileName) {
         return null;
     }
 }

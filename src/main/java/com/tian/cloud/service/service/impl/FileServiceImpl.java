@@ -46,8 +46,16 @@ public class FileServiceImpl implements FileService {
     public void backUpFile(String dbFileName, UploadType uploadType) {
         File file = new File(dbFileName);
         LocalDateTime now = LocalDateTime.now();
-        File backUpFile = new File(dbFileName + "_back_" + now.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        File backUpFile = new File(getBakPath(dbFileName, uploadType) + "_" + now.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        File bakDirectory = backUpFile.getParentFile();
+        if (!bakDirectory.exists()) {
+            bakDirectory.mkdir();
+        }
         boolean success = file.renameTo(backUpFile);
         log.info("backUpFile:{}, result:{}", dbFileName, success);
+    }
+
+    private String getBakPath(String dbFileName, UploadType uploadType) {
+        return dbFileName.replace("/" + uploadType.getDirectory() + "/", "/" +uploadType.getDirectory() + "_back/");
     }
 }
