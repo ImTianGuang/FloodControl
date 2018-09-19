@@ -15,5 +15,5 @@ public interface UploadService {
 
     String getFilePathByType(UploadType uploadType, Integer refId);
 
-    File getFileByExt(String ext);
+    File getFileByExt(String ext) throws Exception;
 }

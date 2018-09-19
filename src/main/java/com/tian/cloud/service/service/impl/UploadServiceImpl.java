@@ -109,22 +109,36 @@ public class UploadServiceImpl implements UploadService {
 
     @Override
     public String getFilePathByType(UploadType uploadType, Integer refId) {
-        return null;
+        if (UploadType.FLOOD_PLAN == uploadType) {
+            Company company = companyMapper.selectById(refId);
+            return company.getFloodPlan();
+        }
+        if (UploadType.FLOOD == uploadType) {
+            FloodSituation floodSituation = situationMapper.getById(refId);
+            return floodSituation.getAttatch();
+        }
+        if (UploadType.NOTICE == uploadType) {
+            Message message = messageMapper.getById(refId);
+            return message.getAttatch();
+        }
+        return "";
     }
 
     @Override
-    public File getFileByExt(String ext) {
-        return null;
+    public File getFileByExt(String ext) throws Exception {
+        String decrypt = DesUtil.decrypt(ext, signKey);
+        UpLoadExt downloadExt = GSON.fromJson(decrypt, UpLoadExt.class);
+        ParamCheckUtil.assertTrue((System.currentTimeMillis() - downloadExt.getTimestamp()) < TEN_MINUTE, "链接已过期，请重新获取");
+        String filePath = this.getFilePathByType(UploadType.toEnum(downloadExt.getUploadType()), downloadExt.getRefId());
+        if (StringUtils.isEmpty(filePath)) {
+            return null;
+        }
+        return new File(filePath);
     }
 
     @Override
     public String encryptDownloadExtra(UploadType uploadType, Integer refId) throws Exception {
-        DownloadExt downloadExt = new DownloadExt();
-        downloadExt.setPath(getFilePathByType(uploadType, refId));
-        downloadExt.setRefId(refId);
-        downloadExt.setUploadType(uploadType.getCode());
-        downloadExt.setTimestamp(System.currentTimeMillis());
-        return DesUtil.encrypt(GSON.toJson(downloadExt), signKey);
+        return encryptUploadExtra(uploadType, refId);
     }
 
     @Override

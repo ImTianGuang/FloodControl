@@ -12,6 +12,7 @@ import com.tian.cloud.service.dao.entity.Message;
 import com.tian.cloud.service.enums.UploadType;
 import com.tian.cloud.service.service.*;
 import com.tian.cloud.service.util.DateUtil;
+import com.tian.cloud.service.util.FileUtils;
 import com.tian.cloud.service.util.ParamCheckUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.util.URLEncoder;
@@ -22,7 +23,11 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URLDecoder;
 import java.util.List;
 
 /**
@@ -178,8 +183,24 @@ public class ManageController {
     }
 
     @RequestMapping("download")
-    public Object download(HttpServletRequest request, HttpServletResponse response, String ext) {
+    public Object download(HttpServletRequest request, HttpServletResponse response, String ext) throws Exception {
         File file = uploadService.getFileByExt(ext);
+        if(file.exists()){
+            OutputStream os = new BufferedOutputStream(response.getOutputStream());
+            try {
+                response.setContentType("application/octet-stream");
+
+                String fileName = FileUtils.getFileName(file.getAbsolutePath());
+                response.setHeader("Content-disposition", "attachment; filename="
+                        + new String(fileName.getBytes("utf-8"), "ISO8859-1")); // 指定下载的文件名
+                os.write(org.apache.commons.io.FileUtils.readFileToByteArray(file));
+                os.flush();
+            } finally {
+                if(os != null){
+                    os.close();
+                }
+            }
+        }
         return null;
     }
 }
