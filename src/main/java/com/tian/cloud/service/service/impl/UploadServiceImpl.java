@@ -11,6 +11,7 @@ import com.tian.cloud.service.dao.mapper.SituationMapper;
 import com.tian.cloud.service.enums.UploadType;
 import com.tian.cloud.service.exception.ErrorCode;
 import com.tian.cloud.service.exception.InternalException;
+import com.tian.cloud.service.model.DownloadExt;
 import com.tian.cloud.service.model.UpLoadExt;
 import com.tian.cloud.service.service.FileService;
 import com.tian.cloud.service.service.UploadService;
@@ -21,6 +22,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.io.File;
 
 /**
  * @author tianguang
@@ -111,8 +113,18 @@ public class UploadServiceImpl implements UploadService {
     }
 
     @Override
-    public String encryptDownloadExtra(UploadType uploadType, Integer refId) throws Exception {
+    public File getFileByExt(String ext) {
         return null;
+    }
+
+    @Override
+    public String encryptDownloadExtra(UploadType uploadType, Integer refId) throws Exception {
+        DownloadExt downloadExt = new DownloadExt();
+        downloadExt.setPath(getFilePathByType(uploadType, refId));
+        downloadExt.setRefId(refId);
+        downloadExt.setUploadType(uploadType.getCode());
+        downloadExt.setTimestamp(System.currentTimeMillis());
+        return DesUtil.encrypt(GSON.toJson(downloadExt), signKey);
     }
 
     @Override

@@ -22,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.util.List;
 
 /**
@@ -168,16 +169,17 @@ public class ManageController {
 
     @RequestMapping("downloadUrl")
     @ResponseBody
-    public Object downloadUrl (HttpServletRequest request, HttpServletResponse response, int uploadType, Integer refId, String fileName) {
+    public BaseResponse<String> downloadUrl (HttpServletRequest request, HttpServletResponse response, int uploadType, Integer refId) throws Exception {
         UploadType type = UploadType.toEnum(uploadType);
         ParamCheckUtil.assertTrue(type != null, "参数错误:type");
         ParamCheckUtil.assertTrue(refId != null, "参数错误:refId");
-        String filePath = uploadService.getFilePathByType(type, refId);
-        return null;
+        String ext = uploadService.encryptDownloadExtra(type, refId);
+        return BaseResponse.success("/manage/download?ext=" + ext);
     }
 
     @RequestMapping("download")
     public Object download(HttpServletRequest request, HttpServletResponse response, String ext) {
+        File file = uploadService.getFileByExt(ext);
         return null;
     }
 }
