@@ -13,12 +13,8 @@ import com.tian.cloud.service.enums.UploadType;
 import com.tian.cloud.service.service.*;
 import com.tian.cloud.service.util.DateUtil;
 import com.tian.cloud.service.util.ParamCheckUtil;
-import com.tian.cloud.service.util.excel.ExcelExportUtil;
-import com.tian.cloud.service.util.excel.MySheet;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.util.URLEncoder;
-import org.apache.ibatis.annotations.Param;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -26,7 +22,6 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.OutputStream;
 import java.util.List;
 
 /**
@@ -147,7 +142,7 @@ public class ManageController {
         ParamCheckUtil.assertTrue(uploadType1 != null, "系统异常");
         ParamCheckUtil.assertTrue(refId != null, "系统异常");
 
-        String ext = uploadService.encryptExtra(uploadType1, refId);
+        String ext = uploadService.encryptUploadExtra(uploadType1, refId);
         ext = URLEncoder.QUERY.encode(ext, Charsets.UTF_8);
         return BaseResponse.success("/manage/upload?ext=" + ext + "&title=" + uploadType1.getMsg());
     }
@@ -174,6 +169,15 @@ public class ManageController {
     @RequestMapping("downloadUrl")
     @ResponseBody
     public Object downloadUrl (HttpServletRequest request, HttpServletResponse response, int uploadType, Integer refId, String fileName) {
+        UploadType type = UploadType.toEnum(uploadType);
+        ParamCheckUtil.assertTrue(type != null, "参数错误:type");
+        ParamCheckUtil.assertTrue(refId != null, "参数错误:refId");
+        String filePath = uploadService.getFilePathByType(type, refId);
+        return null;
+    }
+
+    @RequestMapping("download")
+    public Object download(HttpServletRequest request, HttpServletResponse response, String ext) {
         return null;
     }
 }

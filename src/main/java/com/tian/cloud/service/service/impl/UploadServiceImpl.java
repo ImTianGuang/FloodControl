@@ -106,7 +106,17 @@ public class UploadServiceImpl implements UploadService {
     }
 
     @Override
-    public String encryptExtra(UploadType uploadType, Integer refId) throws Exception {
+    public String getFilePathByType(UploadType uploadType, Integer refId) {
+        return null;
+    }
+
+    @Override
+    public String encryptDownloadExtra(UploadType uploadType, Integer refId) throws Exception {
+        return null;
+    }
+
+    @Override
+    public String encryptUploadExtra(UploadType uploadType, Integer refId) throws Exception {
         UpLoadExt upLoadExt = new UpLoadExt();
         upLoadExt.setRefId(refId);
         upLoadExt.setUploadType(uploadType.getCode());

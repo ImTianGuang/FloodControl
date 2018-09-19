@@ -7,5 +7,9 @@ public interface UploadService {
 
     boolean upload(MultipartFile file, String extraData) throws Exception;
 
-    String encryptExtra(UploadType uploadType, Integer refId) throws Exception;
+    String encryptUploadExtra(UploadType uploadType, Integer refId) throws Exception;
+
+    String encryptDownloadExtra(UploadType uploadType, Integer refId) throws Exception;
+
+    String getFilePathByType(UploadType uploadType, Integer refId);
 }
