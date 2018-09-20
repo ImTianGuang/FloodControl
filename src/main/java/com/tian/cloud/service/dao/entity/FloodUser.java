@@ -17,7 +17,17 @@ public class FloodUser {
 
     private Integer status;
 
+    private Boolean isSuper;
+
     private long createTime;
 
     private long updateTime;
+
+    public Boolean getIsSuper() {
+        return isSuper;
+    }
+
+    public void setIsSuper(Boolean aSuper) {
+        isSuper = aSuper;
+    }
 }

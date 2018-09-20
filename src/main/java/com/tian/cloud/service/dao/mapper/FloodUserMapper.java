@@ -12,4 +12,10 @@ public interface FloodUserMapper {
     FloodUser selectByNameAndPass(@Param("userName") String userName, @Param("password") String password);
 
     FloodUser selectByName(@Param("userName") String userName);
+
+    int updatePassword(@Param("id") int id, @Param("newPassword") String newPassword);
+
+    int insert(@Param("userName") String name, @Param("password") String pass, @Param("isSuper") boolean isSuper);
+
+    int deleteUser(@Param("id") int id);
 }

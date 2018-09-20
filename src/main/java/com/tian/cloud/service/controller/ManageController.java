@@ -10,6 +10,7 @@ import com.tian.cloud.service.dao.entity.CommonType;
 import com.tian.cloud.service.dao.entity.Company;
 import com.tian.cloud.service.dao.entity.Message;
 import com.tian.cloud.service.enums.UploadType;
+import com.tian.cloud.service.model.auth.AccountCheckResult;
 import com.tian.cloud.service.service.*;
 import com.tian.cloud.service.util.DateUtil;
 import com.tian.cloud.service.util.FileUtils;
@@ -62,15 +63,29 @@ public class ManageController {
 
     @RequestMapping("checkAccount")
     @ResponseBody
-    public BaseResponse<String> checkAccount(@RequestBody AccountCheckReq checkReq) {
-        String token = authService.checkAccount(checkReq);
+    public BaseResponse<AccountCheckResult> checkAccount(@RequestBody AccountCheckReq checkReq) {
+        AccountCheckResult token = authService.checkAccount(checkReq);
         return BaseResponse.success(token);
     }
 
-    @RequestMapping("checkToken")
+    @RequestMapping("changePassword")
     @ResponseBody
-    public BaseResponse<Boolean> checkToken(String token) {
-        boolean result = authService.checkToken(token);
+    public BaseResponse<Boolean> changePassword(String token, String newPass) {
+        boolean result = authService.changePassword(token, newPass);
+        return BaseResponse.success(result);
+    }
+
+    @RequestMapping("addAccount")
+    @ResponseBody
+    public BaseResponse<Boolean> addAccount(String token, String name, String pass, boolean isSuper) {
+        boolean result = authService.addAccount(token, name, pass, isSuper);
+        return BaseResponse.success(result);
+    }
+
+    @RequestMapping("delAccount")
+    @ResponseBody
+    public BaseResponse<Boolean> delAccount(String token, String name) {
+        boolean result = authService.delAccount(token, name);
         return BaseResponse.success(result);
     }
 

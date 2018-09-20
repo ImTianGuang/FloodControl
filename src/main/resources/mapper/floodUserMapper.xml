@@ -5,6 +5,7 @@
         <id column="id" property="id" jdbcType="INTEGER" />
 
         <result column="status" property="status" jdbcType="INTEGER" />
+        <result column="is_super" property="isSuper" jdbcType="TINYINT" />
         <result column="user_name" property="userName" jdbcType="VARCHAR"/>
         <result column="password" property="password" jdbcType="VARCHAR"/>
         <result column="create_time" property="createTime" jdbcType="BIGINT" />
@@ -12,7 +13,7 @@
     </resultMap>
 
     <sql id="Base_Column_List" >
-        id, status, user_name, password , create_time, update_time
+        id, status, user_name, password , create_time, update_time, is_super
     </sql>
 
     <select id="selectByNameAndPass" parameterType="Object" resultMap="BaseResultMap">
@@ -30,4 +31,30 @@
         where
         user_name = #{userName} and status = 1
     </select>
+
+    <update id="updatePassword" parameterType="Object">
+        update
+        flood_user
+        set
+        password = #{newPassword}
+        where
+        id = #{id}
+    </update>
+
+    <update id="deleteUser" parameterType="Object">
+        update
+        flood_user
+        set
+        status = 0
+        where
+        id = #{id}
+    </update>
+
+    <insert id="insert" parameterType="Object" keyProperty="id" useGeneratedKeys="true">
+        insert into
+        flood_user
+        (status, user_name, password , is_super)
+        values
+        (1, #{userName}, #{password}, #{isSuper})
+    </insert>
 </mapper>

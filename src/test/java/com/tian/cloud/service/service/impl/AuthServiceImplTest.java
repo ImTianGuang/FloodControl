@@ -24,7 +24,7 @@ public class AuthServiceImplTest extends TestBase {
         AccountCheckReq accountCheckReq = new AccountCheckReq();
         accountCheckReq.setUserName("tianguang");
         accountCheckReq.setPassword("123456");
-        String token = authService.checkAccount(accountCheckReq);
+         authService.checkAccount(accountCheckReq);
 //        boolean result = authService.checkToken(token);
 //        Assert.assertTrue(result);
     }
