@@ -178,10 +178,10 @@ public class ManageController {
 
     @RequestMapping("doUpload")
     @ResponseBody
-    public BaseResponse<Boolean> doUpload(@RequestParam("file") MultipartFile file, String extraData) throws Exception{
+    public String doUpload(@RequestParam("file") MultipartFile file, String extraData) throws Exception{
         log.info("extraData:{}", extraData);
         uploadService.upload(file, extraData);
-        return BaseResponse.success(true);
+        return "上传成功";
     }
 
     @RequestMapping("downloadUrl")

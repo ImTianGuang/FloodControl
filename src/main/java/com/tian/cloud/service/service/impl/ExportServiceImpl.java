@@ -224,10 +224,10 @@ public class ExportServiceImpl implements ExportService {
             throw new InternalException(ErrorCode.SYS_ERROR, "邮件发送失败");
         } finally {
             if (file != null) {
-                file.deleteOnExit();
+                file.delete();
             }
             if (zipFile != null) {
-                zipFile.deleteOnExit();
+                zipFile.delete();
             }
         }
     }
