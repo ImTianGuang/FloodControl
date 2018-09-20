@@ -29,7 +29,7 @@ public class FileServiceImpl implements FileService {
     @Override
     public String uploadFile(MultipartFile uploadFile, UploadType uploadType) throws Exception {
         ParamCheckUtil.assertTrue(!uploadFile.isEmpty(), "文件为空");
-        String savePath = uploadConfig.getFilePath() + "/" + uploadType.getDirectory();
+        String savePath = uploadConfig.getUploadDir(uploadType);
         File file = new File(savePath);
         if (!file.exists()) {
             file.mkdir();

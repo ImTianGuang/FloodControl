@@ -14,4 +14,11 @@ public class FileUtils {
         }
         return path.substring(path.lastIndexOf("/") + 1);
     }
+
+    public static String cutFileName(String fileName, int length) {
+        if (StringUtils.isEmpty(fileName)) {
+            return fileName;
+        }
+        return fileName.length() > length ? fileName.substring(0, length) : fileName;
+    }
 }

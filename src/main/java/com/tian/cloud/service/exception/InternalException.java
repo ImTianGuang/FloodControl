@@ -19,6 +19,11 @@ public class InternalException extends RuntimeException {
         this.errorCode = code.getCode();
     }
 
+    public InternalException(ErrorCode code, String errorMsgCn, Throwable cause) {
+        super(code.getMsg(), cause);
+        this.errorMsgCn = errorMsgCn;
+        this.errorCode = code.getCode();
+    }
     public InternalException(String code, String errorMsgCn, String errorMsg) {
         super(errorMsg);
         this.errorCode = code;

@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 public class FloodUser {
 
-    private int id;
+    private Integer id;
 
     private String userName;
 
@@ -17,11 +17,11 @@ public class FloodUser {
 
     private Integer status;
 
-    private Boolean isSuper;
+    private Boolean isSuper = false;
 
-    private long createTime;
+    private long createTime = System.currentTimeMillis();
 
-    private long updateTime;
+    private long updateTime = System.currentTimeMillis();
 
     public Boolean getIsSuper() {
         return isSuper;

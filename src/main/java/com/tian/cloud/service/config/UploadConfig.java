@@ -1,5 +1,6 @@
 package com.tian.cloud.service.config;
 
+import com.tian.cloud.service.enums.UploadType;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -14,4 +15,8 @@ import org.springframework.context.annotation.Configuration;
 public class UploadConfig {
 
     private String filePath;
+
+    public String getUploadDir(UploadType uploadType) {
+        return filePath + uploadType.getDirectory();
+    }
 }

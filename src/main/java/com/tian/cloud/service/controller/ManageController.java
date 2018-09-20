@@ -2,12 +2,16 @@ package com.tian.cloud.service.controller;
 
 import com.google.common.base.Charsets;
 import com.tian.cloud.service.controller.request.AccountCheckReq;
+import com.tian.cloud.service.controller.request.AccountUpdateReq;
+import com.tian.cloud.service.controller.request.ChangePassReq;
 import com.tian.cloud.service.controller.request.CommonSearchReq;
 import com.tian.cloud.service.controller.response.BaseResponse;
 import com.tian.cloud.service.controller.response.CompanyInfo;
 import com.tian.cloud.service.controller.response.FloodSituationInfo;
+import com.tian.cloud.service.controller.response.PageResponse;
 import com.tian.cloud.service.dao.entity.CommonType;
 import com.tian.cloud.service.dao.entity.Company;
+import com.tian.cloud.service.dao.entity.FloodUser;
 import com.tian.cloud.service.dao.entity.Message;
 import com.tian.cloud.service.enums.UploadType;
 import com.tian.cloud.service.model.auth.AccountCheckResult;
@@ -61,6 +65,20 @@ public class ManageController {
     @Resource
     private UploadService uploadService;
 
+    @RequestMapping("accountList")
+    @ResponseBody
+    public PageResponse<FloodUser> accountList(String token) {
+        List<FloodUser> users = authService.accountList(token);
+        return PageResponse.success(users, FloodUser::getId);
+    }
+
+    @RequestMapping("updateAccountList")
+    @ResponseBody
+    public BaseResponse<Boolean> updateAccountList(@RequestBody AccountUpdateReq reqs) {
+        authService.saveOrUpdate(reqs);
+        return BaseResponse.success(true);
+    }
+
     @RequestMapping("checkAccount")
     @ResponseBody
     public BaseResponse<AccountCheckResult> checkAccount(@RequestBody AccountCheckReq checkReq) {
@@ -70,8 +88,8 @@ public class ManageController {
 
     @RequestMapping("changePassword")
     @ResponseBody
-    public BaseResponse<Boolean> changePassword(String token, String newPass) {
-        boolean result = authService.changePassword(token, newPass);
+    public BaseResponse<Boolean> changePassword(@RequestBody ChangePassReq req) {
+        boolean result = authService.changePassword(req.getToken(), req.getNewPass());
         return BaseResponse.success(result);
     }
 

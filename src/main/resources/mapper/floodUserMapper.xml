@@ -32,6 +32,13 @@
         user_name = #{userName} and status = 1
     </select>
 
+    <select id="selectAllUsable" parameterType="Object" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from `flood_user`
+        where
+        status = 1
+    </select>
     <update id="updatePassword" parameterType="Object">
         update
         flood_user
@@ -50,11 +57,11 @@
         id = #{id}
     </update>
 
-    <insert id="insert" parameterType="Object" keyProperty="id" useGeneratedKeys="true">
+    <insert id="insert" parameterType="com.tian.cloud.service.dao.entity.FloodUser" keyProperty="id" useGeneratedKeys="true">
         insert into
         flood_user
-        (status, user_name, password , is_super)
+        (status, user_name, password , is_super,create_time, update_time)
         values
-        (1, #{userName}, #{password}, #{isSuper})
+        (1, #{userName}, #{password}, #{isSuper}, #{createTime}, #{updateTime})
     </insert>
 </mapper>

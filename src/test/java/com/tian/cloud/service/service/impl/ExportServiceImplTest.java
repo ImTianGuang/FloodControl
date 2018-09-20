@@ -65,4 +65,15 @@ public class ExportServiceImplTest extends TestBase {
 //        Workbook workbook = exportService.buildAll();
 //        ExcelExportUtil.writeToFile(workbook, filePath);
     }
+
+    @Test
+    public void testMessage() {
+        CommonSearchReq req = new CommonSearchReq();
+        req.setLen(Integer.MAX_VALUE);
+
+        req.setStartTime(0L);
+        req.setEndTime(System.currentTimeMillis());
+        req.setEmails("308929467@qq.com");
+        exportService.exportMessage(req);
+    }
 }

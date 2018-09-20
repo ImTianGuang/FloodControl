@@ -16,4 +16,12 @@ public class AccountCheckResult {
     private boolean isSuper;
 
     private String token;
+
+    public boolean getIsSuper() {
+        return isSuper;
+    }
+
+    public void setIsSuper(boolean aSuper) {
+        isSuper = aSuper;
+    }
 }

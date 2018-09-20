@@ -52,7 +52,7 @@ mybatis:
   mapperLocations: classpath*:mapper/*.xml
 
 export:
-  filePath: /var/file/flood/temp/
+  filePath: /var/file/export/
 
 upload:
   filePath: /var/file/upload/

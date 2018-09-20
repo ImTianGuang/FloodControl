@@ -5,6 +5,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
 import com.google.common.base.Splitter;
 import com.google.common.collect.*;
+import com.google.common.io.Files;
 import com.tian.cloud.service.config.ExportConfig;
 import com.tian.cloud.service.config.UploadConfig;
 import com.tian.cloud.service.controller.request.CommonSearchReq;
@@ -16,6 +17,7 @@ import com.tian.cloud.service.exception.InternalException;
 import com.tian.cloud.service.model.export.*;
 import com.tian.cloud.service.service.ExportService;
 import com.tian.cloud.service.service.UserService;
+import com.tian.cloud.service.util.FileUtils;
 import com.tian.cloud.service.util.OhMyEmail;
 import com.tian.cloud.service.util.ParamCheckUtil;
 import com.tian.cloud.service.util.ZipUtil;
@@ -72,6 +74,9 @@ public class ExportServiceImpl implements ExportService {
 
     @Resource
     private SituationMapper situationMapper;
+
+    @Resource
+    private MessageMapper messageMapper;
 
     private static final List<String> headList = Lists.newArrayList(" ", "名称", "姓名", "职务", "办公电话", "手机", "传真");
 
@@ -200,14 +205,14 @@ public class ExportServiceImpl implements ExportService {
 
             long start = System.currentTimeMillis();
 
-            String filePath = exportConfig.getFilePath() + "companyBooks-"+ LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) +".xls";
+            String filePath = exportConfig.getTempPath() + "companyBooks-"+ LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) +".xls";
             ExcelExportUtil.writeToFile(workbook, filePath);
             file = new File(filePath);
 
             String nowString = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
             log.info("build:{}", System.currentTimeMillis() - start);
             String zipFileName = "floodPlan-" + nowString + ".zip";
-            ZipUtil.zipFolder(uploadConfig.getFilePath() + UploadType.FLOOD_PLAN.getDirectory(),uploadConfig.getFilePath(), zipFileName, Charsets.UTF_8.name());
+            ZipUtil.zipFolder(uploadConfig.getUploadDir(UploadType.FLOOD_PLAN),uploadConfig.getFilePath(), zipFileName, Charsets.UTF_8.name());
             zipFile = new File(uploadConfig.getFilePath() + zipFileName);
             OhMyEmail.subject("汛前通讯录-导出-" + nowString)
                     .from("flood-smallSoft")
@@ -237,16 +242,14 @@ public class ExportServiceImpl implements ExportService {
         File file = null;
         try {
             List<FloodSituation> floodSituations = situationMapper.search(searchReq);
-            if (CollectionUtils.isEmpty(floodSituations)) {
-                return;
-            }
+            ParamCheckUtil.assertTrue(!CollectionUtils.isEmpty(floodSituations), "没有汛情可导出");
             List<FloodSituationDetail> details = floodSituationDetailMapper.getBySituationIdList(Lists.transform(floodSituations, FloodSituation::getId));
             List<Company> companyList = companyMapper.selectByIdList(Lists.transform(floodSituations, FloodSituation::getCompanyId));
             List<CommonType> situationAndSolution = commonTypeMapper.selectAllByTypes(Lists.newArrayList(CommonTypeEnum.SITUATION.getCode(), CommonTypeEnum.SOLUTION
                     .getCode()));
             Workbook workbook = buildFloodWorkBook(floodSituations, details, companyList, situationAndSolution);
             long now = System.currentTimeMillis() / 1000;
-            String filePath = exportConfig.getFilePath() + "flood-"+ now +".xls";
+            String filePath = exportConfig.getTempPath() + "flood-"+ now +".xls";
             ExcelExportUtil.writeToFile(workbook, filePath);
             file = new File(filePath);
 
@@ -263,7 +266,7 @@ public class ExportServiceImpl implements ExportService {
             throw new InternalException(ErrorCode.SYS_ERROR, "邮件发送失败");
         } finally {
             if (file != null) {
-                file.deleteOnExit();
+                file.delete();
             }
         }
     }
@@ -271,6 +274,46 @@ public class ExportServiceImpl implements ExportService {
     @Override
     public void exportMessage(CommonSearchReq request) {
         log.info("start-export:{}", request);
+        List<Message> messageList = messageMapper.search(request);
+        ParamCheckUtil.assertTrue(!CollectionUtils.isEmpty(messageList), "没有通知可导出");
+        ParamCheckUtil.assertTrue(messageList.size() <= 100, "单次最多导出100条");
+        List<File> tempFileList = Lists.newArrayList();
+        File zipMessageFile = null;
+        File zipAttatchFile = null;
+        try {
+            for (Message message : messageList) {
+                String fileName = FileUtils.cutFileName(message.getTitle(), 10) + "-" + message.getId() + ".txt";
+                File file = new File(exportConfig.getTempPath() + fileName);
+                tempFileList.add(file);
+                Files.write(message.getContent().getBytes(Charsets.UTF_8.name()), file);
+            }
+            String zipFileName = "通知-" + System.currentTimeMillis()/1000 + ".zip";
+            ZipUtil.zipFileList(Lists.transform(tempFileList, File::getName), exportConfig.getTempPath(), exportConfig.getTempPath(),zipFileName,Charsets.UTF_8.name());
+            zipMessageFile = new File(exportConfig.getTempPath() + zipFileName);
+            String zipAttatchName = "附件-" + System.currentTimeMillis()/1000 + ".zip";
+            ZipUtil.zipFileList(Lists.transform(messageList, message -> FileUtils.getFileName(message.getAttatch())), uploadConfig.getUploadDir(UploadType.NOTICE), exportConfig.getTempPath(),zipAttatchName,Charsets.UTF_8.name());
+            zipAttatchFile = new File(exportConfig.getTempPath() + zipAttatchName);
+            OhMyEmail.subject("简报与通知信息已导出-请查收 " + request.getStartDateStr() + "-" + request.getEndDateStr())
+                    .from("flood-smallSoft")
+                    .to(request.getEmails())
+                    .text("简报与通知信息已导出-请查看附件。")
+                    .attach(zipMessageFile, "通知.zip")
+                    .attach(zipAttatchFile, "附件.zip")
+                    .send();
+        } catch (Exception e) {
+            log.error("通知导出异常,request:{}", request, e);
+            throw new InternalException(ErrorCode.SYS_ERROR, e);
+        } finally {
+            for (File temFile : tempFileList) {
+                temFile.delete();
+            }
+            if (zipMessageFile != null) {
+                zipMessageFile.delete();
+            }
+            if (zipAttatchFile != null) {
+                zipAttatchFile.delete();
+            }
+        }
     }
 
     private Workbook buildFloodWorkBook(List<FloodSituation> floodSituations, List<FloodSituationDetail> details, List<Company> companyList, List<CommonType>

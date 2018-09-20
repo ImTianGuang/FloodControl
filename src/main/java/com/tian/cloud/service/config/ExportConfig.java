@@ -14,4 +14,8 @@ import org.springframework.context.annotation.Configuration;
 public class ExportConfig {
 
     private String filePath;
+
+    public String getTempPath() {
+        return filePath + "temp/";
+    }
 }

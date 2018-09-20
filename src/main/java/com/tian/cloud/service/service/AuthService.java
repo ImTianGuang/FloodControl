@@ -1,8 +1,12 @@
 package com.tian.cloud.service.service;
 
 import com.tian.cloud.service.controller.request.AccountCheckReq;
+import com.tian.cloud.service.controller.request.AccountUpdateReq;
+import com.tian.cloud.service.dao.entity.FloodUser;
 import com.tian.cloud.service.model.auth.AccountCheckResult;
 import com.tian.cloud.service.model.auth.TokenCheckResult;
+
+import java.util.List;
 
 public interface AuthService {
 
@@ -15,4 +19,8 @@ public interface AuthService {
     boolean addAccount(String token, String name, String pass, boolean isSuper);
 
     boolean delAccount(String token, String name);
+
+    List<FloodUser> accountList(String token);
+
+    void saveOrUpdate(AccountUpdateReq req);
 }
