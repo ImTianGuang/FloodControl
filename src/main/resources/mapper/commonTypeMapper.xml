@@ -4,14 +4,16 @@
     <resultMap id="BaseResultMap" type="com.tian.cloud.service.dao.entity.CommonType" >
         <id column="id" property="id" jdbcType="INTEGER" />
         <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="type_desc" property="typeDesc" jdbcType="VARCHAR" />
         <result column="status" property="status" jdbcType="INTEGER" />
+        <result column="type_order" property="typeOrder" jdbcType="INTEGER" />
         <result column="common_type_enum" property="commonTypeEnum" jdbcType="TINYINT" />
         <result column="create_time" property="createTime" jdbcType="BIGINT" />
         <result column="update_time" property="updateTime" jdbcType="BIGINT" />
     </resultMap>
 
     <sql id="Base_Column_List" >
-        id, name, status, common_type_enum, create_time, update_time
+        id, name, status, common_type_enum, create_time, update_time, type_order, type_desc
     </sql>
 
     <insert id="saveBatch" parameterType="list">
@@ -48,6 +50,7 @@
             and
             status = 1
         </where>
+        order by type_order
     </select>
 
     <select id="selectAllByType" resultMap="BaseResultMap" parameterType="Integer">

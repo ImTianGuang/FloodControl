@@ -3,6 +3,7 @@ package com.tian.cloud.service.service.impl;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import com.tian.cloud.service.controller.response.CompanyInfo;
 import com.tian.cloud.service.dao.entity.*;
@@ -24,7 +25,9 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author tianguang
@@ -65,8 +68,8 @@ public class CompanyServiceImpl implements CompanyService {
         ParamCheckUtil.assertTrue(company != null, "单位不存在");
         List<Asserts> asserts = assertsService.getAssertsByCompany(companyId);
         List<CompanyUser> users = userService.getUserByCompany(companyId);
-        fillAbsentUsers(users, company);
-        fillAbsentAsserts(asserts);
+        users = fillAbsentUsers(users, company);
+        asserts = fillAbsentAsserts(asserts);
         List<CompanyInfo.PhoneInfo> phoneInfos = toPhoneInfos(users);
         CompanyInfo companyInfo = new CompanyInfo();
         companyInfo.setAssertsList(asserts);
@@ -84,10 +87,10 @@ public class CompanyServiceImpl implements CompanyService {
         company.setId(-1);
         company.setStatus(LineStatusEnum.USABLE.getCode());
         List<CompanyUser> users = Lists.newArrayList();
-        fillAbsentUsers(users, company);
+        users = fillAbsentUsers(users, company);
         List<CompanyInfo.PhoneInfo> phoneInfos = toPhoneInfos(users);
         List<Asserts> asserts = Lists.newArrayList();
-        fillAbsentAsserts(asserts);
+        asserts = fillAbsentAsserts(asserts);
 
         companyInfo.setCompany(company);
         companyInfo.setPhoneList(phoneInfos);
@@ -95,53 +98,65 @@ public class CompanyServiceImpl implements CompanyService {
         return companyInfo;
     }
 
-    private void fillAbsentAsserts(List<Asserts> assertsList) {
-        List<CommonType> commonTypeList = commonTypeMapper.selectUsableByType(CommonTypeEnum.ASSERTS.getCode());
-        for (CommonType assertsType: commonTypeList) {
-            if (containAsserts(assertsList, assertsType.getId())) {
-                continue;
-            }
-            Asserts asserts = new Asserts();
-            asserts.setStatus(1);
-            asserts.setAssertsValue("");
-            asserts.setAssertsTypeName(assertsType.getName());
-            asserts.setAssertsTypeId(assertsType.getId());
+    private List<Asserts> fillAbsentAsserts(List<Asserts> assertsList) {
+        List<Asserts> result = Lists.newArrayList();
 
-            assertsList.add(asserts);
+        Multimap<Integer, Asserts> typeIdMap = Multimaps.index(assertsList, Asserts::getAssertsTypeId);
+        List<CommonType> commonTypeList = commonTypeMapper.selectUsableByType(CommonTypeEnum.ASSERTS.getCode());
+
+        for (CommonType assertsType: commonTypeList) {
+            Collection<Asserts> assertsCollection = typeIdMap.get(assertsType.getId());
+            if (CollectionUtils.isEmpty(assertsCollection)) {
+                Asserts asserts = new Asserts();
+                asserts.setStatus(1);
+                asserts.setAssertsValue("");
+                asserts.setAssertsTypeName(assertsType.getName());
+                asserts.setAssertsTypeId(assertsType.getId());
+                asserts.setAssertsDesc(assertsType.getTypeDesc());
+
+                result.add(asserts);
+            } else {
+                for (Asserts asserts : assertsCollection) {
+                    asserts.setAssertsDesc(assertsType.getTypeDesc());
+                    result.add(asserts);
+                }
+            }
+
         }
+        return result;
     }
-    private void fillAbsentUsers(List<CompanyUser> userList, Company company) {
+    private List<CompanyUser> fillAbsentUsers(List<CompanyUser> userList, Company company) {
+        List<CompanyUser> result = Lists.newArrayList();
         userList = userList == null ? Lists.newArrayList() : userList;
-        List<CommonType> commonTypeList = commonTypeMapper.selectUsableByType(CommonTypeEnum.POSITION.getCode());
+        Multimap<String, CompanyUser> titleUserMap = Multimaps.index(userList, CompanyUser::getFloodTitle);
         List<CommonType> floodTitleList = commonTypeMapper.selectUsableByType(CommonTypeEnum.FLOOD_TITLE.getCode());
-        createDefaultIfEmpty(commonTypeList, CommonTypeEnum.POSITION);
         createDefaultIfEmpty(floodTitleList, CommonTypeEnum.FLOOD_TITLE);
         for (CommonType title : floodTitleList) {
-            if (containTitle(userList, title)) {
-                continue;
+            Collection<CompanyUser> users = titleUserMap.get(title.getName());
+            if (CollectionUtils.isEmpty(users)) {
+                CompanyUser user = new CompanyUser();
+                user.setCompanyId(company.getId() == null ? -1 : company.getId());
+                user.setOrgCode(Orgnization.ORG1.getCode());
+                user.setOrgTitle(Orgnization.ORG1.getMsg());
+                if (Orgnization.isOrg2Title(title.getName())) {
+                    user.setOrgCode(Orgnization.ORG2.getCode());
+                    user.setOrgTitle(Orgnization.ORG2.getMsg());
+                }
+                user.setFloodTitle(title.getName());
+                user.setTitleDesc(title.getTypeDesc());
+                user.setPositionId(-1);
+                result.add(user);
+            } else {
+                for (CompanyUser companyUser : users) {
+                    companyUser.setTitleDesc(title.getTypeDesc());
+                    result.add(companyUser);
+                }
             }
-            CompanyUser user = new CompanyUser();
-            user.setCompanyId(company.getId() == null ? -1 : company.getId());
-            user.setOrgCode(Orgnization.ORG1.getCode());
-            user.setOrgTitle(Orgnization.ORG1.getMsg());
-            if (Orgnization.isOrg2Title(title.getName())) {
-                user.setOrgCode(Orgnization.ORG2.getCode());
-                user.setOrgTitle(Orgnization.ORG2.getMsg());
-            }
-            user.setFloodTitle(title.getName());
-            user.setPositionId(-1);
-            userList.add(user);
         }
+
+        return result;
     }
 
-    private boolean containTitle(List<CompanyUser> userList, CommonType title) {
-        for (CompanyUser companyUser : userList) {
-            if (Objects.equal(companyUser.getFloodTitle(), title.getName())) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     private boolean containAsserts(List<Asserts> asserts, Integer id) {
         for (Asserts asserts1 : asserts) {

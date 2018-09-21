@@ -19,6 +19,10 @@ public class CommonType {
 
     private String name;
 
+    private Integer typeOrder;
+
+    private String typeDesc;
+
     private long createTime;
 
     private long updateTime;

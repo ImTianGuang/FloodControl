@@ -17,6 +17,8 @@ create table `common_type` (
     `status` int(11) NOT NULL default 1,
     `create_time` bigint(20) NOT NULL,
     `update_time` bigint(20) NOT NULL,
+    `type_desc` varchar(64) NOT NULL DEFAULT '',
+    `type_order` int(11) NOT NULL DEFAULT '0',
     PRIMARY KEY (`id`)
 )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
@@ -116,6 +118,7 @@ create table flood_user (
     `password` varchar(64) NOT NULL default '',
     `create_time` bigint(20) NOT NULL,
     `update_time` bigint(20) NOT NULL,
+    `is_super` tinyint(1) NOT NULL DEFAULT '0',
     unique key `uniq_name` (`user_name`),
     PRIMARY KEY (`id`)
 )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;

@@ -36,4 +36,7 @@ public class CompanyUser {
     private long createTime;
 
     private long updateTime;
+
+    // for 前端
+    private String titleDesc;
 }

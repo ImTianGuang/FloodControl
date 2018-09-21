@@ -24,4 +24,7 @@ public class Asserts {
     private long createTime;
 
     private long updateTime;
+
+    // for 前端
+    private String assertsDesc;
 }
