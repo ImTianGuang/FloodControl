@@ -439,6 +439,14 @@ public class ExportServiceImpl implements ExportService {
         createCell(secondRow, defaultCellStyle, 1, "");
         createCell(secondRow, defaultCellStyle, 2, "");
 //        mergeCell(sheet, startRow, startRow, 0, 2);
+        for (int i = 0; i < 3; i++) {
+            sheet.autoSizeColumn(i);
+            int width = sheet.getColumnWidth(i);
+            if (width < 100) {
+                width = width * 13 / 10;
+                sheet.setColumnWidth(i, width);
+            }
+        }
         Multimap<Integer, FloodSituationDetail> detailMultimap = Multimaps.index(details, FloodSituationDetail::getFloodSituationId);
         for (int i = 0; i < floodSituations.size(); i++) {
             FloodSituation floodSituation = floodSituations.get(i);
@@ -446,14 +454,7 @@ public class ExportServiceImpl implements ExportService {
             startRow = addSituationToSheet(workbook, sheet, defaultCellStyle, i, startRow, floodSituation, companyMap, detailMultimap, commonTypeMap);
         }
 
-        for (int i = 0; i < 3; i++) {
-//            sheet.autoSizeColumn(i);
-//            int width = sheet.getColumnWidth(i);
-//            if (width < 100) {
-//                width = width * 13 / 10;
-//                sheet.setColumnWidth(i, width);
-//            }
-        }
+
     }
 
     private int addSituationToSheet(Workbook workbook, Sheet sheet, CellStyle cellStyle, int i, int startRow, FloodSituation floodSituation, Map<Integer, Company> companyMap,
