@@ -658,10 +658,10 @@ public class ExportServiceImpl implements ExportService {
         sheet.addMergedRegionUnsafe(cra);
 
         // 使用RegionUtil类为合并后的单元格添加边框
-        RegionUtil.setBorderBottom(BorderStyle.MEDIUM, cra, sheet); // 下边框
-        RegionUtil.setBorderLeft(BorderStyle.MEDIUM, cra, sheet); // 左边框
-        RegionUtil.setBorderRight(BorderStyle.MEDIUM, cra, sheet); // 有边框
-        RegionUtil.setBorderTop(BorderStyle.MEDIUM, cra, sheet); // 上边框
+        RegionUtil.setBorderBottom(1, cra, sheet); // 下边框
+        RegionUtil.setBorderLeft(1, cra, sheet); // 左边框
+        RegionUtil.setBorderRight(1, cra, sheet); // 有边框
+        RegionUtil.setBorderTop(1, cra, sheet); // 上边框
     }
 
     private Row createRow(Sheet sheet, int rownum) {
