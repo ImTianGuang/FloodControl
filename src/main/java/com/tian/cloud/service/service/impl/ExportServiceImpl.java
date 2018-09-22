@@ -449,8 +449,10 @@ public class ExportServiceImpl implements ExportService {
         for (int i = 0; i < 3; i++) {
             sheet.autoSizeColumn(i);
             int width = sheet.getColumnWidth(i);
-            width = width * 13 / 10;
-            sheet.setColumnWidth(i, width);
+            if (width < 100) {
+                width = width * 13 / 10;
+                sheet.setColumnWidth(i, width);
+            }
         }
     }
 
