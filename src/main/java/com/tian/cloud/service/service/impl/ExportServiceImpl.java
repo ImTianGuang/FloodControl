@@ -442,7 +442,7 @@ public class ExportServiceImpl implements ExportService {
         for (int i = 0; i < 3; i++) {
             sheet.autoSizeColumn(i);
 
-            sheet.setColumnWidth(i, 11);
+            sheet.setColumnWidth(i, 11 * 256);
 
         }
         Multimap<Integer, FloodSituationDetail> detailMultimap = Multimaps.index(details, FloodSituationDetail::getFloodSituationId);
