@@ -464,7 +464,7 @@ public class ExportServiceImpl implements ExportService {
         createCell(headRow, getCellStyle(workbook, HSSFColor.HSSFColorPredefined.LIGHT_GREEN), 0, (i + 1) + companyName);
         createCell(headRow, cellStyle, 1, "");
         createCell(headRow, cellStyle, 2, "");
-        mergeCell(sheet, startRow, startRow, 0, 2);
+//        mergeCell(sheet, startRow, startRow, 0, 2);
 
         int situationStartRow = startRow + 1;
         int situationEndRow = -1;
@@ -494,11 +494,11 @@ public class ExportServiceImpl implements ExportService {
         }
 
         if (situationEndRow != -1) {
-            mergeCell(sheet, situationStartRow, situationEndRow, 0, 0);
+//            mergeCell(sheet, situationStartRow, situationEndRow, 0, 0);
         }
 
         if (solutionEndRow != -1) {
-            mergeCell(sheet, situationEndRow + 1, solutionEndRow, 0, 0);
+//            mergeCell(sheet, situationEndRow + 1, solutionEndRow, 0, 0);
         }
 
         startRow++;
@@ -506,7 +506,7 @@ public class ExportServiceImpl implements ExportService {
         createCell(floodDesc, cellStyle, 0, "受灾详情:");
         createCell(floodDesc, cellStyle, 1, floodSituation.getFloodDesc());
         createCell(floodDesc, cellStyle, 2, "");
-        mergeCell(sheet, startRow, startRow, 1, 2);
+//        mergeCell(sheet, startRow, startRow, 1, 2);
 
 
         return startRow;
