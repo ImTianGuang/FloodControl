@@ -57,7 +57,7 @@ public class ExportServiceImplTest extends TestBase {
         req.setEndTime(System.currentTimeMillis());
         req.setEmails("308929467@qq.com");
 //        log.info("req:{}", req);
-//        exportService.exportFlood(req);
+        exportService.exportFlood(req);
     }
 
     @Test

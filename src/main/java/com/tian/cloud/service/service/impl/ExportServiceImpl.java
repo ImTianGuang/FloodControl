@@ -456,9 +456,7 @@ public class ExportServiceImpl implements ExportService {
 
     private int addSituationToSheet(Workbook workbook, Sheet sheet, CellStyle cellStyle, int i, int startRow, FloodSituation floodSituation, Map<Integer, Company> companyMap,
                                     Multimap<Integer, FloodSituationDetail> detailMultimap, Map<Integer, CommonType> commonTypeMap) {
-        int situationStartRow = startRow + 2;
-        int situationEndRow = -1;
-        int solutionEndRow = -1;
+
         startRow++;
         Row headRow = createRow(sheet, startRow);
         Company company = companyMap.get(floodSituation.getCompanyId());
@@ -467,6 +465,10 @@ public class ExportServiceImpl implements ExportService {
         createCell(headRow, cellStyle, 1, "");
         createCell(headRow, cellStyle, 2, "");
         mergeCell(sheet, startRow, startRow, 0, 2);
+
+        int situationStartRow = startRow + 1;
+        int situationEndRow = -1;
+        int solutionEndRow = -1;
 
         List<FloodSituationDetail> details = (List<FloodSituationDetail>) detailMultimap.get(floodSituation.getId());
         if (!CollectionUtils.isEmpty(details)) {
@@ -491,9 +493,9 @@ public class ExportServiceImpl implements ExportService {
             }
         }
 
-        if (situationEndRow != -1) {
-            mergeCell(sheet, situationStartRow, situationEndRow, 0, 0);
-        }
+//        if (situationEndRow != -1) {
+//            mergeCell(sheet, situationStartRow, situationEndRow, 0, 0);
+//        }
 
         if (solutionEndRow != -1) {
             mergeCell(sheet, situationEndRow + 1, solutionEndRow, 0, 0);
