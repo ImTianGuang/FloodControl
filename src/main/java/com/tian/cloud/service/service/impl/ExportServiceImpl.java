@@ -429,7 +429,7 @@ public class ExportServiceImpl implements ExportService {
         createCell(firstRow, getCellStyle(workbook, HSSFColor.HSSFColorPredefined.LIGHT_ORANGE), 0, "实时上报信息表");
         createCell(firstRow, defaultCellStyle, 1, "");
         createCell(firstRow, defaultCellStyle, 2, "");
-        mergeCell(sheet, startRow, startRow, 0, 2);
+//        mergeCell(sheet, startRow, startRow, 0, 2);
 
         startRow++;
         Row secondRow = createRow(sheet, startRow);
@@ -438,7 +438,7 @@ public class ExportServiceImpl implements ExportService {
         createCell(secondRow, defaultCellStyle, 0, "上报时间:" + localDateTime.toLocalDate().format(DateTimeFormatter.ISO_LOCAL_DATE));
         createCell(secondRow, defaultCellStyle, 1, "");
         createCell(secondRow, defaultCellStyle, 2, "");
-        mergeCell(sheet, startRow, startRow, 0, 2);
+//        mergeCell(sheet, startRow, startRow, 0, 2);
         Multimap<Integer, FloodSituationDetail> detailMultimap = Multimaps.index(details, FloodSituationDetail::getFloodSituationId);
         for (int i = 0; i < floodSituations.size(); i++) {
             FloodSituation floodSituation = floodSituations.get(i);
@@ -493,9 +493,9 @@ public class ExportServiceImpl implements ExportService {
             }
         }
 
-//        if (situationEndRow != -1) {
-//            mergeCell(sheet, situationStartRow, situationEndRow, 0, 0);
-//        }
+        if (situationEndRow != -1) {
+            mergeCell(sheet, situationStartRow, situationEndRow, 0, 0);
+        }
 
         if (solutionEndRow != -1) {
             mergeCell(sheet, situationEndRow + 1, solutionEndRow, 0, 0);
