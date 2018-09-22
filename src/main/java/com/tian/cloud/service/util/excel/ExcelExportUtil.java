@@ -136,6 +136,13 @@ public class ExcelExportUtil {
                     }
                 }
             }
+
+            for (int i = 0; i < 12; i++) {
+                sheet.autoSizeColumn(i);
+                int width = sheet.getColumnWidth(i);
+                width = width * 13 / 10;
+                sheet.setColumnWidth(i, width);
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -144,6 +151,16 @@ public class ExcelExportUtil {
 
     private static void createCell(Workbook workbook, int headColorIndex, Row headRow, int i, String fieldName) {
         CellStyle headStyle = workbook.createCellStyle();
+        headStyle.setAlignment(HorizontalAlignment.CENTER);
+        //垂直居中
+        headStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        //设置边框
+        headStyle.setBorderTop(BorderStyle.THIN);
+        headStyle.setBorderRight(BorderStyle.THIN);
+        headStyle.setBorderBottom(BorderStyle.THIN);
+        headStyle.setBorderLeft(BorderStyle.THIN);
+
+        headStyle.setWrapText(true);
         if (headColorIndex > -1) {
             headStyle.setFillForegroundColor((short) headColorIndex);
             headStyle.setFillBackgroundColor((short) headColorIndex);
