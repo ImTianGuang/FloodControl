@@ -507,7 +507,7 @@ public class ExportServiceImpl implements ExportService {
         createCell(floodDesc, cellStyle, 0, "受灾详情:");
         createCell(floodDesc, cellStyle, 1, floodSituation.getFloodDesc());
         createCell(floodDesc, cellStyle, 2, "");
-        mergeCell(sheet, startRow, startRow, 1, 2);
+//        mergeCell(sheet, startRow, startRow, 1, 2);
 
 
         return startRow;
