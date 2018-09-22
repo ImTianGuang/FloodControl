@@ -151,6 +151,13 @@ public class CompanyServiceImpl implements CompanyService {
                 result.add(user);
             } else {
                 for (CompanyUser companyUser : users) {
+                    if (Orgnization.isOrg2Title(title.getName())) {
+                        if (title.getName().startsWith("非汛期")) {
+                            companyUser.setIsAutoFax(true);
+                        }
+                        companyUser.setOrgCode(Orgnization.ORG2.getCode());
+                        companyUser.setOrgTitle(Orgnization.ORG2.getMsg());
+                    }
                     companyUser.setTitleDesc(title.getTypeDesc());
                     result.add(companyUser);
                 }
