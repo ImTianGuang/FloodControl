@@ -495,11 +495,11 @@ public class ExportServiceImpl implements ExportService {
         }
 
         if (situationEndRow != -1) {
-            mergeCell(sheet, situationStartRow, situationEndRow, 0, 0);
+//            mergeCell(sheet, situationStartRow, situationEndRow, 0, 0);
         }
 
         if (solutionEndRow != -1) {
-            mergeCell(sheet, situationEndRow + 1, solutionEndRow, 0, 0);
+//            mergeCell(sheet, situationEndRow + 1, solutionEndRow, 0, 0);
         }
 
         startRow++;
