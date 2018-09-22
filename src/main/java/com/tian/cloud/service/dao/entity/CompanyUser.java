@@ -39,4 +39,13 @@ public class CompanyUser {
 
     // for 前端
     private String titleDesc;
+    private boolean isAutoFax;
+
+    public boolean getIsAutoFax() {
+        return isAutoFax;
+    }
+
+    public void setIsAutoFax(boolean autoFax) {
+        isAutoFax = autoFax;
+    }
 }

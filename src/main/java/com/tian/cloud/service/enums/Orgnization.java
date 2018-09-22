@@ -21,7 +21,7 @@ public enum Orgnization {
 
     private String msg;
 
-    private static final Set<String> ORG2_TITLE_SET = ImmutableSet.of("24小时值班", "非汛期联系", "行政办公电话", "行政办公室电话", "行政办公座机", "行政办公室座机");
+    private static final Set<String> ORG2_TITLE_SET = ImmutableSet.of("24小时值班", "非汛期联系", "非汛期值班", "行政办公电话", "行政办公室电话", "行政办公座机", "行政办公室座机");
     private static final Map<Integer, Orgnization> codeMap = Maps.newHashMap();
 
     static {
