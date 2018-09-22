@@ -441,11 +441,9 @@ public class ExportServiceImpl implements ExportService {
 //        mergeCell(sheet, startRow, startRow, 0, 2);
         for (int i = 0; i < 3; i++) {
             sheet.autoSizeColumn(i);
-            int width = sheet.getColumnWidth(i);
-            if (width < 100) {
-                width = width * 13 / 10;
-                sheet.setColumnWidth(i, width);
-            }
+
+            sheet.setColumnWidth(i, 11);
+
         }
         Multimap<Integer, FloodSituationDetail> detailMultimap = Multimaps.index(details, FloodSituationDetail::getFloodSituationId);
         for (int i = 0; i < floodSituations.size(); i++) {
