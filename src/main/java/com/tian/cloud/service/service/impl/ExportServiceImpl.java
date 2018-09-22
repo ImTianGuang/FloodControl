@@ -220,7 +220,7 @@ public class ExportServiceImpl implements ExportService {
             String zipFileName = "floodPlan-" + nowString + ".zip";
             ZipUtil.zipFolder(uploadConfig.getUploadDir(UploadType.FLOOD_PLAN),uploadConfig.getFilePath(), zipFileName, Charsets.UTF_8.name());
             zipFile = new File(uploadConfig.getFilePath() + zipFileName);
-            OhMyEmail.subject("汛前通讯录-导出-" + nowString)
+            OhMyEmail.subject("汛前通讯录已导出-" + nowString)
                     .from("flood-smallSoft")
                     .to(emails)
                     .text("汛前通讯录与防汛预案已导出，请查看附件")
@@ -462,7 +462,7 @@ public class ExportServiceImpl implements ExportService {
         startRow++;
         Row headRow = createRow(sheet, startRow);
         Company company = companyMap.get(floodSituation.getCompanyId());
-        String companyName = company == null ? "未知" : company.getName();
+        String companyName = company == null ? ". 未知" : ". " + company.getName();
         createCell(headRow, getCellStyle(workbook, HSSFColor.HSSFColorPredefined.LIGHT_GREEN), 0, (i + 1) + companyName);
         createCell(headRow, cellStyle, 1, "");
         createCell(headRow, cellStyle, 2, "");
@@ -658,10 +658,10 @@ public class ExportServiceImpl implements ExportService {
         sheet.addMergedRegionUnsafe(cra);
 
         // 使用RegionUtil类为合并后的单元格添加边框
-        RegionUtil.setBorderBottom(1, cra, sheet); // 下边框
-        RegionUtil.setBorderLeft(1, cra, sheet); // 左边框
-        RegionUtil.setBorderRight(1, cra, sheet); // 有边框
-        RegionUtil.setBorderTop(1, cra, sheet); // 上边框
+        RegionUtil.setBorderBottom(BorderStyle.THIN, cra, sheet); // 下边框
+//        RegionUtil.setBorderLeft(1, cra, sheet); // 左边框
+//        RegionUtil.setBorderRight(1, cra, sheet); // 有边框
+//        RegionUtil.setBorderTop(1, cra, sheet); // 上边框
     }
 
     private Row createRow(Sheet sheet, int rownum) {
