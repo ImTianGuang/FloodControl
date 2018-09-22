@@ -22,12 +22,10 @@ public class ExportUser {
     @ExcelField(name = "职位")
     private String position;
 
-    @ExcelField(name = "工作电话")
+    @ExcelField(name = "座机")
     private String workPhone;
 
-    @ExcelField(name = "个人电话")
+    @ExcelField(name = "手机")
     private String personPhone;
 
-    @ExcelField(name = "传真")
-    private String fax;
 }

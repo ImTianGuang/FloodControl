@@ -101,8 +101,14 @@ public class ExportServiceImpl implements ExportService {
             if (CollectionUtils.isEmpty(users)) {
                 continue;
             }
-            List<ExportUser> exportUsers = toExportUser(floodTitleUserMap.get(floodTitle), idCompanyMap, idPositionMap);
-            mySheet.setDataList(exportUsers);
+            if (Orgnization.isOrg2Title(floodTitle)) {
+                List<ExportUserV1> exportUsers = toExportUserV1(floodTitleUserMap.get(floodTitle), idCompanyMap);
+                mySheet.setDataList(exportUsers);
+            } else {
+                List<ExportUser> exportUsers = toExportUser(floodTitleUserMap.get(floodTitle), idCompanyMap, idPositionMap);
+                mySheet.setDataList(exportUsers);
+            }
+
             mySheets.add(mySheet);
         }
         return mySheets;
@@ -738,7 +744,6 @@ public class ExportServiceImpl implements ExportService {
                 continue;
             }
             exportUser.setCompanyName(company.getName());
-            exportUser.setFax(user.getFax());
             exportUser.setName(user.getUserName());
             exportUser.setPersonPhone(user.getUserPhone());
             exportUser.setWorkPhone(user.getWorkPhone());
@@ -746,8 +751,23 @@ public class ExportServiceImpl implements ExportService {
             if (position != null) {
                 exportUser.setPosition(position.getName());
             } else {
-                exportUser.setPosition(user.getPositionId().toString());
+                exportUser.setPosition("未填写");
             }
+            exportUsers.add(exportUser);
+        }
+        return exportUsers;
+    }
+
+    private List<ExportUserV1> toExportUserV1(Collection<CompanyUser> users, Map<Integer, Company> idCompanyMap) {
+        List<ExportUserV1> exportUsers = Lists.newArrayList();
+        for (CompanyUser user : users) {
+            ExportUserV1 exportUser = new ExportUserV1();
+            Company company = idCompanyMap.get(user.getCompanyId());
+            if (company == null) {
+                continue;
+            }
+            exportUser.setCompanyName(company.getName());
+            exportUser.setWorkPhone(user.getWorkPhone());
             exportUsers.add(exportUser);
         }
         return exportUsers;

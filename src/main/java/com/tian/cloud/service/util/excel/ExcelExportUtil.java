@@ -140,7 +140,7 @@ public class ExcelExportUtil {
             for (int i = 0; i < 12; i++) {
                 sheet.autoSizeColumn(i);
                 int width = sheet.getColumnWidth(i);
-                width = width * 13 / 10;
+                width = width * 17 / 10;
                 sheet.setColumnWidth(i, width);
             }
         } catch (Exception e) {
