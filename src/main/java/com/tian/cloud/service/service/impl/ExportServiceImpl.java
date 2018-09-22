@@ -768,6 +768,7 @@ public class ExportServiceImpl implements ExportService {
             }
             exportUser.setCompanyName(company.getName());
             exportUser.setWorkPhone(user.getWorkPhone());
+            exportUser.setFax(user.getFax());
             exportUsers.add(exportUser);
         }
         return exportUsers;
