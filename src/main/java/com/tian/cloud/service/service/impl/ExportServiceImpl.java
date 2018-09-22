@@ -246,6 +246,7 @@ public class ExportServiceImpl implements ExportService {
     @Override
     public void exportFlood(CommonSearchReq searchReq) {
         File file = null;
+        File zipAttatchFile = null;
         try {
             List<FloodSituation> floodSituations = situationMapper.search(searchReq);
             ParamCheckUtil.assertTrue(!CollectionUtils.isEmpty(floodSituations), "没有汛情可导出");
@@ -259,11 +260,16 @@ public class ExportServiceImpl implements ExportService {
             ExcelExportUtil.writeToFile(workbook, filePath);
             file = new File(filePath);
 
+            String zipAttatchName = "附件-" + System.currentTimeMillis()/1000 + ".zip";
+            ZipUtil.zipFileList(Lists.transform(floodSituations, message -> FileUtils.getFileName(message.getAttatch())), uploadConfig.getUploadDir(UploadType.FLOOD), exportConfig.getTempPath(),zipAttatchName,Charsets.UTF_8.name());
+            zipAttatchFile = new File(exportConfig.getTempPath() + zipAttatchName);
+
             OhMyEmail.subject("汛期中实时上报表已导出-请查收 " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
                     .from("flood-smallSoft")
                     .to(searchReq.getEmails())
                     .text("汛期中实时上报表已导出-请查看附件")
                     .attach(file, "汛期中实时上报表.xls")
+                    .attach(zipAttatchFile, "附件.zip")
                     .send();
         } catch (InternalException e) {
             throw e;
@@ -273,6 +279,9 @@ public class ExportServiceImpl implements ExportService {
         } finally {
             if (file != null) {
                 file.delete();
+            }
+            if (zipAttatchFile != null) {
+                zipAttatchFile.delete();
             }
         }
     }
