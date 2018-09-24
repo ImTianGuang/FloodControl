@@ -40,6 +40,7 @@ public class CompanyUser {
     // for 前端
     private String titleDesc;
     private boolean isAutoFax;
+    private boolean canAdd;
 
     public boolean getIsAutoFax() {
         return isAutoFax;
@@ -47,5 +48,13 @@ public class CompanyUser {
 
     public void setIsAutoFax(boolean autoFax) {
         isAutoFax = autoFax;
+    }
+
+    public boolean getCanAdd() {
+        return canAdd;
+    }
+
+    public void setCanAdd(boolean canAdd) {
+        this.canAdd = canAdd;
     }
 }

@@ -132,7 +132,7 @@ public class CompanyServiceImpl implements CompanyService {
         List<CommonType> floodTitleList = commonTypeMapper.selectUsableByType(CommonTypeEnum.FLOOD_TITLE.getCode());
         createDefaultIfEmpty(floodTitleList, CommonTypeEnum.FLOOD_TITLE);
         for (CommonType title : floodTitleList) {
-            Collection<CompanyUser> users = titleUserMap.get(title.getName());
+            List<CompanyUser> users = (List<CompanyUser>) titleUserMap.get(title.getName());
             if (CollectionUtils.isEmpty(users)) {
                 CompanyUser user = new CompanyUser();
                 user.setCompanyId(company.getId() == null ? -1 : company.getId());
@@ -148,9 +148,16 @@ public class CompanyServiceImpl implements CompanyService {
                 user.setFloodTitle(title.getName());
                 user.setTitleDesc(title.getTypeDesc());
                 user.setPositionId(-1);
+                if (title.getName().contains("指挥部成员")) {
+                    user.setCanAdd(true);
+                }
                 result.add(user);
             } else {
-                for (CompanyUser companyUser : users) {
+                for (int i=0;i<users.size(); i ++) {
+                    CompanyUser companyUser = users.get(i);
+                    if (i==0 && title.getName().contains("指挥部成员")) {
+                        companyUser.setCanAdd(true);
+                    }
                     if (Orgnization.isOrg2Title(title.getName())) {
                         if (title.getName().startsWith("非汛期")) {
                             companyUser.setIsAutoFax(true);
