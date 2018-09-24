@@ -113,11 +113,16 @@ public class CompanyServiceImpl implements CompanyService {
                 asserts.setAssertsTypeName(assertsType.getName());
                 asserts.setAssertsTypeId(assertsType.getId());
                 asserts.setAssertsDesc(assertsType.getTypeDesc());
-
+                if (StringUtils.isEmpty(asserts.getAssertsDesc())) {
+                    asserts.setAssertsDesc("请输入" + assertsType.getName());
+                }
                 result.add(asserts);
             } else {
                 for (Asserts asserts : assertsCollection) {
                     asserts.setAssertsDesc(assertsType.getTypeDesc());
+                    if (StringUtils.isEmpty(asserts.getAssertsDesc())) {
+                        asserts.setAssertsDesc("请输入" + assertsType.getName());
+                    }
                     result.add(asserts);
                 }
             }
