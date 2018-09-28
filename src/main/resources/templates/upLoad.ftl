@@ -49,7 +49,7 @@
 
     </div>
     <h1 style="text-align: center;font-size: 16px;">${title}</h1>
-    <h2 style="text-align: center">最大上传大小:5MB,支持上传格式:jpeg,jpe,png,pdf,word</h2>
+    <h2 style="text-align: center">最大上传大小:5MB,支持上传格式:jpeg,jpg,png,pdf,doc. 链接有效期10分钟</h2>
     <form id="form1" action="${uploadPath}" target="frame1" method="post" enctype="multipart/form-data" style="text-align: center;">
 
         <input type="text" style="width: 350px;margin-left: 6px;" name="fileName" id="fileName"/>
