@@ -5,10 +5,7 @@ import com.tian.cloud.service.controller.request.AccountCheckReq;
 import com.tian.cloud.service.controller.request.AccountUpdateReq;
 import com.tian.cloud.service.controller.request.ChangePassReq;
 import com.tian.cloud.service.controller.request.CommonSearchReq;
-import com.tian.cloud.service.controller.response.BaseResponse;
-import com.tian.cloud.service.controller.response.CompanyInfo;
-import com.tian.cloud.service.controller.response.FloodSituationInfo;
-import com.tian.cloud.service.controller.response.PageResponse;
+import com.tian.cloud.service.controller.response.*;
 import com.tian.cloud.service.dao.entity.CommonType;
 import com.tian.cloud.service.dao.entity.Company;
 import com.tian.cloud.service.dao.entity.FloodUser;
@@ -264,7 +261,18 @@ public class ManageController {
         ModelAndView modelAndView = new ModelAndView();
         List<Company> companies = companyService.selectAll();
         modelAndView.setViewName("companySelect");
-        modelAndView.addObject("comapnyList", companies);
+        modelAndView.addObject("companyList", companies);
+        return modelAndView;
+    }
+
+    @RequestMapping("h5/floodReport")
+    public ModelAndView floodReport(Integer companyId) throws Exception{
+
+        ModelAndView modelAndView = new ModelAndView();
+        CompanySituationTypes companySituationTypes = companyService.situationTypesOfCompany(companyId);
+        modelAndView.setViewName("afterfloodReport");
+        modelAndView.addObject("situationTypeList", companySituationTypes.getSituationTypeList());
+        modelAndView.addObject("solutionTypeList", companySituationTypes.getSolutionTypeList());
         return modelAndView;
     }
 }

@@ -87,6 +87,7 @@
             </foreach>
             and status = 1
         </where>
+        order by type_order
     </select>
 
     <select id="selectAllUsable" resultMap="BaseResultMap" parameterType="java.lang.Integer">

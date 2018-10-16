@@ -69,48 +69,16 @@
                     <div id="tab3" class="tab">
                         <div class="list-block">
                             <ul>
-                                <li class="item-content item-link">
-                                    <div class="item-media"><i class="icon icon-f7"></i></div>
-                                    <div class="item-inner">
-                                        <div class="item-title">单位1</div>
-                                        <!--<div class="item-after">杜蕾斯</div>-->
-                                    </div>
-                                </li>
-                                <li class="item-content item-link">
-                                    <div class="item-media"><i class="icon icon-f7"></i></div>
-                                    <div class="item-inner">
-                                        <div class="item-title">单位1</div>
-                                        <!--<div class="item-after">极致超薄型</div>-->
-                                    </div>
-                                </li>
-                                <li class="item-content item-link">
-                                    <div class="item-media"><i class="icon icon-f7"></i></div>
-                                    <div class="item-inner">
-                                        <div class="item-title">单位1</div>
-                                        <!--<div class="item-after">极致超薄型</div>-->
-                                    </div>
-                                </li>
-                                <li class="item-content item-link">
-                                    <div class="item-media"><i class="icon icon-f7"></i></div>
-                                    <div class="item-inner">
-                                        <div class="item-title">单位1</div>
-                                        <!--<div class="item-after">极致超薄型</div>-->
-                                    </div>
-                                </li>
-                                <li class="item-content item-link">
-                                    <div class="item-media"><i class="icon icon-f7"></i></div>
-                                    <div class="item-inner">
-                                        <div class="item-title">单位1</div>
-                                        <!--<div class="item-after">极致超薄型</div>-->
-                                    </div>
-                                </li>
-                                <li class="item-content item-link">
-                                    <div class="item-media"><i class="icon icon-f7"></i></div>
-                                    <div class="item-inner">
-                                        <div class="item-title">单位1</div>
-                                        <!--<div class="item-after">极致超薄型</div>-->
-                                    </div>
-                                </li>
+                                <#list companyList as company>
+                                    <#if company.companyGroup =1>
+                                        <li class="item-content item-link">
+                                            <div class="item-media"><i class="icon icon-f7"></i></div>
+                                            <div class="item-inner">
+                                                <div class="item-title">${company.name}</div>
+                                            </div>
+                                        </li>
+                                    </#if>
+                                </#list>
                             </ul>
                         </div>
                     </div>
@@ -141,6 +109,7 @@
     $.config = {
         autoInit: true
     }
+    $.init();
 </script>
 
 <script type='text/javascript' src='http://g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>

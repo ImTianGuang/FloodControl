@@ -15,6 +15,8 @@
         <result column="flood_manager_phone" property="floodManagerPhone" jdbcType="VARCHAR" />
         <result column="flood_plan" property="floodPlan" jdbcType="VARCHAR" />
         <result column="record_date" property="recordDate" jdbcType="VARCHAR" />
+        <result column="situation_ids" property="situationIds" jdbcType="VARCHAR" />
+        <result column="solution_ids" property="solutionIds" jdbcType="VARCHAR" />
         <result column="status" property="status" jdbcType="INTEGER" />
         <result column="company_group" property="companyGroup" jdbcType="INTEGER" />
         <result column="create_time" property="createTime" jdbcType="BIGINT" />
@@ -22,23 +24,23 @@
     </resultMap>
 
     <sql id="Base_Column_List" >
-        id, name, address, post_code, email, record_person, record_person_phone, check_person, check_person_phone, status, create_time, update_time,flood_plan,flood_manager,flood_manager_phone,record_date,company_group
+        id, name, address, post_code, email, record_person, record_person_phone, check_person, check_person_phone, status, create_time, update_time,flood_plan,flood_manager,flood_manager_phone,record_date,company_group,situation_ids,solution_ids
     </sql>
 
     <insert id="insertBatch" parameterType="list" useGeneratedKeys="true" keyProperty="id">
         insert into company
-        (name, address, post_code, email, record_person, record_person_phone, check_person, check_person_phone, status, create_time, update_time,flood_plan, record_date,company_group)
+        (name, address, post_code, email, record_person, record_person_phone, check_person, check_person_phone, status, create_time, update_time,flood_plan, record_date,company_group,situation_ids,solution_ids)
         values
         <foreach collection="saveList" item="company" separator=",">
-            (#{company.name},#{company.address},#{company.postCode},#{company.email},#{company.recordPerson},#{company.recordPersonPhone},#{company.checkPerson},#{company.checkPersonPhone},#{company.status},#{company.createTime},#{company.updateTime},#{company.floodPlan},#{company.recordDate},#{company.companyGroup})
+            (#{company.name},#{company.address},#{company.postCode},#{company.email},#{company.recordPerson},#{company.recordPersonPhone},#{company.checkPerson},#{company.checkPersonPhone},#{company.status},#{company.createTime},#{company.updateTime},#{company.floodPlan},#{company.recordDate},#{company.companyGroup},#{company.situationIds},#{company.solutionIds})
         </foreach>
     </insert>
 
     <insert id="insert" parameterType="Object" useGeneratedKeys="true" keyProperty="id">
         insert into company
-        (name, address, post_code, email, record_person, record_person_phone, check_person, check_person_phone, status, create_time, update_time,flood_plan,record_date,company_group)
+        (name, address, post_code, email, record_person, record_person_phone, check_person, check_person_phone, status, create_time, update_time,flood_plan,record_date,company_group,situation_ids,solution_ids)
         values
-        (#{name},#{address},#{postCode},#{email},#{recordPerson},#{recordPersonPhone},#{checkPerson},#{checkPersonPhone},#{status},#{createTime},#{updateTime},#{floodPlan},#{floodPlan},#{companyGroup})
+        (#{name},#{address},#{postCode},#{email},#{recordPerson},#{recordPersonPhone},#{checkPerson},#{checkPersonPhone},#{status},#{createTime},#{updateTime},#{floodPlan},#{floodPlan},#{companyGroup},#{situationIds},#{solutionIds})
     </insert>
     <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
         select
@@ -110,7 +112,9 @@
         flood_manager_phone = #{floodManagerPhone},
         flood_manager = #{floodManager},
         record_date = #{recordDate},
-        company_group = #{companyGroup}
+        company_group = #{companyGroup},
+        situation_ids = #{situationIds},
+        solution_ids = #{solutionIds}
         <where>
             id = #{id}
         </where>
