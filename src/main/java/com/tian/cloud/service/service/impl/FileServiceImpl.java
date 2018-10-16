@@ -37,7 +37,13 @@ public class FileServiceImpl implements FileService {
         String fileName = uploadFile.getOriginalFilename();
         String filePath = savePath + "/" + fileName;
         File file1 = new File(filePath);
-        ParamCheckUtil.assertTrue(!file1.exists(), "存在相同名称的文件，请重新上传");
+
+        int i=0;
+        while (file1.exists()) {
+            i++;
+            filePath = savePath + "/" + i + "_" + fileName;
+            file1 = new File(filePath);
+        }
         uploadFile.transferTo(file1);
         return filePath;
     }

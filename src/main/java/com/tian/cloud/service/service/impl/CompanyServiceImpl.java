@@ -1,11 +1,14 @@
 package com.tian.cloud.service.service.impl;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
+import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import com.tian.cloud.service.controller.response.CompanyInfo;
+import com.tian.cloud.service.controller.response.CompanySituationTypes;
 import com.tian.cloud.service.dao.entity.*;
 import com.tian.cloud.service.dao.mapper.CommonTypeMapper;
 import com.tian.cloud.service.dao.mapper.CompanyMapper;
@@ -28,6 +31,7 @@ import javax.annotation.Resource;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author tianguang
@@ -48,6 +52,10 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Resource
     private CommonTypeMapper commonTypeMapper;
+
+    private static final Splitter COMA_SPLITTER = Splitter.on(",").omitEmptyStrings().trimResults();
+
+    private static final Joiner JOINER = Joiner.on(",").skipNulls();
 
     @Override
     public List<Company> selectAll() {
@@ -79,6 +87,22 @@ public class CompanyServiceImpl implements CompanyService {
         companyInfo.setCompany(company);
         companyInfo.setPhoneList(phoneInfos);
         return companyInfo;
+    }
+
+    @Override
+    public CompanySituationTypes situationTypesOfCompany(Integer companyId) {
+        Company company = companyMapper.selectById(companyId);
+        ParamCheckUtil.assertTrue(company != null, "单位不存在");
+        List<Integer> situationIdList = COMA_SPLITTER.splitToList(company.getSituationIds()).stream().map(Integer::valueOf).collect(Collectors.toList());
+        List<Integer> solutionIdList = COMA_SPLITTER.splitToList(company.getSolutionIds()).stream().map(Integer::valueOf).collect(Collectors.toList());
+        List<CommonType> situationTypeList = commonTypeMapper.selectByIdList(situationIdList);
+        List<CommonType> solutionTypeList = commonTypeMapper.selectByIdList(solutionIdList);
+
+        CompanySituationTypes result = new CompanySituationTypes();
+        result.setSituationTypeList(situationTypeList);
+        result.setSolutionTypeList(solutionTypeList);
+        result.setCompanyId(companyId);
+        return result;
     }
 
     private CompanyInfo emptyCompanyInfo() {

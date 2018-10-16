@@ -21,6 +21,7 @@ import com.tian.cloud.service.util.FileUtils;
 import com.tian.cloud.service.util.ParamCheckUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.util.URLEncoder;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -214,6 +215,14 @@ public class ManageController {
     public String doUpload(@RequestParam("file") MultipartFile file, String extraData) throws Exception{
         log.info("extraData:{}", extraData);
         uploadService.upload(file, extraData);
+        return "上传成功";
+    }
+
+    @RequestMapping("fileUpload")
+    @ResponseBody
+    public String fileUpload(@RequestParam("file") MultipartFile file, @Param("uploadType") Integer uploadType, @Param("refId") Integer refId) throws Exception{
+        log.info("uploadType:{},refId:{}", uploadType, refId);
+        uploadService.upload(file, uploadType, refId);
         return "上传成功";
     }
 

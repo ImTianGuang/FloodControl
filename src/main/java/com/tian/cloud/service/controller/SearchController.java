@@ -5,12 +5,14 @@ import com.tian.cloud.service.controller.request.CommonSearchReq;
 import com.tian.cloud.service.controller.response.*;
 import com.tian.cloud.service.dao.entity.*;
 import com.tian.cloud.service.enums.CommonTypeEnum;
+import com.tian.cloud.service.exception.ErrorCode;
 import com.tian.cloud.service.service.CommonTypeService;
 import com.tian.cloud.service.service.CompanyService;
 import com.tian.cloud.service.service.MessageService;
 import com.tian.cloud.service.service.SituationService;
 import com.tian.cloud.service.util.DateUtil;
 import com.tian.cloud.service.util.FileUtils;
+import com.tian.cloud.service.util.ParamCheckUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -130,5 +132,12 @@ public class SearchController {
         typeSummary.setFloodTitleList((List<CommonType>) multimap.get(CommonTypeEnum.FLOOD_TITLE.getCode()));
 
         return BaseResponse.success(typeSummary);
+    }
+
+    @RequestMapping("companyFloodSituationTypes")
+    @ResponseBody
+    public BaseResponse<CompanySituationTypes> companySituationTypes(Integer companyId) {
+        ParamCheckUtil.assertTrue(companyId != null, ErrorCode.PARAM_ERROR.getMsg());
+        return BaseResponse.success(companyService.situationTypesOfCompany(companyId));
     }
 }

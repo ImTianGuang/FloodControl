@@ -98,6 +98,7 @@ create table `user` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `company_id` int(11) NOT NULL default 0,
     `position_id` int(11) NOT NULL default 0,
+    `position_name` varchar(64) NOT NULL DEFAULT '',
     `status` int(11) NOT NULL DEFAULT '1',
     `user_name` varchar(64) NOT NULL default '',
     `user_phone` varchar(64) NOT NULL default '',

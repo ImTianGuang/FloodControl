@@ -55,45 +55,51 @@ public class UploadServiceImpl implements UploadService {
         UpLoadExt ext = GSON.fromJson(decrypt, UpLoadExt.class);
         ParamCheckUtil.assertTrue((System.currentTimeMillis() - ext.getTimestamp()) < TEN_MINUTE, "链接已过期，请重新获取");
         UploadType uploadType = UploadType.toEnum(ext.getUploadType());
+        Integer refId = ext.getRefId();
+        doUpload(file, uploadType, refId);
+        return true;
+    }
+
+    private void doUpload(MultipartFile file, UploadType uploadType, Integer refId) throws Exception {
         String filePath = fileService.uploadFile(file, uploadType);
         int affectRow = 0;
         String dbFileName = "";
         if (UploadType.FLOOD_PLAN.equals(uploadType)) {
-            Company dbCompany = companyMapper.selectById(ext.getRefId());
+            Company dbCompany = companyMapper.selectById(refId);
             Company company = new Company();
-            company.setId(ext.getRefId());
+            company.setId(refId);
             company.setFloodPlan(filePath);
             affectRow = companyMapper.updateSelective(company);
             dbFileName = dbCompany.getFloodPlan();
         } else if (UploadType.FLOOD.equals(uploadType)) {
-            FloodSituation dbSituation = situationMapper.getById(ext.getRefId());
+            FloodSituation dbSituation = situationMapper.getById(refId);
             FloodSituation floodSituation = new FloodSituation();
-            floodSituation.setId(ext.getRefId());
+            floodSituation.setId(refId);
             floodSituation.setAttatch(filePath);
             floodSituation.setUpdateTime(System.currentTimeMillis());
             affectRow = situationMapper.updateSelective(floodSituation);
             dbFileName = dbSituation.getAttatch();
         } else if (UploadType.FLOOD_IMG.equals(uploadType)) {
-            FloodSituation dbFloodSituation = situationMapper.getById(ext.getRefId());
+            FloodSituation dbFloodSituation = situationMapper.getById(refId);
             ParamCheckUtil.assertTrue(dbFloodSituation != null, "系统异常，请重新获取上传链接");
             // todo check photos num
             FloodSituation floodSituation = new FloodSituation();
-            floodSituation.setId(ext.getRefId());
+            floodSituation.setId(refId);
             floodSituation.setPhotos(dbFloodSituation.getPhotos() + ";" + filePath);
             floodSituation.setUpdateTime(System.currentTimeMillis());
             affectRow = situationMapper.updateSelective(floodSituation);
         } else if (UploadType.NOTICE.equals(uploadType)) {
-            Message dbMessage = messageMapper.getById(ext.getRefId());
+            Message dbMessage = messageMapper.getById(refId);
             Message message = new Message();
-            message.setId(ext.getRefId());
+            message.setId(refId);
             message.setAttatch(filePath);
             message.setUpdateTime(System.currentTimeMillis());
             affectRow = messageMapper.updateSelective(message);
             dbFileName = dbMessage.getAttatch();
         } else if (UploadType.NOTICE_IMG.equals(uploadType)) {
-            Message dbMessage = messageMapper.getById(ext.getRefId());
+            Message dbMessage = messageMapper.getById(refId);
             Message message = new Message();
-            message.setId(ext.getRefId());
+            message.setId(refId);
             message.setPhotos(dbMessage.getPhotos() + ";" + filePath);
             message.setUpdateTime(System.currentTimeMillis());
             affectRow = messageMapper.updateSelective(message);
@@ -104,6 +110,11 @@ public class UploadServiceImpl implements UploadService {
         if (!StringUtils.isEmpty(dbFileName)) {
             fileService.backUpFile(dbFileName, uploadType);
         }
+    }
+
+    @Override
+    public boolean upload(MultipartFile file, Integer uploadType, Integer refId) throws Exception {
+        doUpload(file, UploadType.toEnum(uploadType), refId);
         return true;
     }
 

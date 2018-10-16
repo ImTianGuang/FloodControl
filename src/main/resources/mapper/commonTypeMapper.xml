@@ -74,6 +74,21 @@
             </foreach>
         </where>
     </select>
+
+    <select id="selectByIdList" resultMap="BaseResultMap" parameterType="list">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        common_type
+        <where>
+            id  in
+            <foreach collection="idList" item="id" separator="," open="(" close=")">
+                #{id}
+            </foreach>
+            and status = 1
+        </where>
+    </select>
+
     <select id="selectAllUsable" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         select
         <include refid="Base_Column_List"/>

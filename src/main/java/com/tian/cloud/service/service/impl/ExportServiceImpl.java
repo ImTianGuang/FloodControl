@@ -760,11 +760,16 @@ public class ExportServiceImpl implements ExportService {
             exportUser.setPersonPhone(user.getUserPhone());
             exportUser.setWorkPhone(user.getWorkPhone());
             CommonType position = idPositionMap.get(user.getPositionId());
-            if (position != null) {
-                exportUser.setPosition(position.getName());
+            if (StringUtils.isEmpty(user.getPositionName())) {
+                if (position != null) {
+                    exportUser.setPosition(position.getName());
+                } else {
+                    exportUser.setPosition("未填写");
+                }
             } else {
-                exportUser.setPosition("未填写");
+                exportUser.setPosition(user.getPositionName());
             }
+
             exportUsers.add(exportUser);
         }
         return exportUsers;

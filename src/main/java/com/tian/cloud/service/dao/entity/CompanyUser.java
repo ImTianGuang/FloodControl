@@ -16,7 +16,9 @@ public class CompanyUser {
 
     private String floodTitle = "";
 
-    private Integer positionId;
+    private Integer positionId = -1;
+
+    private String positionName ="";
 
     private Integer status = 1;
 

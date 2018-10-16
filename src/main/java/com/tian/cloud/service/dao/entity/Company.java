@@ -37,6 +37,12 @@ public class Company {
 
     private String floodPlan = "";
 
+    private String situationIds;
+
+    private String solutionIds;
+
+    private Integer companyGroup;
+
     private long createTime = System.currentTimeMillis();
 
     private long updateTime = System.currentTimeMillis();

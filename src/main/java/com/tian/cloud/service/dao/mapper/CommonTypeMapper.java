@@ -21,4 +21,6 @@ public interface CommonTypeMapper {
     List<CommonType> selectAllByType(int code);
 
     List<CommonType> selectAllByTypes(@Param("typeIdList") List<Integer> typeIdList);
+
+    List<CommonType> selectByIdList(@Param("idList") List<Integer> situationIdList);
 }
