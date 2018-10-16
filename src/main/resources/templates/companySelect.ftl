@@ -14,11 +14,134 @@
 
 </head>
 <body>
+<!-- page集合的容器，里面放多个平行的.page，其他.page作为内联页面由路由控制展示 -->
 <div class="page-group">
-    <div class="page page-current">
-        <!-- 你的html代码 -->
+    <!-- 单个page ,第一个.page默认被展示-->
+    <div class="page">
+        <!-- 标题栏 -->
+        <header class="bar bar-nav">
+            <!--<a class="icon icon-me pull-left open-panel"></a>-->
+            <h1 class="title">标题</h1>
+        </header>
+
+        <!-- 工具栏 -->
+        <!--<nav class="bar bar-tab">-->
+        <!--<a class="tab-item external active" href="#">-->
+        <!--<span class="icon icon-home"></span>-->
+        <!--<span class="tab-label">首页</span>-->
+        <!--</a>-->
+        <!--<a class="tab-item external" href="#">-->
+        <!--<span class="icon icon-star"></span>-->
+        <!--<span class="tab-label">收藏</span>-->
+        <!--</a>-->
+        <!--<a class="tab-item external" href="#">-->
+        <!--<span class="icon icon-settings"></span>-->
+        <!--<span class="tab-label">设置</span>-->
+        <!--</a>-->
+        <!--</nav>-->
+
+        <!-- 这里是页面内容区 -->
+        <div class="content">
+            <div class="buttons-tab">
+                <!--<a href="#tab1" class="tab-link active button">全部</a>-->
+                <a href="#tab2" class="tab-link button">街乡镇</a>
+                <a href="#tab3" class="tab-link button">委办局</a>
+            </div>
+            <div class="content-block">
+                <div class="tabs">
+                    <div id="tab2" class="tab">
+                        <div class="list-block">
+                            <ul>
+                                <#list companyList as company>
+                                    <#if company.companyGroup =0>
+                                        <li class="item-content item-link">
+                                            <div class="item-media"><i class="icon icon-f7"></i></div>
+                                            <div class="item-inner">
+                                                <div class="item-title">${company.name}</div>
+                                            </div>
+                                        </li>
+                                    </#if>
+                                </#list>
+
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="tab3" class="tab">
+                        <div class="list-block">
+                            <ul>
+                                <li class="item-content item-link">
+                                    <div class="item-media"><i class="icon icon-f7"></i></div>
+                                    <div class="item-inner">
+                                        <div class="item-title">单位1</div>
+                                        <!--<div class="item-after">杜蕾斯</div>-->
+                                    </div>
+                                </li>
+                                <li class="item-content item-link">
+                                    <div class="item-media"><i class="icon icon-f7"></i></div>
+                                    <div class="item-inner">
+                                        <div class="item-title">单位1</div>
+                                        <!--<div class="item-after">极致超薄型</div>-->
+                                    </div>
+                                </li>
+                                <li class="item-content item-link">
+                                    <div class="item-media"><i class="icon icon-f7"></i></div>
+                                    <div class="item-inner">
+                                        <div class="item-title">单位1</div>
+                                        <!--<div class="item-after">极致超薄型</div>-->
+                                    </div>
+                                </li>
+                                <li class="item-content item-link">
+                                    <div class="item-media"><i class="icon icon-f7"></i></div>
+                                    <div class="item-inner">
+                                        <div class="item-title">单位1</div>
+                                        <!--<div class="item-after">极致超薄型</div>-->
+                                    </div>
+                                </li>
+                                <li class="item-content item-link">
+                                    <div class="item-media"><i class="icon icon-f7"></i></div>
+                                    <div class="item-inner">
+                                        <div class="item-title">单位1</div>
+                                        <!--<div class="item-after">极致超薄型</div>-->
+                                    </div>
+                                </li>
+                                <li class="item-content item-link">
+                                    <div class="item-media"><i class="icon icon-f7"></i></div>
+                                    <div class="item-inner">
+                                        <div class="item-title">单位1</div>
+                                        <!--<div class="item-after">极致超薄型</div>-->
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 其他的单个page内联页（如果有） -->
+    <div class="page">...</div>
+</div>
+
+<!-- popup, panel 等放在这里 -->
+<div class="panel-overlay"></div>
+<!-- Left Panel with Reveal effect -->
+<div class="panel panel-left panel-reveal">
+    <div class="content-block">
+        <p>这是一个侧栏</p>
+        <p></p>
+        <!-- Click on link with "close-panel" class will close panel -->
+        <p><a href="#" class="close-panel">关闭</a></p>
     </div>
 </div>
+
+
+<!-- 默认必须要执行$.init(),实际业务里一般不会在HTML文档里执行，通常是在业务页面代码的最后执行 -->
+<script>
+    $.config = {
+        autoInit: true
+    }
+</script>
 
 <script type='text/javascript' src='http://g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
 <script type='text/javascript' src='http://g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>

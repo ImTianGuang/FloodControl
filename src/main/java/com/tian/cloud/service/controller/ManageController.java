@@ -257,4 +257,14 @@ public class ManageController {
         }
         return null;
     }
+
+    @RequestMapping("h5/companySelect")
+    public ModelAndView companySelect() throws Exception{
+
+        ModelAndView modelAndView = new ModelAndView();
+        List<Company> companies = companyService.selectAll();
+        modelAndView.setViewName("companySelect");
+        modelAndView.addObject("comapnyList", companies);
+        return modelAndView;
+    }
 }
