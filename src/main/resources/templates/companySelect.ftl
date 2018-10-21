@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>我的生活</title>
+    <title>汛情录入</title>
     <meta name="viewport" content="initial-scale=1, maximum-scale=1">
     <link rel="shortcut icon" href="/favicon.ico">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -21,7 +21,7 @@
         <!-- 标题栏 -->
         <header class="bar bar-nav">
             <!--<a class="icon icon-me pull-left open-panel"></a>-->
-            <h1 class="title">标题</h1>
+            <h1 class="title">单位选择</h1>
         </header>
 
         <!-- 工具栏 -->
@@ -44,39 +44,43 @@
         <div class="content">
             <div class="buttons-tab">
                 <!--<a href="#tab1" class="tab-link active button">全部</a>-->
-                <a href="#tab2" class="tab-link button">街乡镇</a>
-                <a href="#tab3" class="tab-link button">委办局</a>
+                <a href="#tab1" class="tab-link active button">街乡镇</a>
+                <a href="#tab2" class="tab-link button">委办局</a>
             </div>
             <div class="content-block">
                 <div class="tabs">
-                    <div id="tab2" class="tab">
+                    <div id="tab1" class="tab active">
                         <div class="list-block">
                             <ul>
                                 <#list companyList as company>
                                     <#if company.companyGroup =0>
+                                        <a class="item-title" href="/manage/h5/floodReport?companyId=${company.id}" style="color:#6d6d72;">
                                         <li class="item-content item-link">
                                             <div class="item-media"><i class="icon icon-f7"></i></div>
                                             <div class="item-inner">
                                                 <div class="item-title">${company.name}</div>
                                             </div>
                                         </li>
+                                        </a>
                                     </#if>
                                 </#list>
 
                             </ul>
                         </div>
                     </div>
-                    <div id="tab3" class="tab">
+                    <div id="tab2" class="tab">
                         <div class="list-block">
                             <ul>
                                 <#list companyList as company>
                                     <#if company.companyGroup =1>
-                                        <li class="item-content item-link">
+                                    <a class="item-title" href="/manage/h5/floodReport?companyId=${company.id}" style="color:#6d6d72;">
+                                        <li class="item-content item-link external" >
                                             <div class="item-media"><i class="icon icon-f7"></i></div>
                                             <div class="item-inner">
                                                 <div class="item-title">${company.name}</div>
                                             </div>
                                         </li>
+                                    </a>
                                     </#if>
                                 </#list>
                             </ul>
@@ -109,7 +113,7 @@
     $.config = {
         autoInit: true
     }
-    $.init();
+
 </script>
 
 <script type='text/javascript' src='http://g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>

@@ -121,6 +121,13 @@ public class ManageController {
         return BaseResponse.success(company);
     }
 
+    @RequestMapping("updateCompanyFloodTypes")
+    @ResponseBody
+    public BaseResponse<Boolean> updateCompanyFloodTypes(@RequestBody Company company) {
+        boolean res = companyService.updateCompanyFloodTypes(company);
+        return BaseResponse.success(res);
+    }
+
     @RequestMapping("updateCommonType")
     @ResponseBody
     public BaseResponse<Boolean> saveOrUpdateCommonType(@RequestBody List<CommonType> commonTypeList) {
@@ -273,6 +280,7 @@ public class ManageController {
         modelAndView.setViewName("afterfloodReport");
         modelAndView.addObject("situationTypeList", companySituationTypes.getSituationTypeList());
         modelAndView.addObject("solutionTypeList", companySituationTypes.getSolutionTypeList());
+        modelAndView.addObject("companyId", companyId);
         return modelAndView;
     }
 }

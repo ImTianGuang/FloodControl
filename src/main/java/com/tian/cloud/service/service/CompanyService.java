@@ -23,4 +23,6 @@ public interface CompanyService {
     void saveOrUpdate(List<Company> companyList);
 
     boolean saveOrUpdate(Company company);
+
+    boolean updateCompanyFloodTypes(Company company);
 }

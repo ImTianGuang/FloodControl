@@ -134,7 +134,7 @@ public class SearchController {
         return BaseResponse.success(typeSummary);
     }
 
-    @RequestMapping("companyFloodSituationTypes")
+    @RequestMapping("companyFloodTypes")
     @ResponseBody
     public BaseResponse<CompanySituationTypes> companySituationTypes(Integer companyId) {
         ParamCheckUtil.assertTrue(companyId != null, ErrorCode.PARAM_ERROR.getMsg());

@@ -95,12 +95,22 @@ public class CompanyServiceImpl implements CompanyService {
         ParamCheckUtil.assertTrue(company != null, "单位不存在");
         List<Integer> situationIdList = COMA_SPLITTER.splitToList(company.getSituationIds()).stream().map(Integer::valueOf).collect(Collectors.toList());
         List<Integer> solutionIdList = COMA_SPLITTER.splitToList(company.getSolutionIds()).stream().map(Integer::valueOf).collect(Collectors.toList());
-        List<CommonType> situationTypeList = commonTypeMapper.selectByIdList(situationIdList);
-        List<CommonType> solutionTypeList = commonTypeMapper.selectByIdList(solutionIdList);
+        List<CommonType> situationTypeList = Lists.newArrayList();
+        if (!CollectionUtils.isEmpty(situationIdList)) {
+            situationTypeList = commonTypeMapper.selectByIdList(situationIdList);
+        }
+        List<CommonType> solutionTypeList = Lists.newArrayList();
+        if (!CollectionUtils.isEmpty(solutionIdList)) {
+            solutionTypeList = commonTypeMapper.selectByIdList(solutionIdList);
+        }
 
+        List<CommonType> allSituationTypes = commonTypeMapper.selectUsableByType(CommonTypeEnum.SITUATION.getCode());
+        List<CommonType> allSolutionTypes = commonTypeMapper.selectUsableByType(CommonTypeEnum.SOLUTION.getCode());
         CompanySituationTypes result = new CompanySituationTypes();
         result.setSituationTypeList(situationTypeList);
         result.setSolutionTypeList(solutionTypeList);
+        result.setAllSituationTypes(allSituationTypes);
+        result.setAllSolutionTypes(allSolutionTypes);
         result.setCompanyId(companyId);
         return result;
     }
@@ -374,9 +384,22 @@ public class CompanyServiceImpl implements CompanyService {
         return false;
     }
 
+    @Override
+    public boolean updateCompanyFloodTypes(Company company) {
+        ParamCheckUtil.assertTrue(company != null, "系统异常");
+        ParamCheckUtil.assertTrue(company.getId() != null, "未知异常，请刷新页面重试");
+        Company dbCompany = companyMapper.selectById(company.getId());
+        dbCompany.setSituationIds(company.getSituationIds());
+        dbCompany.setSolutionIds(company.getSolutionIds());
+        return companyMapper.updateCompany(dbCompany) > 0;
+    }
+
     public boolean updateCompany(Company company) {
 
         company.setUpdateTime(System.currentTimeMillis());
+        if (!StringUtils.isEmpty(company.getRecordDate()) && company.getRecordDate().contains("T")) {
+            company.setRecordDate(company.getRecordDate().substring(0, company.getRecordDate().indexOf('T')));
+        }
         return companyMapper.updateCompany(company) > 0;
     }
 
