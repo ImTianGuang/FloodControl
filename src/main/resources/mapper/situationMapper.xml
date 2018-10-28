@@ -49,10 +49,10 @@
                 and <![CDATA[ id < #{startId} ]]>
             </if>
             <if test="startTime != null">
-                and create_time >= #{startTime}
+                and start_time >= #{startTime}
             </if>
             <if test="endTime != null">
-                and <![CDATA[ create_time <= #{endTime} ]]>
+                and <![CDATA[ start_time <= #{endTime} ]]>
             </if>
             <if test="1 == 1">
                 and status = 1

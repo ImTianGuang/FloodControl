@@ -6,10 +6,7 @@ import com.tian.cloud.service.controller.request.AccountUpdateReq;
 import com.tian.cloud.service.controller.request.ChangePassReq;
 import com.tian.cloud.service.controller.request.CommonSearchReq;
 import com.tian.cloud.service.controller.response.*;
-import com.tian.cloud.service.dao.entity.CommonType;
-import com.tian.cloud.service.dao.entity.Company;
-import com.tian.cloud.service.dao.entity.FloodUser;
-import com.tian.cloud.service.dao.entity.Message;
+import com.tian.cloud.service.dao.entity.*;
 import com.tian.cloud.service.enums.UploadType;
 import com.tian.cloud.service.model.auth.AccountCheckResult;
 import com.tian.cloud.service.service.*;
@@ -147,6 +144,11 @@ public class ManageController {
     @ResponseBody
     public BaseResponse<Boolean> saveOrUpdateFloodSituation(@RequestBody FloodSituationInfo situationInfo) {
         log.info("updateFlood:{}", situationInfo);
+        FloodSituation floodSituation = situationInfo.getFloodSituation();
+
+        if (floodSituation.getFloodTime() != null) {
+            floodSituation.setStartTime(DateUtil.str2Date(floodSituation.getFloodTime(), DateUtil.FMT_YYYY_MM).getTime());
+        }
         situationService.saveOrUpdate(situationInfo);
         return BaseResponse.success(true);
     }

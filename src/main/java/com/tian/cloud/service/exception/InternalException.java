@@ -31,13 +31,13 @@ public class InternalException extends RuntimeException {
     }
 
     public InternalException(ErrorCode errorCode) {
-        super(errorCode.getCode());
+        super(errorCode.getMsg());
         this.errorCode = errorCode.getCode();
         this.errorMsgCn = errorCode.getMsg();
     }
 
     public InternalException(ErrorCode errorCode, String errorMsgCn) {
-        super(errorCode.getCode());
+        super(errorMsgCn);
         this.errorCode = errorCode.getCode();
         this.errorMsgCn = errorMsgCn;
     }

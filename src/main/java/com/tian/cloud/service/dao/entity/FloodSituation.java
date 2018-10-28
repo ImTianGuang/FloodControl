@@ -32,6 +32,9 @@ public class FloodSituation {
     private long updateTime;
 
     /* for前端展示-start */
+
+    private String floodTime;
+
     private String companyName;
 
     private String createTimeStr;
