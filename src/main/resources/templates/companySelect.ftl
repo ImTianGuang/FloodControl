@@ -168,7 +168,7 @@
                         }
                     }
                 },
-                "application/json");
+                "json");
 
     }
 
