@@ -171,7 +171,7 @@
 
 
         $.post("/manage/updateSituation",
-                JSON.stringify(formData),
+                {jsonData: JSON.stringify(JSON.stringify(formData))},
                 function(data,status){
                     console.log(data);
                     if (data.ret && data.data) {
