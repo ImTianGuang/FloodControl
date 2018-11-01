@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="https://g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
     <link rel="stylesheet" href="https://g.alicdn.com/msui/sm/0.6.2/css/sm-extend.min.css">
 
+    <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js">
+    </script>
 </head>
 <body>
 <!-- page集合的容器，里面放多个平行的.page，其他.page作为内联页面由路由控制展示 -->
@@ -151,26 +153,21 @@
         formData.situationDetailList=situationList;
         formData.solutionDetailList=solutionList;
 
-        $.ajax({
-            method: "POST",
-            url: "/manage/updateSituation",
-            contentType: 'application/json',
-            data:JSON.stringify(formData),
-            success: function( data ) {
-                console.log(data);
-                if (data.ret && data.data) {
-                    alert('提交成功');
-                    setTimeout("go()",3000);
-                } else {
-                    if(data.errorMsg) {
-                        alert('提交失败:' + data.errorMsg);
-                    } else {
-                        alert('提交失败:未知错误');
-                    }
-                }
-
-            }
-        });
+        $.post("/manage/updateSituation",
+                JSON.stringify(formData),
+                function(data,status){
+                    console.log(data);
+                    // if (data.ret && data.data) {
+                    //     alert('提交成功');
+                    //     setTimeout("go()",3000);
+                    // } else {
+                    //     if(data.errorMsg) {
+                    //         alert('提交失败:' + data.errorMsg);
+                    //     } else {
+                    //         alert('提交失败:未知错误');
+                    //     }
+                    // }
+                });
 
     }
 
