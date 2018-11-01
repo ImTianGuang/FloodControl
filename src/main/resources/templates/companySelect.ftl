@@ -110,8 +110,76 @@
 
 <!-- 默认必须要执行$.init(),实际业务里一般不会在HTML文档里执行，通常是在业务页面代码的最后执行 -->
 <script>
-    $.config = {
-        autoInit: true
+    function submitForm() {
+        var companyId = document.getElementById("companyId").value;
+        var situations = document.getElementsByName("situations");
+        var situationList = [];
+        for(var i=0;i<situations.length;i++){
+            var situation = {};
+            situation.companyId=companyId;
+            situation.situationTargetCode=0;
+            situation.status=1;
+            situation.targetId=situations[i].id;
+            situation.targetValue = situations[i].value;
+            situationList.push(situation);
+        }
+
+        var solutions = document.getElementsByName("solutions");
+        var solutionList = [];
+        for(var i=0;i<solutions.length;i++){
+            var solution = {};
+            solution.companyId=companyId;
+            solution.situationTargetCode=1;
+            solution.status=1;
+            solution.targetId=situations[i].id;
+            solution.targetValue = situations[i].value;
+            solutionList.push(solution);
+        }
+
+        var company = {};
+        company.companyId = companyId;
+
+        var floodSituation = {};
+        floodSituation.companyId=companyId;
+        floodSituation.status=1;
+        floodSituation.floodDesc=document.getElementById("floodDesc").value;
+        floodSituation.floodTime=document.getElementById("floodTime").value;
+
+        var formData = {};
+        formData.compnay = company;
+        formData.floodSituation= floodSituation;
+        formData.situationDetailList=situationList;
+        formData.solutionDetailList=solutionList;
+
+        $.ajax({
+            method: "POST",
+            url: "/manage/updateSituation",
+            contentType: 'application/json',
+            data:JSON.stringify(formData),
+            success: function( data ) {
+                console.log(data);
+                if (data.ret && data.data) {
+                    alert('提交成功');
+                    setTimeout("go()",3000);
+                } else {
+                    if(data.errorMsg) {
+                        alert('提交失败:' + data.errorMsg);
+                    } else {
+                        alert('提交失败:未知错误');
+                    }
+                }
+
+            }
+        });
+
+    }
+
+    function toast(msg, time, classes) {
+        $.toast(msg, time, classes);
+    }
+    function go()
+    {
+        window.history.go(-1);
     }
 
 </script>
