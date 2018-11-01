@@ -184,7 +184,7 @@
                             alert('提交失败:未知错误');
                         }
                     }
-                },"json");
+                },"application/json");
 
     }
 
