@@ -157,17 +157,18 @@
                 JSON.stringify(formData),
                 function(data,status){
                     console.log(data);
-                    // if (data.ret && data.data) {
-                    //     alert('提交成功');
-                    //     setTimeout("go()",3000);
-                    // } else {
-                    //     if(data.errorMsg) {
-                    //         alert('提交失败:' + data.errorMsg);
-                    //     } else {
-                    //         alert('提交失败:未知错误');
-                    //     }
-                    // }
-                });
+                    if (data.ret && data.data) {
+                        alert('提交成功');
+                        setTimeout("go()",3000);
+                    } else {
+                        if(data.errorMsg) {
+                            alert('提交失败:' + data.errorMsg);
+                        } else {
+                            alert('提交失败:未知错误');
+                        }
+                    }
+                },
+                "application/json");
 
     }
 
