@@ -104,7 +104,7 @@ public class UploadServiceImpl implements UploadService {
             message.setPhotos(dbMessage.getPhotos() + ";" + filePath);
             message.setUpdateTime(System.currentTimeMillis());
             affectRow = messageMapper.updateSelective(message);
-        } else if (UploadType.FLOOD_PLAN.equals(uploadType)) {
+        } else if (UploadType.FLOOD_SUM.equals(uploadType)) {
             Company dbCompany = companyMapper.selectById(refId);
             Company company = new Company();
             company.setId(refId);
