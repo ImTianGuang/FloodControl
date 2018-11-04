@@ -133,6 +133,7 @@
                 flood_sum = #{floodSum}
             </if>
         </set>
+        where
         id = #{id}
     </update>
 </mapper>
