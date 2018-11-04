@@ -61,6 +61,7 @@ public class UploadServiceImpl implements UploadService {
     }
 
     private void doUpload(MultipartFile file, UploadType uploadType, Integer refId) throws Exception {
+        ParamCheckUtil.assertTrue(refId!=null, "请选择要上传的单位");
         String filePath = fileService.uploadFile(file, uploadType);
         int affectRow = 0;
         String dbFileName = "";
