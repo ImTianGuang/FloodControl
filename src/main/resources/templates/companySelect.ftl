@@ -153,22 +153,29 @@
         formData.situationDetailList=situationList;
         formData.solutionDetailList=solutionList;
 
-        $.post("/manage/updateSituation",
-                {jsonData: JSON.stringify(JSON.stringify(formData))},
-                function(data,status){
-                    console.log(data);
-                    if (data.ret && data.data) {
-                        alert('提交成功');
-                        setTimeout("go()",3000);
+        $.ajax({
+            type: "POST",
+            url: "/manage/updateSituation",
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(formData),
+            dataType: "json",
+            success: function (data) {
+                console.log(data);
+                if (data.ret && data.data) {
+                    alert('提交成功');
+                    setTimeout("go()",3000);
+                } else {
+                    if(data.errorMsg) {
+                        alert('提交失败:' + data.errorMsg);
                     } else {
-                        if(data.errorMsg) {
-                            alert('提交失败:' + data.errorMsg);
-                        } else {
-                            alert('提交失败:未知错误');
-                        }
+                        alert('提交失败:未知错误');
                     }
-                },
-                "application/json");
+                }
+            },
+            error: function (message) {
+                alert('提交失败:未知错误');
+            }
+        });
 
     }
 
