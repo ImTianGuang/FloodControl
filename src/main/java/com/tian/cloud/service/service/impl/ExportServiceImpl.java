@@ -204,6 +204,9 @@ public class ExportServiceImpl implements ExportService {
     public void exportAll(String emails) {
         File file = null;
         File zipFile = null;
+        File zipFileSum = null;
+
+
         try {
 
             ParamCheckUtil.assertTrue(!StringUtils.isEmpty(emails), "邮箱必填");
@@ -220,12 +223,18 @@ public class ExportServiceImpl implements ExportService {
             String zipFileName = "floodPlan-" + nowString + ".zip";
             ZipUtil.zipFolder(uploadConfig.getUploadDir(UploadType.FLOOD_PLAN),uploadConfig.getFilePath(), zipFileName, Charsets.UTF_8.name());
             zipFile = new File(uploadConfig.getFilePath() + zipFileName);
+
+            String zipFloodSum = "floodSummary-" + nowString + ".zip";
+            ZipUtil.zipFolder(uploadConfig.getUploadDir(UploadType.FLOOD_SUM),uploadConfig.getFilePath(), zipFileName, Charsets.UTF_8.name());
+            zipFileSum = new File(uploadConfig.getFilePath() + zipFileName);
+
             OhMyEmail.subject("汛前通讯录已导出-" + nowString)
                     .from("flood-smallSoft")
                     .to(emails)
                     .text("汛前通讯录与防汛预案已导出，请查看附件")
                     .attach(file, "汛前通讯录.xls")
                     .attach(zipFile, "防汛预案.zip")
+                    .attach(zipFileSum, "汛后总结.zip")
                     .send();
             log.info("sendEmail:{}", System.currentTimeMillis() - start);
         } catch (InternalException e) {
@@ -239,6 +248,9 @@ public class ExportServiceImpl implements ExportService {
             }
             if (zipFile != null) {
                 zipFile.delete();
+            }
+            if (zipFileSum != null) {
+                zipFileSum.delete();
             }
         }
     }

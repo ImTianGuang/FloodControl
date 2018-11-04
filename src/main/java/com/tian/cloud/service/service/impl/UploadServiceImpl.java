@@ -103,7 +103,14 @@ public class UploadServiceImpl implements UploadService {
             message.setPhotos(dbMessage.getPhotos() + ";" + filePath);
             message.setUpdateTime(System.currentTimeMillis());
             affectRow = messageMapper.updateSelective(message);
-        } else {
+        } else if (UploadType.FLOOD_PLAN.equals(uploadType)) {
+            Company dbCompany = companyMapper.selectById(refId);
+            Company company = new Company();
+            company.setId(refId);
+            company.setFloodSum(filePath);
+            affectRow = companyMapper.updateSelective(company);
+            dbFileName = dbCompany.getFloodPlan();
+        }else {
             throw new InternalException(ErrorCode.PARAM_ERROR, "未知的上传类型");
         }
         ParamCheckUtil.assertTrue(affectRow > 0, "上传失败，请重试");

@@ -37,6 +37,8 @@ public class Company {
 
     private String floodPlan = "";
 
+    private String floodSum = "";
+
     private String situationIds;
 
     private String solutionIds;

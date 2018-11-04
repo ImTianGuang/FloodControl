@@ -39,6 +39,7 @@ create table `company` (
     `create_time` bigint(20) NOT NULL,
     `update_time` bigint(20) NOT NULL,
     `record_date` varchar(64) NOT NULL DEFAULT '',
+    `flood_sum` varchar(255) NOT NULL DEFAULT '',
     PRIMARY KEY (`id`)
 )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 

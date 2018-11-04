@@ -11,6 +11,7 @@ public enum UploadType {
     NOTICE_IMG(2, "noticeImg", "通知图片上传"),
     FLOOD(3, "flood", "汛情上传"),
     FLOOD_IMG(4, "floodImg", "汛情图片上传"),
+    FLOOD_SUM(5, "floodSummary", "汛后总结上传"),
     ;
 
     UploadType(int code, String directory, String msg) {
