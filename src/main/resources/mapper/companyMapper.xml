@@ -125,15 +125,14 @@
     <update id="updateSelective" parameterType="com.tian.cloud.service.dao.entity.Company">
         update
         company
-        set
-        <where>
+        <set>
             <if test="floodPlan != null">
                 flood_plan = #{floodPlan},
             </if>
             <if test="floodSum != null">
                 flood_sum = #{floodSum}
             </if>
-        </where>
+        </set>
         id = #{id}
     </update>
 </mapper>
