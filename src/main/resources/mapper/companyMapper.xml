@@ -126,13 +126,14 @@
         update
         company
         set
-        <if test="floodPlan != null">
-            flood_plan = #{floodPlan},
-        </if>
-        <if test="floodSum != null">
-            flood_sum = #{floodSum},
-        </if>
-        where
+        <where>
+            <if test="floodPlan != null">
+                flood_plan = #{floodPlan},
+            </if>
+            <if test="floodSum != null">
+                flood_sum = #{floodSum},
+            </if>
+        </where>
         id = #{id}
     </update>
 </mapper>
