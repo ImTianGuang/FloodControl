@@ -127,10 +127,10 @@
         company
         set
         <if test="floodPlan != null">
-            flood_plan = #{floodPlan}
+            flood_plan = #{floodPlan},
         </if>
         <if test="floodSum != null">
-            flood_sum = #{floodSum}
+            flood_sum = #{floodSum},
         </if>
         where
         id = #{id}
