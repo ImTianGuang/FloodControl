@@ -113,8 +113,11 @@ values
 ('在岗领导',2,1,0,0,'请输入姓名及职务')
 ;
 
-
-
+#物资
+insert into common_type
+(name,common_type_enum,status,create_time,update_time,type_desc)
+values
+('抢险人员',3,1,0,0,'请输入多少人');
 
 
 

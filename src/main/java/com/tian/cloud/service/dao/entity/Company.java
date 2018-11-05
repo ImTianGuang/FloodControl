@@ -25,7 +25,7 @@ public class Company {
 
     private String recordPersonPhone = "";
 
-    private String recordDate;
+    private String recordDate = "";
 
     private String checkPerson = "";
 
