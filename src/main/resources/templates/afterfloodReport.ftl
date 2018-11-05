@@ -33,13 +33,13 @@
                         <div class="card-header">汛情与灾情</div>
                         <#list situationTypeList as type>
                             <div class="card-content">
-                                <div class="card-content-inner">
+                                <div class="card-content-inner" style="padding: 0px;">
                                     <div class="item-content">
                                         <div class="item-media">
                                             <i class="icon icon-form-name"></i>
                                         </div>
                                         <div class="item-inner">
-                                            <div class="item-title label" style="width:55%;">${type.name}</div>
+                                            <div class="item-title label" style="width:5rem;word-break: break-all;white-space: normal;">${type.name}</div>
                                             <div class="item-input">
                                                 <input type="text" id="${type.id}" name="situations" placeholder="${type.typeDesc}">
                                             </div>
@@ -55,13 +55,13 @@
                         <div class="card-header">应对措施</div>
                         <#list solutionTypeList as type>
                             <div class="card-content">
-                                <div class="card-content-inner">
+                                <div class="card-content-inner" style="padding: 0px;">
                                     <div class="item-content">
                                         <div class="item-media">
                                             <i class="icon icon-form-name"></i>
                                         </div>
                                         <div class="item-inner">
-                                            <div class="item-title label" style="width:55%;">${type.name}</div>
+                                            <div class="item-title label" style="width:5rem;word-break: break-all;white-space: normal;">${type.name}</div>
                                             <div class="item-input">
                                                 <input type="text" id="${type.id}" name="solutions" placeholder="${type.typeDesc}">
                                             </div>
