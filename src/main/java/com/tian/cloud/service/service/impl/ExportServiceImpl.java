@@ -281,7 +281,7 @@ public class ExportServiceImpl implements ExportService {
                     .to(searchReq.getEmails())
                     .text("汛期中实时上报表已导出-请查看附件")
                     .attach(file, "汛期中实时上报表.xls")
-                    .attach(zipAttatchFile, "附件.zip")
+//                    .attach(zipAttatchFile, "附件.zip")
                     .send();
         } catch (InternalException e) {
             throw e;
