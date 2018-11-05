@@ -723,7 +723,11 @@ public class ExportServiceImpl implements ExportService {
         createCell(userRow, cellStyle, 2, user.getUserName());
 
         CommonType position = idAndPositionMap.get(user.getPositionId());
-        createCell(userRow, cellStyle, 3, position == null ? "未知" : position.getName());
+        String positionName = user.getPositionName();
+        if (StringUtils.isEmpty(positionName)) {
+            positionName = position == null ? "未知" : position.getName();
+        }
+        createCell(userRow, cellStyle, 3, positionName);
 
         createCell(userRow, cellStyle, 4, user.getWorkPhone());
 
