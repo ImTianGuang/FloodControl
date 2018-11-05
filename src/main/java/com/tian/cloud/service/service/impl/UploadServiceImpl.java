@@ -110,7 +110,7 @@ public class UploadServiceImpl implements UploadService {
             company.setId(refId);
             company.setFloodSum(filePath);
             affectRow = companyMapper.updateSelective(company);
-            dbFileName = dbCompany.getFloodPlan();
+            dbFileName = dbCompany.getFloodSum();
         }else {
             throw new InternalException(ErrorCode.PARAM_ERROR, "未知的上传类型");
         }
