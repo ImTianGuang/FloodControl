@@ -62,9 +62,9 @@ public class CompanyServiceImpl implements CompanyService {
             @Override
             public int compare(Company o1, Company o2) {
                 if (!StringUtils.isEmpty(o1.getSituationIds()) && StringUtils.isEmpty(o2.getSituationIds())) {
-                    return 0;
+                    return -1;
                 } else {
-                    return 1;
+                    return 0;
                 }
             }
         }).sortedCopy(companies);
@@ -77,7 +77,7 @@ public class CompanyServiceImpl implements CompanyService {
         companies = Ordering.from(new Comparator<Company>() {
             @Override
             public int compare(Company o1, Company o2) {
-                if (!StringUtils.isEmpty(o1) && StringUtils.isEmpty(o2)) {
+                if (!StringUtils.isEmpty(o1.getSituationIds()) && StringUtils.isEmpty(o2.getSituationIds())) {
                     return -1;
                 } else {
                     return 0;
