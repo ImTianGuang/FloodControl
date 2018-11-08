@@ -89,7 +89,7 @@
                                 <div class="item-content align-top">
                                     <div class="item-media"><i class="icon icon-form-comment"></i></div>
                                     <div class="item-inner">
-                                        <div class="item-title label">汛情描述</div>
+                                        <div class="item-title label">受灾详情</div>
                                         <div class="item-input">
                                             <textarea id="floodDesc" placeholder="时间 地点 人物 事件 结果"></textarea>
                                         </div>

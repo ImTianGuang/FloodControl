@@ -1,6 +1,7 @@
 package com.tian.cloud.service.controller;
 
 import com.google.common.collect.Multimap;
+import com.google.common.collect.Ordering;
 import com.tian.cloud.service.controller.request.CommonSearchReq;
 import com.tian.cloud.service.controller.response.*;
 import com.tian.cloud.service.dao.entity.*;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -55,6 +57,16 @@ public class SearchController {
         } else {
             companies = companyService.search(companyName);
         }
+        companies = Ordering.from(new Comparator<Company>() {
+            @Override
+            public int compare(Company o1, Company o2) {
+                if (!StringUtils.isEmpty(o1) && StringUtils.isEmpty(o2)) {
+                    return 0;
+                } else {
+                    return 1;
+                }
+            }
+        }).sortedCopy(companies);
         return PageResponse.success(companies, companies.size());
     }
 
