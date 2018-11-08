@@ -57,16 +57,7 @@ public class SearchController {
         } else {
             companies = companyService.search(companyName);
         }
-        companies = Ordering.from(new Comparator<Company>() {
-            @Override
-            public int compare(Company o1, Company o2) {
-                if (!StringUtils.isEmpty(o1) && StringUtils.isEmpty(o2)) {
-                    return 0;
-                } else {
-                    return 1;
-                }
-            }
-        }).sortedCopy(companies);
+
         return PageResponse.success(companies, companies.size());
     }
 

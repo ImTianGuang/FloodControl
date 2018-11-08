@@ -3,10 +3,7 @@ package com.tian.cloud.service.service.impl;
 import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
 import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableListMultimap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
+import com.google.common.collect.*;
 import com.tian.cloud.service.controller.response.CompanyInfo;
 import com.tian.cloud.service.controller.response.CompanySituationTypes;
 import com.tian.cloud.service.dao.entity.*;
@@ -29,6 +26,7 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -59,12 +57,34 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public List<Company> selectAll() {
-        return companyMapper.selectAllUsable();
+        List<Company> companies = companyMapper.selectAllUsable();
+        companies = Ordering.from(new Comparator<Company>() {
+            @Override
+            public int compare(Company o1, Company o2) {
+                if (!StringUtils.isEmpty(o1) && StringUtils.isEmpty(o2)) {
+                    return 0;
+                } else {
+                    return 1;
+                }
+            }
+        }).sortedCopy(companies);
+        return companies;
     }
 
     @Override
     public List<Company> search(String companyName) {
-        return companyMapper.search(companyName);
+        List<Company> companies = companyMapper.search(companyName);
+        companies = Ordering.from(new Comparator<Company>() {
+            @Override
+            public int compare(Company o1, Company o2) {
+                if (!StringUtils.isEmpty(o1) && StringUtils.isEmpty(o2)) {
+                    return 0;
+                } else {
+                    return 1;
+                }
+            }
+        }).sortedCopy(companies);
+        return companies;
     }
 
     @Override
