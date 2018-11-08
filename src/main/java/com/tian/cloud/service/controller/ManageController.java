@@ -16,6 +16,7 @@ import com.tian.cloud.service.util.ParamCheckUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.util.URLEncoder;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -29,6 +30,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLDecoder;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author tianguang
@@ -269,6 +271,7 @@ public class ManageController {
 
         ModelAndView modelAndView = new ModelAndView();
         List<Company> companies = companyService.selectAll();
+        companies = companies.stream().filter(company -> !StringUtils.isEmpty(company.getSituationIds())).collect(Collectors.toList());
         modelAndView.setViewName("companySelect");
         modelAndView.addObject("companyList", companies);
         return modelAndView;
