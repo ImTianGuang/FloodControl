@@ -75,14 +75,12 @@
         from company
         where
         status = 1
-        order by name
     </select>
 
     <select id="selectAll" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from company
-        order by name
     </select>
 
     <select id="search" resultMap="BaseResultMap">
@@ -93,7 +91,6 @@
             name like CONCAT('%', #{companyName}, '%')
             and status = 1
         </where>
-        order by name
     </select>
 
     <update id="updateCompany" parameterType="com.tian.cloud.service.dao.entity.Company">
