@@ -61,10 +61,18 @@ public class CompanyServiceImpl implements CompanyService {
         companies = Ordering.from(new Comparator<Company>() {
             @Override
             public int compare(Company o1, Company o2) {
-                if (!StringUtils.isEmpty(o1.getSituationIds()) && StringUtils.isEmpty(o2.getSituationIds())) {
-                    return -1;
+                if (!StringUtils.isEmpty(o1.getSituationIds())) {
+                    if (StringUtils.isEmpty(o2.getSituationIds())) {
+                        return -1;
+                    } else {
+                        return 0;
+                    }
                 } else {
-                    return 0;
+                    if (StringUtils.isEmpty(o2.getSituationIds())) {
+                        return 0;
+                    } else {
+                        return 1;
+                    }
                 }
             }
         }).sortedCopy(companies);
@@ -77,10 +85,18 @@ public class CompanyServiceImpl implements CompanyService {
         companies = Ordering.from(new Comparator<Company>() {
             @Override
             public int compare(Company o1, Company o2) {
-                if (!StringUtils.isEmpty(o1.getSituationIds()) && StringUtils.isEmpty(o2.getSituationIds())) {
-                    return -1;
+                if (!StringUtils.isEmpty(o1.getSituationIds())) {
+                    if (StringUtils.isEmpty(o2.getSituationIds())) {
+                        return -1;
+                    } else {
+                        return 0;
+                    }
                 } else {
-                    return 0;
+                    if (StringUtils.isEmpty(o2.getSituationIds())) {
+                        return 0;
+                    } else {
+                        return 1;
+                    }
                 }
             }
         }).sortedCopy(companies);
