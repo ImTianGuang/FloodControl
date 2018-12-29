@@ -3,7 +3,7 @@ spring:
       type: org.apache.commons.dbcp2.BasicDataSource # 注意这里要指定数据库连接池的类型
       url: jdbc:mysql://127.0.0.1:3306/flood?useUnicode=true&CharacterEncoding=UTF-8
       username: root
-      password: HFRi7bzMJVme
+      password: root
       driver-class-name: com.mysql.cj.jdbc.Driver
       dbcp2:  # 表示的是连接池的配置  database connnection pool 2 的缩写
         min-idle: 5
