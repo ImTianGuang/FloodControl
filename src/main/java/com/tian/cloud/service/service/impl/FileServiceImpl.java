@@ -32,7 +32,7 @@ public class FileServiceImpl implements FileService {
         String savePath = uploadConfig.getUploadDir(uploadType);
         File file = new File(savePath);
         if (!file.exists()) {
-            file.mkdir();
+            file.mkdirs();
         }
         String fileName = uploadFile.getOriginalFilename();
         String filePath = savePath + "/" + fileName;
@@ -55,7 +55,7 @@ public class FileServiceImpl implements FileService {
         File backUpFile = new File(getBakPath(dbFileName, uploadType) + "_" + now.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         File bakDirectory = backUpFile.getParentFile();
         if (!bakDirectory.exists()) {
-            bakDirectory.mkdir();
+            bakDirectory.mkdirs();
         }
         boolean success = file.renameTo(backUpFile);
         log.info("backUpFile:{}, result:{}", dbFileName, success);
