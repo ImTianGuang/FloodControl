@@ -12,7 +12,7 @@ public interface AuthService {
 
     AccountCheckResult checkAccount(AccountCheckReq checkReq);
 
-    boolean changePassword(String token, String newPassword);
+    boolean changePassword(String token, String oldPass, String newPassword);
 
     TokenCheckResult checkToken(String token);
 

@@ -11,5 +11,7 @@ public class ChangePassReq {
 
     private String token;
 
+    private String oldPass;
+
     private String newPass;
 }

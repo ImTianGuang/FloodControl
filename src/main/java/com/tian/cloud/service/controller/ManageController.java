@@ -86,7 +86,7 @@ public class ManageController {
     @RequestMapping("changePassword")
     @ResponseBody
     public BaseResponse<Boolean> changePassword(@RequestBody ChangePassReq req) {
-        boolean result = authService.changePassword(req.getToken(), req.getNewPass());
+        boolean result = authService.changePassword(req.getToken(), req.getOldPass(), req.getNewPass());
         return BaseResponse.success(result);
     }
 
