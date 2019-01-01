@@ -155,8 +155,8 @@
             solution.companyId=companyId;
             solution.situationTargetCode=1;
             solution.status=1;
-            solution.targetId=situations[i].id;
-            solution.targetValue = situations[i].value;
+            solution.targetId=solutions[i].id;
+            solution.targetValue = solutions[i].value;
             solutionList.push(solution);
         }
 
