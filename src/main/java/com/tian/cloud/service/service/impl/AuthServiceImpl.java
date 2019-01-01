@@ -64,9 +64,11 @@ public class AuthServiceImpl implements AuthService {
     public boolean changePassword(String token, String oldPass, String newPassword) {
         ParamCheckUtil.assertTrue(!org.springframework.util.StringUtils.isEmpty(newPassword), "密码不能为空");
         TokenCheckResult result = this.checkToken(token);
-        ParamCheckUtil.assertTrue(result.isResult(), "鉴权失败");
+        ParamCheckUtil.assertTrue(result.isResult(), "密码错误");
         FloodUser floodUser = result.getFloodUser();
-        ParamCheckUtil.assertTrue(StringUtils.isEmpty(oldPass) || StringUtils.equals(oldPass, floodUser.getPassword()), "密码输入错误");
+        if (StringUtils.isNotEmpty(oldPass)) {
+            ParamCheckUtil.assertTrue(StringUtils.equals(oldPass, floodUser.getPassword()), "密码输入错误");
+        }
         int row = floodUserMapper.updatePassword(floodUser.getId(), newPassword);
         return row > 0;
     }
