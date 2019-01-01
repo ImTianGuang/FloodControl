@@ -81,7 +81,7 @@
                                     <div class="item-inner">
                                         <div class="item-title label">发生日期</div>
                                         <div class="item-input">
-                                            <input id="floodTime" type="date" placeholder="Birth day" value="2018-07-30">
+                                            <input id="floodTime" type="date" placeholder="" value="2018-07-30">
                                         </div>
                                     </div>
                                 </div>
@@ -124,9 +124,16 @@
         </p>
     </div>
 </div>
+
+<script type='text/javascript' src='https://g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='https://g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='https://g.alicdn.com/msui/sm/0.6.2/js/sm-extend.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='https://m.sui.taobao.org/docs-demos/js/toast.js' charset='utf-8'></script>
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.js"></script>
+
 <!-- 默认必须要执行$.init(),实际业务里一般不会在HTML文档里执行，通常是在业务页面代码的最后执行 -->
 <script>
-    
+
     function submitForm() {
         var companyId = document.getElementById("companyId").value;
         var situations = document.getElementsByName("situations");
@@ -154,7 +161,7 @@
         }
 
         var company = {};
-        company.companyId = companyId;
+        company.id = companyId;
 
         var floodSituation = {};
         floodSituation.companyId=companyId;
@@ -180,7 +187,7 @@
                 console.log(data);
                 if (data.ret && data.data) {
                     alert('提交成功');
-                    setTimeout("go()",3000);
+                    setTimeout("go()",1000);
                 } else {
                     if(data.errorMsg) {
                         alert('提交失败:' + data.errorMsg);
@@ -206,10 +213,5 @@
 
 </script>
 
-<script type='text/javascript' src='https://g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
-<script type='text/javascript' src='https://g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
-<script type='text/javascript' src='https://g.alicdn.com/msui/sm/0.6.2/js/sm-extend.min.js' charset='utf-8'></script>
-<script type='text/javascript' src='https://m.sui.taobao.org/docs-demos/js/toast.js' charset='utf-8'></script>
-<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.js"></script>
 </body>
 </html>
